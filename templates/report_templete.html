@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report.meeting_analysis.meeting_title }}</title>
+
+    <style>
+
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            background:#f5f7fb;
+            margin:0;
+            padding:40px;
+            color:#1f2937;
+        }
+
+        .container{
+            max-width:900px;
+            margin:auto;
+            background:white;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 4px 20px rgba(0,0,0,.08);
+        }
+
+        .header{
+            background:#2563eb;
+            color:white;
+            padding:35px;
+        }
+
+        .header h1{
+            margin:0;
+        }
+
+        .section{
+            padding:30px;
+            border-bottom:1px solid #ececec;
+        }
+
+        h2{
+            color:#2563eb;
+            margin-bottom:18px;
+        }
+
+        p{
+            line-height:1.7;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        table th{
+            background:#2563eb;
+            color:white;
+            padding:12px;
+            text-align:left;
+        }
+
+        table td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+        }
+
+        ul{
+            padding-left:20px;
+        }
+
+        li{
+            margin-bottom:8px;
+        }
+
+        .badge{
+            display:inline-block;
+            background:#e5edff;
+            color:#2563eb;
+            padding:6px 12px;
+            margin:5px;
+            border-radius:20px;
+            font-size:14px;
+        }
+
+        .footer{
+            text-align:center;
+            padding:25px;
+            color:#777;
+            font-size:13px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>{{ report.meeting_analysis.meeting_title }}</h1>
+
+        <p>
+            AI Generated Meeting Intelligence Report
+        </p>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Executive Summary</h2>
+
+        <p>
+            {{ report.meeting_analysis.summary }}
+        </p>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Narrative Report</h2>
+
+        <p>
+            {{ report.narrative_report }}
+        </p>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Action Items</h2>
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>Task</th>
+                <th>Owner</th>
+                <th>Deadline</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for item in report.meeting_analysis.action_items %}
+
+            <tr>
+
+                <td>{{ item.task }}</td>
+
+                <td>{{ item.owner or "-" }}</td>
+
+                <td>{{ item.deadline or "-" }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Key Decisions</h2>
+
+        <ul>
+
+        {% for decision in report.meeting_analysis.decisions %}
+
+            <li>{{ decision }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Risks</h2>
+
+        <ul>
+
+        {% for risk in report.meeting_analysis.risks %}
+
+            <li>{{ risk }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Opportunities</h2>
+
+        <ul>
+
+        {% for opportunity in report.meeting_analysis.opportunities %}
+
+            <li>{{ opportunity }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Open Questions</h2>
+
+        <ul>
+
+        {% for question in report.meeting_analysis.open_questions %}
+
+            <li>{{ question }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Resources Mentioned</h2>
+
+        {% for resource in report.meeting_analysis.resources_mentioned %}
+
+            <span class="badge">
+                {{ resource }}
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="section">
+
+        <h2>KPIs</h2>
+
+        <ul>
+
+        {% for kpi in report.meeting_analysis.kpis %}
+
+            <li>{{ kpi }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Participants</h2>
+
+        <ul>
+
+        {% for participant in report.meeting_analysis.participants %}
+
+            <li>{{ participant }}</li>
+
+        {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>Tags</h2>
+
+        {% for tag in report.meeting_analysis.tags %}
+
+            <span class="badge">
+                {{ tag }}
+            </span>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="section">
+
+        <h2>Historical Trends</h2>
+
+        <p>
+
+            {{ report.historical_report }}
+
+        </p>
+
+    </div>
+
+    <div class="footer">
+
+        Generated by Meeting Intelligence Platform
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+1. Organisation
+PRIMARY KEY (organisation_id)
+
+Nothing else for now.
+
+2. Users
+
+Index:
+
+PRIMARY KEY (id)
+
+INDEX(org_id)
+
+INDEX(manager_id)
+
+UNIQUE(email)
+
+You'll frequently fetch users by organization.
+
+3. Customers
+
+Index:
+
+PRIMARY KEY(id)
+
+INDEX(salesperson_id)
+
+INDEX(organisation_id)
+
+INDEX(customer_name)
+
+If customer names must be unique within an organization:
+
+UNIQUE(organisation_id, customer_name)
+4. Meetings ⭐
+
+This is your most queried table.
+
+PRIMARY KEY(id)
+
+INDEX(customer_id)
+
+INDEX(salesperson_id)
+
+INDEX(org_id)
+
+INDEX(meeting_date)
+
+INDEX(meeting_type)
+
+I'd also create a composite index:
+
+INDEX(customer_id, meeting_date DESC)
+
+Why?
+
+Your chatbot and dashboard will often ask:
+
+Show all meetings for Acme ordered by newest.
+
+5. Transcript&Report ⭐⭐⭐
+Transcript
+
+Create a PostgreSQL Full Text Search index.
+
+GIN(to_tsvector('english', transcript))
+
+This is for queries like:
+
+Find meetings mentioning "Hetzner"
+
+Summary
+
+If you keep it:
+
+GIN(to_tsvector('english', summary))
+Merged Report
+GIN(to_tsvector('english', merged_report))
+
+This is extremely useful for keyword search.
+
+Also:
+
+INDEX(meeting_id)
+
+INDEX(org_id)
+6. Embeddings ⭐⭐⭐⭐⭐
+
+For pgvector:
+
+HNSW(vector)
+
+or
+
+IVFFLAT(vector)
+
+I'd choose HNSW.
+
+Also:
+
+INDEX(transcriptreport_id)
+7. MeetingReport
+PRIMARY KEY(id)
+
+UNIQUE(meeting_id)
+
+INDEX(customer_id)
+
+INDEX(salesperson_id)
+
+INDEX(org_id)
+
+INDEX(created_at)
+
+Your dashboard will constantly query by these.
+
+8. MeetingAnalysis
+PRIMARY KEY(id)
+
+UNIQUE(meeting_id)
+
+INDEX(customer_id)
+
+INDEX(org_id)
+
+INDEX(created_at)
+
+If analysis_json is stored as JSONB, you do not need a GIN index immediately.
+
+Only add one later if you start querying inside the JSON, for example:
+
+SELECT *
+FROM meeting_analysis
+WHERE analysis_json->'risks' IS NOT NULL;
+
+For the MVP, skip it.
+
+Overall indexes
+B-tree
+
+Use for:
+
+id
+meeting_id
+customer_id
+salesperson_id
+organisation_id
+created_at
+meeting_date
+meeting_type
+email
+GIN
+
+Use for:
+
+transcript
+
+summary
+
+merged_report
+
+(PostgreSQL Full Text Search)
+
+HNSW
+
+Use for:
+
+Embeddings.vector
+
+(pgvector)
