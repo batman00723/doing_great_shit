@@ -1,12 +1,13 @@
 from myapi.agent.state import MeetingState
 from myapi.agent.llm import LLMService
 from myapi.agent.schema import StructuredMeetingAnalysis
-from myapi.models import MeetingReport, MeetingAnalysis, TranscriptReport, Embedding
+from myapi.models import MeetingReport, MeetingAnalysis, TranscriptReport, Embedding, Customer, User
 from myapi.agent.prompts.loader import load_prompt
 from langchain_core.messages import SystemMessage, HumanMessage
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 import json
+from myapi.email_service.email_service import send_email
 
 
 llm= LLMService()
@@ -21,7 +22,7 @@ env = Environment(
     loader=FileSystemLoader(TEMPLATE_DIR)
 )
 
-template = env.get_template("meeting_report.html")
+template = env.get_template("report_template.html")
 
 
 
@@ -38,10 +39,10 @@ def structured_report_node(state: MeetingState):
         ]
         
         structured_report= llm.get_structured(StructuredMeetingAnalysis, messages)
+        print(f"Structured Report: {structured_report}")
 
         return {
-            "meeting_analysis": structured_report,
-            "status": "Agent 1 Passed"
+            "meeting_analysis": structured_report
         }
 
     except Exception as e:
@@ -66,8 +67,7 @@ def narrative_report_node(state: MeetingState):
         print(f"Narrative Report: {narrative_report}")
 
         return {
-            "narrative_report": narrative_report.content,
-            "status": "Agent 2 Passed"
+            "narrative_report": narrative_report.content
         }
 
     except Exception as e:
@@ -88,7 +88,7 @@ def historical_report_node(state: MeetingState):
             MeetingAnalysis.objects
             .filter(
                 customer_id=state["customer_id"],
-                organisation_id=state["organization_id"],
+                organisation_id=state["organisation_id"],
             )
             .exclude(meeting_id=state["meeting_id"])
             .order_by("-created_at")[:4]
@@ -113,8 +113,7 @@ def historical_report_node(state: MeetingState):
         historical_report= llm.invoke(messages)
 
         return {
-            "historical_analysis": historical_report.content,
-            "status": "Agent 3 Passed"
+            "historical_analysis": historical_report.content
         }
 
     except Exception as e:
@@ -210,8 +209,7 @@ def markdown_report_node(state: MeetingState):
 
 
     return {
-        "markdown_report": merged_report,
-        "status": "Reports Converted to md"
+        "markdown_report": merged_report
     }
 
 
@@ -249,7 +247,7 @@ def save_to_db_node(state: MeetingState):
     try:
         MeetingAnalysis.objects.create(
             meeting_id=state['meeting_id'],
-            organisation_id=state['organization_id'],
+            organisation_id=state['organisation_id'],
             customer_id=state['customer_id'],
             agent_1_report_persistent=state['meeting_analysis'].model_dump()
         )
@@ -257,7 +255,7 @@ def save_to_db_node(state: MeetingState):
 
         TranscriptReport.objects.create(
             meeting_id=state['meeting_id'],
-            organisation_id=state['organization_id'],
+            organisation_id=state['organisation_id'],
             transcript=state['transcript'],
             summary=state['meeting_analysis'].summary,
             merged_final_report=state['markdown_report']
@@ -266,7 +264,7 @@ def save_to_db_node(state: MeetingState):
 
         MeetingReport.objects.create(
             meeting_id=state['meeting_id'],
-            organisation_id=state['organization_id'],
+            organisation_id=state['organisation_id'],
             customer_id=state['customer_id'],
             salesperson_id=state['salesperson_id'],
             html_report=state['html_report']
@@ -282,6 +280,28 @@ def save_to_db_node(state: MeetingState):
             "errors": [str(e)]
         }
 
-# def send_report_to_mail(state: MeetingState):
-#     "send html mail to respective customer of the sales guy via customer id"
+def send_report_to_mail(state: MeetingState):
 
+    customer = Customer.objects.get(id=state["customer_id"])
+
+    salesperson = User.objects.get(id=state["salesperson_id"])
+
+    # Email to salesperson
+    send_email(
+        recipient_email=salesperson.email,
+        recipient_name=salesperson.salesperson_name,
+        subject="Meeting Report",
+        html_content=state["html_report"],
+    )
+
+    # Email to customer
+    # send_email(
+    #     recipient_email=customer.email,
+    #     recipient_name=customer.customer_name,
+    #     subject="Meeting Summary",
+    #     html_content=state["html_report"],
+    # )
+
+    return {
+        "status": "Emails Sent Successfully"
+    }

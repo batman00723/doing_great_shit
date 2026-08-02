@@ -4,7 +4,7 @@ from operator import add
 
 class MeetingState(TypedDict):
     meeting_id: int
-    organization_id: int
+    organisation_id: int
     customer_id: int
     salesperson_id: int
 
