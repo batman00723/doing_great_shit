@@ -117,15 +117,35 @@
 
     </div>
 
-    <div class="section">
+<div class="section">
 
-        <h2>Narrative Report</h2>
+    <h2>Narrative Report</h2>
 
-        <p>
-            {{ report.narrative_report }}
-        </p>
+    <h3 style="color:#374151;margin-top:25px;">Executive Summary</h3>
 
-    </div>
+    <ul>
+
+        {% for point in report.narrative_report.executive_summary %}
+
+        <li>{{ point }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+    <h3 style="color:#374151;margin-top:30px;">Discussion Flow</h3>
+
+    <ul>
+
+        {% for point in report.narrative_report.discussion_flow %}
+
+        <li>{{ point }}</li>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
 
     <div class="section">
 

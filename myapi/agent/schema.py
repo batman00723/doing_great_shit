@@ -17,3 +17,24 @@ class StructuredMeetingAnalysis(BaseModel):
     kpis: list[str]= Field(description= "Metrics, performance indicators, targets or numerical values explicitly mentioned.")
     participants: list[str]= Field(description="Participants who joined meeting")
     tags: list[str]= Field(description="Metrics, performance indicators, targets or numerical values explicitly mentioned.")
+
+
+
+
+class NarrativeReport(BaseModel):
+    executive_summary: list[str] = Field(
+        description=(
+            "A concise executive-level summary of the meeting in bullet points, "
+            "highlighting the primary purpose, major discussions, key outcomes, "
+            "and overall direction of the meeting."
+        )
+    )
+
+    discussion_flow: list[str] = Field(
+        description=(
+            "A chronological sequence of the meeting's discussion in bullet points, "
+            "where each bullet represents one major topic or conversation segment "
+            "from beginning to end without adding opinions, recommendations, or "
+            "information not present in the transcript."
+        )
+    )

@@ -1,6 +1,6 @@
 from myapi.agent.state import MeetingState
 from myapi.agent.llm import LLMService
-from myapi.agent.schema import StructuredMeetingAnalysis
+from myapi.agent.schema import StructuredMeetingAnalysis, NarrativeReport
 from myapi.models import MeetingReport, MeetingAnalysis, TranscriptReport, Embedding, Customer, User
 from myapi.agent.prompts.loader import load_prompt
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -63,11 +63,12 @@ def narrative_report_node(state: MeetingState):
             HumanMessage(content= transcript),
        ]
 
-        narrative_report= llm.invoke(messages)
+        narrative_report= llm.get_structured(schema= NarrativeReport,
+                                             messages= messages)
         print(f"Narrative Report: {narrative_report}")
 
         return {
-            "narrative_report": narrative_report.content
+            "narrative_report": narrative_report
         }
 
     except Exception as e:
