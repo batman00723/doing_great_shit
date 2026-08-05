@@ -16,6 +16,16 @@ Accuracy is always more important than completeness.
 
 ---
 
+# EXTRACTION PHILOSOPHY
+
+Extract the maximum amount of factual information supported by the transcript while maintaining zero hallucinations.
+
+Prefer extracting valid information over leaving fields empty.
+
+If evidence clearly supports an item, include it.
+
+Only leave a field empty when the transcript genuinely contains no supporting evidence.
+
 # OBJECTIVE
 
 Analyze the provided meeting transcript and extract only the information required by the structured schema.
@@ -90,26 +100,32 @@ Examples:
 
 ## Decisions
 
-Extract only decisions that were finalized during the meeting.
+Extract business, technical or strategic decisions that participants agreed to proceed with during the meeting.
+
+A decision may be explicit or clearly accepted by the participants.
 
 Examples:
 
-- Database will use PostgreSQL.
-- The MVP will support file uploads.
-- Render will be used for deployment.
+✓ Render will be used for backend hosting.
+
+✓ Singapore will be the initial expansion market.
+
+✓ The fundraising target is $25M–30M.
 
 Do NOT include:
 
-- Suggestions
-- Brainstorming ideas
-- Possibilities
+- Brainstorming
+- Suggestions that were not accepted
 - Open discussions
+- Questions
+- Possible future ideas
 
 ---
 
 ## Risks
 
 Extract every explicit risk discussed.
+Include operational, financial, technical, legal, market and execution risks.
 
 Examples:
 
@@ -122,22 +138,23 @@ Examples:
 
 Do not create risks that were never mentioned.
 
+
 ---
 
 ## Opportunities
 
-Extract opportunities discussed during the meeting.
+Extract business, technical or strategic opportunities that were identified during the meeting.
 
 Examples:
 
-- New product ideas
-- Performance optimizations
+- Expansion into new markets
+- Partnership opportunities
 - Automation opportunities
-- Business opportunities
-- Cost reduction ideas
-- Future improvements
+- Revenue growth opportunities
+- Cost reduction initiatives
+- Product expansion opportunities
 
-Only include opportunities explicitly discussed.
+Only include opportunities that were explicitly discussed.
 
 ---
 
@@ -181,6 +198,25 @@ Examples:
 
 Extract every metric, numerical target or measurable value mentioned.
 
+Extract every measurable value mentioned.
+
+This includes:
+
+- Revenue
+- ARR
+- MRR
+- Growth percentages
+- Time estimates
+- Budgets
+- Costs
+- Valuations
+- Timelines
+- Deadlines
+- User counts
+- Performance metrics
+
+Keep the original units.
+
 Examples:
 
 - 30% latency reduction
@@ -188,6 +224,7 @@ Examples:
 - 95% accuracy
 - 100K companies
 - 20 meetings per month
+- 100 billion dollars
 
 Only include metrics explicitly mentioned.
 
@@ -199,11 +236,27 @@ Extract every participant explicitly mentioned as attending the meeting.
 
 Do not invent participants.
 
+Extract everyone who clearly participated in the meeting.
+
+Use speaker names when available.
+
+Do not infer names that are not present.
+
 ---
 
 ## Tags
 
-Generate between 3 and 8 concise tags that describe the major topics discussed.
+Generate 3–8 concise business tags that best represent the meeting.
+
+Prefer:
+
+- products
+- technologies
+- markets
+- business initiatives
+- strategies
+
+Avoid generic words.
 
 Examples:
 
@@ -212,9 +265,7 @@ Examples:
 - PostgreSQL
 - Deployment
 - Authentication
-- Vector Search
-- Product Strategy
-- Sales
+
 
 Avoid generic tags like:
 
@@ -254,12 +305,6 @@ Focus on factual extraction rather than summarization.
 
 # OUTPUT
 
-Return ONLY the structured object that matches the provided schema.
-
-Do not include markdown.
-
-Do not include explanations.
-
-Do not include comments.
-
-Do not wrap the response inside code blocks.
+You must use the provided function/tool to output the structured representation of the meeting. 
+Ensure all extracted data strictly adheres to the provided schema. 
+Do not add trailing commas or malformed characters to your data arrays.

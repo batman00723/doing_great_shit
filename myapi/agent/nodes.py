@@ -71,12 +71,13 @@ def narrative_report_node(state: MeetingState):
             "narrative_report": narrative_report
         }
 
-    except Exception as e:
-        print(f"Agent 2 failed: {e}")
+    except Exception:
+        raise
+            
 
-        return {
-            "errors": [str(e)]
-        }
+        # return {
+        #     "errors": [str(e)]
+        # }
 
 def historical_report_node(state: MeetingState):
     print("Agent 3: Gererating Historical Report")
@@ -111,7 +112,7 @@ def historical_report_node(state: MeetingState):
         messages= [SystemMessage(content= AGENT_3_PROMPT),
                     HumanMessage(content= prompt)]
 
-        historical_report= llm.invoke(messages)
+        historical_report= llm.invoke( messages)
 
         return {
             "historical_analysis": historical_report.content
@@ -144,11 +145,11 @@ def markdown_report_node(state: MeetingState):
 
     merged_report = f""" # {analysis.meeting_title}
 
-        ## Executive Summary
+        ## Overview
 
             {analysis.summary}
 
-        ## Narrative Report
+        ## Meeting Flow
 
             {state['narrative_report']}
 

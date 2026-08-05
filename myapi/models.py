@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.search import SearchVectorField
-from pgvector.django import VectorField
+from django.contrib.postgres.indexes import GinIndex
+from pgvector.django import VectorField, HnswIndex
 
 
 class Organisation(models.Model):
@@ -77,6 +78,16 @@ class Customer(models.Model):
         blank=True
     )
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["salesperson"]),
+            models.Index(fields=["organisation"]),
+            models.Index(fields=["customer_name"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=["organisation", "customer_name"], name="unique_org_customer_name")
+        ]
+
     def __str__(self):
         return self.customer_name
 
@@ -130,6 +141,8 @@ class Meeting(models.Model):
             models.Index(fields=["salesperson"]),
             models.Index(fields=["organisation"]),
             models.Index(fields=["meeting_date"]),
+            models.Index(fields=["meeting_type"]),
+            models.Index(fields=["customer", "-meeting_date"]),
         ]
 
 
@@ -159,6 +172,13 @@ class TranscriptReport(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        indexes = [
+            GinIndex(fields=["transcript_search"]),
+            GinIndex(fields=["summary_search"]),
+            GinIndex(fields=["report_search"]),
+        ]
+
 
 class MeetingAnalysis(models.Model):
     meeting = models.OneToOneField(
@@ -180,6 +200,11 @@ class MeetingAnalysis(models.Model):
     agent_1_report_persistent = models.JSONField()
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["created_at"]),
+        ]
 
 
 class MeetingReport(models.Model):
@@ -208,6 +233,11 @@ class MeetingReport(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["created_at"]),
+        ]
+
 
 class Embedding(models.Model):
     transcript_report = models.ForeignKey(
@@ -221,3 +251,14 @@ class Embedding(models.Model):
     vector = VectorField(dimensions=1024)  # Adjust to your embedding model
 
     metadata = models.JSONField(default=dict)
+
+    class Meta:
+        indexes = [
+            HnswIndex(
+                name="embed_vector_idx",
+                fields=["vector"],
+                m=16,
+                ef_construction=64,
+                opclasses=["vector_cosine_ops"]
+            ),
+        ]

@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field
 
 class ActionItem(BaseModel):
-    task: str
+    task: str = Field(description= "Specefic task or follow-up acttion explicitly assigned during the meeting.")
     owner: str | None = Field(default= None, description="Person responsible for completing the task or the person task is assigned to")
-    deadline: str | None = None
+    deadline: str | None = Field(description= "Deadline or due date if explicitly mentioned.")
 
 class StructuredMeetingAnalysis(BaseModel):
     meeting_title: str= Field(description="Title for the meeting")
@@ -16,25 +16,13 @@ class StructuredMeetingAnalysis(BaseModel):
     resources_mentioned: list[str]= Field(description="List all the resources mentioned in meeting")
     kpis: list[str]= Field(description= "Metrics, performance indicators, targets or numerical values explicitly mentioned.")
     participants: list[str]= Field(description="Participants who joined meeting")
-    tags: list[str]= Field(description="Metrics, performance indicators, targets or numerical values explicitly mentioned.")
-
-
+    tags: list[str]= Field(description="Concise business and technical topics discussed during the meeting.")
 
 
 class NarrativeReport(BaseModel):
-    executive_summary: list[str] = Field(
+    discussion_narrative: str = Field(
         description=(
-            "A concise executive-level summary of the meeting in bullet points, "
-            "highlighting the primary purpose, major discussions, key outcomes, "
-            "and overall direction of the meeting."
-        )
-    )
-
-    discussion_flow: list[str] = Field(
-        description=(
-            "A chronological sequence of the meeting's discussion in bullet points, "
-            "where each bullet represents one major topic or conversation segment "
-            "from beginning to end without adding opinions, recommendations, or "
-            "information not present in the transcript."
+            "A professional business narrative explaining how the discussion "
+            "progressed from beginning to end in exactly ONE short paragraph under 100 words."
         )
     )
