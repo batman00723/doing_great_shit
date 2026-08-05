@@ -142,7 +142,7 @@ class Meeting(models.Model):
             models.Index(fields=["organisation"]),
             models.Index(fields=["meeting_date"]),
             models.Index(fields=["meeting_type"]),
-            models.Index(fields=["customer", "-meeting_date"]),
+            models.Index(fields=["customer", "-meeting_date"]), 
         ]
 
 
@@ -235,11 +235,13 @@ class Embedding(models.Model):
 
     chunks = models.TextField()
 
-    vector = VectorField(dimensions=1024)  # Adjust to your embedding model
+    vector = VectorField(dimensions=1024)  
 
     metadata = models.JSONField(default=dict)
 
-    chunk_search = SearchVectorField(null=True)
+    chunk_search = SearchVectorField(null=True) # this is for keyword search
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [

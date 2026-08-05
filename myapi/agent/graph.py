@@ -11,6 +11,7 @@ from myapi.agent.nodes import (
     make_html_report_node,
     save_to_db_node,
     send_report_to_mail,
+    generate_embeddings_node,
 )
 
 
@@ -29,6 +30,7 @@ def build_graph():
 
     builder.add_node("save_to_db", save_to_db_node)
     builder.add_node("send_email", send_report_to_mail)
+    builder.add_node("generate_embeddings", generate_embeddings_node)
 
     # Start (Parallel)
     builder.add_edge(START, "structured_report")
@@ -51,9 +53,10 @@ def build_graph():
 
     # Parallel after persistence
     builder.add_edge("save_to_db", "send_email")
-    builder.add_edge("save_to_db", END)
+    builder.add_edge("save_to_db", "generate_embeddings")
 
     builder.add_edge("send_email", END)
+    builder.add_edge("generate_embeddings", END)
 
     memory = MemorySaver()
 

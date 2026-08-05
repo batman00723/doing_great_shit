@@ -2,11 +2,21 @@ starting to call agent
 Transcription is processing
 Agent 2: Gererating Narrative Report
 Agent 1: Generating Structured Report
-Structured Report: meeting_title='Southeast Asia Expansion & Fundraising Strategy Review' summary="The meeting reviewed the company's Southeast Asia expansion strategy and upcoming fundraising process. Sarah Chen presented financial projections, forecasting $40M ARR and an EBITDA margin increase to 19%, and outlined a valuation range of $180M‑$220M with a planned raise of $25M‑$30M. Emily Wong shared market research indicating Singapore as the easiest entry point, Indonesia as the largest long‑term opportunity, and Vietnam requiring further legal due diligence. Operational risks such as local compliance, hiring regional sales leaders, customer support quality, CAC volatility, and infrastructure scalability were identified. The team agreed on a balanced approach to target both strategic investors and growth equity funds, and set a timeline of 4‑6 weeks for data‑room preparation followed by 8‑10 weeks for outreach. Responsibilities were assigned for valuation benchmarks, financial model updates, investor target list, market assessment circulation, and legal advisor coordination. A follow‑up board meeting was scheduled for two weeks later to review progress." action_items=[ActionItem(task='Finalize the valuation benchmarks', owner='Sarah Chen', deadline=None), ActionItem(task='Update the financial model', owner='Sarah Chen', deadline=None), ActionItem(task='Prepare an initial investor target list', owner='Sarah Chen', deadline='Friday'), ActionItem(task='Circulate the complete Southeast Asia market assessment', owner='Emily Wong', deadline=None), ActionItem(task='Coordinate meetings with external legal advisors', owner='Emily Wong', deadline='next week'), ActionItem(task='Schedule another board meeting to review progress', owner=None, deadline='in two weeks')] decisions=['Schedule another board meeting in two weeks to review progress'] risks=['Local compliance requirements in target countries', 'Hiring experienced regional sales leaders', 'Maintaining customer support quality during rapid expansion', 'Customer acquisition cost volatility during the first twelve months', 'Potential need to accelerate cloud infrastructure investments by approximately $2 million over the next year'] opportunities=['Entry into Singapore due to regulatory clarity', 'Long‑term market opportunity in Indonesia', 'Promising market potential in Vietnam pending legal due diligence', 'Strategic investors could accelerate distribution partnerships'] open_questions=[] resources_mentioned=[] kpis=['$40 million annual recurring revenue forecast by end of fiscal year', 'EBITDA margin improvement from 14% to 19% over the last two quarters', 'Valuation range of $180 million to $220 million', 'Fundraising target of $25 million to $30 million', 'Approximate $2 million additional cloud infrastructure investment needed over the next year', 'Fundraising preparation timeline: 4 to 6 weeks', 'Fundraising outreach timeline: 8 to 10 weeks'] participants=['Michael Ross', 'Sarah Chen', 'David Kumar', 'Emily Wong'] tags=['Southeast Asia Expansion', 'Fundraising', 'Investor Strategy', 'Financial Projections', 'Market Research']
-Transcript processing failed: Error code: 400 - {'error': {'message': 'Tool choice is required, but model did not call a tool', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': ''}}
-Agent Execution Error: Error code: 400 - {'error': {'message': 'Tool choice is required, but model did not call a tool', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': ''}}
+Narrative Report: thought_process='Summarize the meeting by outlining financial results, product updates, infrastructure cost concerns, fundraising plans, international expansion and compliance topics, and assign responsibilities, all in a single concise paragraph under 100 words.' discussion_narrative='The strategy review opened with a financial overview showing $38.6\u202fM revenue, 31\u202f% YoY growth, improved margins and 95\u202f% retention, with 74\u202f% of new revenue from enterprise accounts. Product updates highlighted authentication redesign, role‑based access, 32\u202f% latency reduction, 60\u202f% Kubernetes migration, and the AI summarization service, while noting retrieval quality, monitoring, and hallucination gaps. Infrastructure spend rose to $109\u202fk, prompting caching, model downsizing, and data archiving proposals. Fundraising targets a $40\u202fM Series\u202fB at $240‑280\u202fM valuation, with three‑week prep and an eight‑to‑twelve‑week raise. Expansion priorities, compliance needs, and AI testing requirements were discussed, owners were assigned deliverables before reconvening in two weeks.'
+Structured Report: meeting_title='Q2 Strategy Review and Series B Fundraising Planning' summary='The meeting reviewed Q2 performance, discussed AI platform progress, infrastructure cost increases, and prepared for a Series B fundraising round. Key financial metrics were presented, including $38.6M revenue and improved margins. Product updates highlighted authentication redesign, latency reductions, and the AI summarization service. Risks around retrieval quality, infrastructure spend, and international expansion were identified. Decisions included a $40M raise at a $240‑$280M valuation, targeting Singapore for initial expansion, and adopting a hybrid retrieval approach. Action items were assigned to owners for financial modeling, market research, retrieval improvements, pricing strategy, and competitive analysis. The team will reconvene in two weeks to assess progress.' action_items=[ActionItem(task='Finalize the financial model, valuation analysis, and investor target list', owner='Sarah Chen', deadline='by Friday'), ActionItem(task='Complete international market research, coordinate legal consultations, and prepare localization requirements', owner='Emily Wong', deadline=None), ActionItem(task='Improve retrieval quality, benchmark multiple embedding models, complete hybrid search implementation, and prepare infrastructure cost projections', owner='Aman Gupta', deadline=None), ActionItem(task='Review pricing strategy, enterprise packaging, and competitive positioning', owner='David Kumar', deadline=None), ActionItem(task='Prepare an updated competitive analysis covering Microsoft, Notion, Otter.ai, Fireflies, Granola, and Fathom', owner='David Kumar', deadline=None)] decisions=['Target raise of approximately $40 million with valuation between $240 million and $280 million and dilution below 15%', 'Select Singapore as the initial international expansion market', 'Pursue a balanced strategy of both strategic and financial investors', 'Implement hybrid retrieval using dense embeddings, BM25 keyword search, and metadata filtering', 'Allocate three weeks to finalize financial model, investor deck, KPI documentation, and legal data room before outreach', 'Fundraising process expected to last eight to twelve weeks', 'Reconvene in two weeks to review fundraising readiness, product progress, infrastructure optimization, AI evaluation metrics, and international expansion planning', 'Commit to achieving SOC 2 compliance for enterprise prospects', 'Plan for GDPR compliance for European customers entering pilot programs next quarter'] risks=['Historical retrieval struggles with broad historical queries', 'Current monitoring does not track hallucination rates or retrieval quality', 'Infrastructure cost increase and burn rate concerns', 'Need for stronger prompt evaluation, automated regression testing, and offline benchmarking before model upgrades', 'Hiring experienced regional sales leadership for international expansion', 'Regulatory compliance risks in new markets', 'Maintaining customer support quality across regions', 'Localization challenges for multiple languages', 'Risk of inconsistent meeting reports for enterprise customers', 'Security compliance (SOC 2) requirement from enterprise prospects', 'GDPR compliance obligations for European customers'] opportunities=['Caching repeated requests to reduce inference costs', 'Using smaller models for deterministic extraction tasks', 'Batching embeddings during ingestion to reduce processing costs', 'Archiving inactive customer data into cold storage', 'Expanding into Singapore, Indonesia, and Vietnam markets', 'Attracting strategic investors to accelerate distribution', 'Attracting financial investors to simplify governance and future financing'] open_questions=[] resources_mentioned=['Whisper', 'LLM', 'AI summarization service', 'Kubernetes', 'Dense embeddings', 'BM25 keyword search', 'Metadata filtering', 'Vector database storage', 'GPU inference', 'Cold storage'] kpis=['Revenue $38.6 million (Q2)', 'Year-over-year revenue increase 31%', 'Gross margin 71%', 'EBITDA increase from 15% to 20%', 'Customer retention 95%', 'Enterprise new revenue proportion 74%', 'API latency reduction 32%', 'Workloads migrated to Kubernetes 60%', 'Summarization service processing time under 18 seconds for meetings <1 hour', 'Monthly infrastructure spending $82,000 increased to $109,000', 'Additional $20,000 per month if usage doubles', 'Valuation $240 million to $280 million', 'Fundraising target $40 million', 'Dilution limit below 15%', 'Three weeks to finalize financial model and related documents', 'Fundraising process duration 8-12 weeks', 'Reconvene meeting in two weeks'] participants=['Michael Ross', 'Sarah Chen', 'David Kumar', 'Emily Wong', 'Aman Gupta'] tags=['Series B', 'Fundraising', 'AI Platform', 'International Expansion', 'Infrastructure Optimization', 'Compliance', 'Retrieval Optimization']
+Agent 3: Gererating Historical Report
+Generating Markdown Report
+Generated HTML (64540 chars)
+Saving Reports
+Generating RAG Embeddings...
+tokenizer.json:   0%|                                                                                                                                 | 0.00/7.03M [00:00<?, ?B/s]Email sent successfully to amanmishrarewa23@gmail.com
+tokenizer.json: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7.03M/7.03M [00:01<00:00, 4.39MB/s]
+Transcript processing failed: At key 'status': Can receive only one value per step. Use an Annotated key to handle multiple values.
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/INVALID_CONCURRENT_GRAPH_UPDATE
+Agent Execution Error: At key 'status': Can receive only one value per step. Use an Annotated key to handle multiple values.
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/INVALID_CONCURRENT_GRAPH_UPDATE
 Traceback (most recent call last):
-  File "E:\Meeting Intelligence Platform\myapi\meeting_controller.py", line 17, in agent
+  File "E:\Meeting Intelligence Platform\myapi\meeting_controller.py", line 22, in agent
     response = process_transcript(payload.transcript)
   File "E:\Meeting Intelligence Platform\myapi\services\transcript_processor.py", line 47, in process_transcript
     final_state = meeting_agent.invoke(initial_state, config= config)
@@ -20,109 +30,25 @@ Traceback (most recent call last):
         ^^^^^^^^^
     ):
     ^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\main.py", line 2967, in stream
-    for _ in runner.tick(
-             ~~~~~~~~~~~^
-        [t for t in loop.tasks.values() if not t.writes],
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<2 lines>...
-        schedule_task=loop.accept_push,
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ):
-    ^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 344, in tick
-    _panic_or_proceed(
-    ~~~~~~~~~~~~~~~~~^
-        futures.done.union(f for f, t in futures.items() if t is not None),
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<2 lines>...
-        handled_futures=handled_futures,
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\main.py", line 2984, in stream
+    loop.after_tick()
+    ~~~~~~~~~~~~~~~^^
+  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\_loop.py", line 692, in after_tick
+    self.updated_channels = apply_writes(
+                            ~~~~~~~~~~~~^
+        self.checkpoint,
+        ^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.trigger_to_nodes,
+        ^^^^^^^^^^^^^^^^^^^^^^
     )
     ^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\_runner.py", line 687, in _panic_or_proceed
-    raise exc
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\_executor.py", line 80, in done
-    task.result()
-    ~~~~~~~~~~~^^
-  File "C:\Program Files\Python313\Lib\concurrent\futures\_base.py", line 449, in result
-    return self.__get_result()
-           ~~~~~~~~~~~~~~~~~^^
-  File "C:\Program Files\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
-    raise self._exception
-  File "C:\Program Files\Python313\Lib\concurrent\futures\thread.py", line 59, in run
-    result = self.fn(*self.args, **self.kwargs)
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\_retry.py", line 617, in run_with_retry
-    return task.proc.invoke(task.input, config)
-           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 684, in invoke
-    input = context.run(step.invoke, input, config, **kwargs)
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 426, in invoke
-    ret = self.func(*args, **kwargs)
-  File "E:\Meeting Intelligence Platform\myapi\agent\nodes.py", line 66, in narrative_report_node
-    narrative_report= llm.get_structured(schema= NarrativeReport,
-                                         messages= messages)
-  File "E:\Meeting Intelligence Platform\myapi\agent\llm.py", line 21, in get_structured
-    return structured_model.invoke(messages)
-           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langchain_core\runnables\base.py", line 3442, in invoke
-    input_ = context.run(step.invoke, input_, config, **kwargs)
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langchain_core\runnables\base.py", line 6002, in invoke
-    return self.bound.invoke(
-           ~~~~~~~~~~~~~~~~~^
-        input,
-        ^^^^^^
-        self._merge_configs(config),
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        **{**self.kwargs, **kwargs},
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 476, in invoke
-    self.generate_prompt(
-    ~~~~~~~~~~~~~~~~~~~~^
-        [self._convert_input(input)],
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<6 lines>...
-        **kwargs,
-        ^^^^^^^^^
-    ).generations[0][0],
-    ^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1849, in generate_prompt
-    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
-           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1656, in generate
-    self._generate_with_cache(
-    ~~~~~~~~~~~~~~~~~~~~~~~~~^
-        m,
-        ^^
-    ...<2 lines>...
-        **kwargs,
-        ^^^^^^^^^
-    )
-    ^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1994, in _generate_with_cache
-    result = self._generate(
-        messages, stop=stop, run_manager=run_manager, **kwargs
-    )
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langchain_groq\chat_models.py", line 627, in _generate
-    response = self.client.create(messages=message_dicts, **params)
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\groq\resources\chat\completions.py", line 461, in create
-    return self._post(
-           ~~~~~~~~~~^
-        "/openai/v1/chat/completions",
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<45 lines>...
-        stream_cls=Stream[ChatCompletionChunk],
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\groq\_base_client.py", line 1242, in post
-    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
-                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\groq\_base_client.py", line 1044, in request
-    raise self._make_status_error_from_response(err.response) from None
-groq.BadRequestError: Error code: 400 - {'error': {'message': 'Tool choice is required, but model did not call a tool', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': ''}}
-During task with name 'narrative_report' and id '69e0e925-45d0-6a6e-00f3-6bfee823e664'
-"POST - MeetingOperationController[agent] /api_v1/analyse/report" 43.659783363342285
-[05/Aug/2026 17:55:45] "POST /api_v1/analyse/report HTTP/1.1" 200 235
+  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\pregel\_algo.py", line 319, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "E:\Meeting Intelligence Platform\venv\Lib\site-packages\langgraph\channels\last_value.py", line 64, in update
+    raise InvalidUpdateError(msg)
+langgraph.errors.InvalidUpdateError: At key 'status': Can receive only one value per step. Use an Annotated key to handle multiple values.
+For troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/INVALID_CONCURRENT_GRAPH_UPDATE
+"POST - MeetingOperationController[agent] /api_v1/analyse/report" 16.16620445251465
+[06/Aug/2026 04:06:48] "POST /api_v1/analyse/report HTTP/1.1" 200 269

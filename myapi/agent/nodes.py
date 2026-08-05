@@ -1,7 +1,7 @@
 from myapi.agent.state import MeetingState
 from myapi.agent.llm import LLMService, AlternativeLLMService
 from myapi.agent.schema import StructuredMeetingAnalysis, NarrativeReport
-from myapi.models import MeetingReport, MeetingAnalysis, TranscriptReport, Embedding, Customer, User
+from myapi.models import MeetingReport, MeetingAnalysis, TranscriptReport, Embedding, Customer, User, Organisation, Meeting
 from myapi.agent.prompts.loader import load_prompt
 from langchain_core.messages import SystemMessage, HumanMessage
 from jinja2 import Environment, FileSystemLoader
@@ -10,13 +10,18 @@ import json
 from myapi.email_service.email_service import send_email
 import datetime
 from django.db import transaction
+from myapi.services.rag_services import RAGService
+from django.contrib.postgres.search import SearchVector
 
 llm= LLMService()
 altllm= AlternativeLLMService()
+rag_service = RAGService()
+
 
 AGENT_1_PROMPT = load_prompt("agent_1.md")
 AGENT_2_PROMPT = load_prompt("agent_2.md")
 AGENT_3_PROMPT = load_prompt("agent_3.md")
+
 
 TEMPLATE_DIR = Path(__file__).parent.parent / "templates"
 
@@ -312,3 +317,74 @@ def send_report_to_mail(state: MeetingState):
     return {
         "status": "Emails Sent Successfully"
     }
+
+def generate_embeddings_node(state: MeetingState):
+    print("Generating RAG Embeddings...")
+    
+    try:
+        customer = Customer.objects.get(id=state["customer_id"])
+        meeting = Meeting.objects.get(id=state["meeting_id"])
+        organisation = Organisation.objects.get(id=state["organisation_id"])
+        salesperson = User.objects.get(id=state["salesperson_id"])
+        transcript_report = TranscriptReport.objects.get(meeting_id=state["meeting_id"])
+
+        # 1. Prepare Semantic Metadata (For the LLM Context)
+        semantic_header = f"Organisation: {organisation.organisation_name}\n"
+        semantic_header += f"Salesperson: {salesperson.salesperson_name}\n"
+        semantic_header += f"Customer: {customer.customer_name}\n"
+        semantic_header += f"Meeting Title: {meeting.title}\n"
+        semantic_header += f"Date & Time: {meeting.meeting_date.strftime('%B %d, %Y %I:%M %p')}\n\n"
+
+        # 2. Secure Filter Metadata (For PostgreSQL SQL Filtering)
+        db_metadata = {
+            "organisation_id": organisation.id,
+            "organisation_name": organisation.organisation_name,
+            "salesperson_id": salesperson.id,
+            "salesperson_name": salesperson.salesperson_name,
+            "customer_id": customer.id,
+            "customer_name": customer.customer_name,
+            "meeting_id": meeting.id,
+            "meeting_title": meeting.title,
+            "meeting_date": meeting.meeting_date.isoformat()
+        }
+
+        # 3. Use the RAG service to chunk and embed
+        enriched_texts, vectors = rag_service.chunk_and_embed_text(
+            text=state["transcript"],
+            semantic_header=semantic_header
+        )
+
+        if not enriched_texts:
+            print("No text to embed.")
+            return {}
+
+        # 4. Save to Database Transactionally
+        with transaction.atomic():
+            # IDEMPOTENCY: Delete any existing embeddings for this report
+            Embedding.objects.filter(transcript_report=transcript_report).delete()
+            
+            embedding_objects = []
+            for i, text in enumerate(enriched_texts):
+                embedding_objects.append(
+                    Embedding(
+                        transcript_report=transcript_report,
+                        chunks=text,
+                        vector=vectors[i],
+                        metadata=db_metadata
+                    )
+                )
+            
+            # Bulk create is 10x faster
+            Embedding.objects.bulk_create(embedding_objects)
+
+            # 5. Build the GIN Index for Keyword Search
+            Embedding.objects.filter(
+                transcript_report=transcript_report
+            ).update(chunk_search=SearchVector('chunks'))
+
+        return {}
+
+    except Exception as e:
+        print(f"Embedding Generation Failed: {e}")
+        raise
+

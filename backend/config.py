@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
     groq_api_key: SecretStr
     cerebras_api_key: SecretStr
+    voyage_api_key: SecretStr
 
     brevo_api_key: SecretStr
 
