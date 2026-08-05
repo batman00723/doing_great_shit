@@ -76,15 +76,15 @@ Do not force transitions if they reduce readability.
 
 ---
 # WRITING STYLE
-                                                                                                                                                
-    The narrative should be:                                                                                                                                                    
-    - Professional                                                                                                                                                              
-    - Executive-friendly                                                                                                                                                        
-    - Information-dense                                                                                                                                                         
-    - Extremely concise                                                                                                                                                         
-                                                                                                                                                                                
-    Write exactly ONE short paragraph.                                                                                                                                          
-    The total length MUST NOT exceed 100 words. 
+
+The narrative should be:
+- Professional
+- Executive-friendly
+- Information-dense
+- Extremely concise
+
+Write exactly ONE short paragraph.
+The total length MUST NOT exceed 100 words.
 ---
 
 # HALLUCINATION RULES

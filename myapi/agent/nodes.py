@@ -8,7 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 import json
 from myapi.email_service.email_service import send_email
-
+from datetime import datetime
 
 llm= LLMService()
 
@@ -22,7 +22,6 @@ env = Environment(
     loader=FileSystemLoader(TEMPLATE_DIR)
 )
 
-template = env.get_template("report_template.html")
 
 
 
@@ -220,12 +219,15 @@ def make_html_report_node(state: MeetingState):
 
     # Using the merged report here instead of the maekdown report so that i can generate tables and beautiful in html and save the markdown report
 
+    template = env.get_template("report_template.html")
     report= state['merged_report']
+    current_date = datetime.now().strftime("%B %d, %Y")
 
     try:
 
         html = template.render(
-            report= report
+            report= report,
+            current_date= current_date
         )
 
         print(f"Generated HTML ({len(html)} chars)")

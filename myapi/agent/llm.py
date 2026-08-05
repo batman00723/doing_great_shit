@@ -8,7 +8,7 @@ class LLMService:
     def __init__(self):
         self.model= ChatGroq(
             api_key= settings.groq_api_key.get_secret_value(),
-            model= "openai/gpt-oss-120b",
+            model= "llama-3.3-70b-versatile",
             temperature= 0.3,
             max_tokens= 2000
         )

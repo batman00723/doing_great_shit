@@ -20,6 +20,11 @@ class StructuredMeetingAnalysis(BaseModel):
 
 
 class NarrativeReport(BaseModel):
+    # Dummy field added because some LLMs refuse to call a tool if the schema only has a single string field.
+    # Having two fields forces the LLM to output a complex JSON object and prevents the 'Tool choice is required' crash.
+    thought_process: str = Field(
+        description="A brief 1-sentence thought on how you will structure this narrative."
+    )
     discussion_narrative: str = Field(
         description=(
             "A professional business narrative explaining how the discussion "

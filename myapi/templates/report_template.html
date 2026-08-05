@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ report.meeting_analysis.meeting_title }}</title>
-    <!-- Import Inter Font -->
+    <!-- Bloomberg style fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: #F6F9FC;
+            background: #F4F4F1; /* Subtle newsprint off-white */
             margin: 0;
             padding: 40px 20px;
-            color: #425466;
+            color: #111111;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -22,36 +22,43 @@
             max-width: 800px;
             margin: auto;
             background: #FFFFFF;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-            border: 1px solid #EAEAEA;
+            border: 1px solid #DCDCDA;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            padding: 0;
         }
 
         .header {
-            padding: 40px 40px 20px 40px;
-            border-bottom: 1px solid #F3F4F6;
+            text-align: center;
+            padding: 50px 40px 10px;
+            border-bottom: 4px solid #000000;
         }
 
         .header h1 {
-            margin: 0 0 8px 0;
-            color: #0A2540;
-            font-size: 28px;
-            font-weight: 700;
+            font-family: 'Merriweather', serif;
+            font-size: 34px;
+            font-weight: 900;
+            margin: 0 0 20px 0;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
             line-height: 1.2;
         }
 
         .metadata {
-            color: #6B7280;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #555555;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            border-top: 1px solid #EEEEEE;
+            padding: 12px 0 12px 0;
+            margin-bottom: 0;
         }
 
         .section {
             padding: 30px 40px;
-            border-bottom: 1px solid #F3F4F6;
+            border-bottom: 1px solid #000000;
         }
         
         .section:last-of-type {
@@ -59,15 +66,22 @@
         }
 
         h2 {
-            color: #0A2540;
+            font-family: 'Merriweather', serif;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
+            color: #000000;
             margin-top: 0;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0059E4; /* Bloomberg blue */
+            padding-left: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
 
         p {
-            line-height: 1.6;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #222222;
             margin: 0 0 16px 0;
         }
 
@@ -82,30 +96,32 @@
         }
 
         table th {
-            background: #F8FAFC;
-            color: #635BFF;
-            padding: 12px 16px;
+            background: #000000;
+            color: #FFFFFF;
+            padding: 10px 12px;
             text-align: left;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            border-bottom: 1px solid #E2E8F0;
         }
 
         table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #F1F5F9;
+            padding: 12px;
+            border-bottom: 1px solid #DDDDDD;
             font-size: 14px;
+            color: #111111;
         }
 
         ul {
             padding-left: 20px;
             margin: 0;
+            color: #222222;
+            font-size: 15px;
         }
 
         li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             line-height: 1.6;
         }
 
@@ -116,27 +132,21 @@
         .badge-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
         }
 
         .badge {
             display: inline-block;
-            background: #EEF2FF;
-            color: #635BFF;
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 13px;
-            font-weight: 500;
+            background: transparent;
+            color: #000000;
+            padding: 6px 12px;
+            border: 1px solid #000000;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        .footer {
-            text-align: center;
-            padding: 24px;
-            color: #9CA3AF;
-            font-size: 13px;
-            background: #F8FAFC;
-            border-top: 1px solid #EAEAEA;
-        }
     </style>
 </head>
 <body>
@@ -145,9 +155,7 @@
     <div class="header">
         <h1>{{ report.meeting_analysis.meeting_title }}</h1>
         <div class="metadata">
-            <span>AI Generated Meeting Intelligence Report</span>
-            <span>&bull;</span>
-            <span id="report-date"></span>
+            <span>{{ current_date }}</span>
         </div>
     </div>
 
@@ -284,18 +292,7 @@
     </div>
     {% endif %}
 
-    <div class="footer">
-        Generated by Meeting Intelligence Platform
-    </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        const today = new Date().toLocaleDateString('en-US', options);
-        document.getElementById('report-date').textContent = today;
-    });
-</script>
 
 </body>
 </html>
