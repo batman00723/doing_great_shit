@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     db_url: SecretStr
 
     groq_api_key: SecretStr
+    cerebras_api_key: SecretStr
 
     brevo_api_key: SecretStr
 

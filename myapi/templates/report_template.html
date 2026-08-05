@@ -2,297 +2,297 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ report.meeting_analysis.meeting_title }}</title>
-    <!-- Bloomberg style fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@300;700;900&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #F4F4F1; /* Subtle newsprint off-white */
-            margin: 0;
-            padding: 40px 20px;
-            color: #111111;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: #FFFFFF;
-            border: 1px solid #DCDCDA;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            padding: 0;
-        }
-
-        .header {
-            text-align: center;
-            padding: 50px 40px 10px;
-            border-bottom: 4px solid #000000;
-        }
-
-        .header h1 {
-            font-family: 'Merriweather', serif;
-            font-size: 34px;
-            font-weight: 900;
-            margin: 0 0 20px 0;
-            color: #000000;
-            text-transform: uppercase;
-            letter-spacing: -0.01em;
-            line-height: 1.2;
-        }
-
-        .metadata {
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #555555;
-            letter-spacing: 0.1em;
-            font-weight: 700;
-            border-top: 1px solid #EEEEEE;
-            padding: 12px 0 12px 0;
-            margin-bottom: 0;
-        }
-
-        .section {
-            padding: 30px 40px;
-            border-bottom: 1px solid #000000;
-        }
-        
-        .section:last-of-type {
-            border-bottom: none;
-        }
-
-        h2 {
-            font-family: 'Merriweather', serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #000000;
-            margin-top: 0;
-            margin-bottom: 20px;
-            border-left: 4px solid #0059E4; /* Bloomberg blue */
-            padding-left: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-        }
-
-        p {
-            font-size: 15px;
-            line-height: 1.7;
-            color: #222222;
-            margin: 0 0 16px 0;
-        }
-
-        p:last-child {
-            margin-bottom: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        table th {
-            background: #000000;
-            color: #FFFFFF;
-            padding: 10px 12px;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #DDDDDD;
-            font-size: 14px;
-            color: #111111;
-        }
-
-        ul {
-            padding-left: 20px;
-            margin: 0;
-            color: #222222;
-            font-size: 15px;
-        }
-
-        li {
-            margin-bottom: 12px;
-            line-height: 1.6;
-        }
-
-        li:last-child {
-            margin-bottom: 0;
-        }
-
-        .badge-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: transparent;
-            color: #000000;
-            padding: 6px 12px;
-            border: 1px solid #000000;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-    </style>
 </head>
-<body>
+<body style="margin:0; padding:0; background-color:#F2F2F0; font-family: Arial, Helvetica, sans-serif; -webkit-font-smoothing: antialiased;">
 
-<div class="container">
-    <div class="header">
-        <h1>{{ report.meeting_analysis.meeting_title }}</h1>
-        <div class="metadata">
-            <span>{{ current_date }}</span>
-        </div>
-    </div>
+<!-- Outer wrapper -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F2F2F0; padding: 32px 0;">
+    <tr>
+        <td align="center">
 
-    {% if report.meeting_analysis.summary %}
-    <div class="section">
-        <h2>Overview</h2>
-        <p>{{ report.meeting_analysis.summary }}</p>
-    </div>
-    {% endif %}
+            <!-- Main container -->
+            <table width="680" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF; border:1px solid #DCDCDA; border-radius:8px; overflow:hidden; max-width:680px;">
 
-    {% if report.narrative_report.discussion_narrative %}
-    <div class="section">
-        <h2>Meeting Flow</h2>
-        <p>{{ report.narrative_report.discussion_narrative }}</p>
-    </div>
-    {% endif %}
-
-    {% if report.meeting_analysis.action_items and report.meeting_analysis.action_items|length > 0 %}
-    <div class="section">
-        <h2>Action Items</h2>
-        <table>
-            <thead>
+                <!-- ===================== HEADER ===================== -->
                 <tr>
-                    <th>Task</th>
-                    <th>Owner</th>
-                    <th>Deadline</th>
+                    <td style="background-color:#0F1117; padding: 20px 32px;">
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <!-- Logo + Brand Name -->
+                                <td valign="middle">
+                                    <table cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td valign="middle" style="padding-right:12px;">
+                                                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect width="36" height="36" rx="6" fill="#FFFFFF"/>
+                                                    <path d="M23 13.5C23 11.567 21.433 10 19.5 10H16.5C14.567 10 13 11.567 13 13.5C13 15.433 14.567 17 16.5 17H19.5C20.6046 17 21.5 17.8954 21.5 19C21.5 20.1046 20.6046 21 19.5 21H13M13 22.5C13 24.433 14.567 26 16.5 26H19.5C21.433 26 23 24.433 23 22.5C23 20.567 21.433 19 19.5 19H16.5C15.3954 19 14.5 18.1046 14.5 17C14.5 15.8954 15.3954 15 16.5 15H23" stroke="#0F1117" stroke-width="3" stroke-linecap="round"/>
+                                                </svg>
+                                            </td>
+                                            <td valign="middle">
+                                                <span style="color:#FFFFFF; font-family: Arial, Helvetica, sans-serif; font-size:20px; font-weight:700; letter-spacing:0.02em;">स्मृति</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <!-- Date on the right -->
+                                <td align="right" valign="middle">
+                                    <span style="color:#9CA3AF; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em;">{{ current_date }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for item in report.meeting_analysis.action_items %}
+
+                <!-- ===================== TITLE AREA ===================== -->
                 <tr>
-                    <td>{{ item.task }}</td>
-                    <td>{{ item.owner or "-" }}</td>
-                    <td>{{ item.deadline or "-" }}</td>
+                    <td style="padding: 36px 32px 24px 32px; border-bottom: 3px solid #0F1117;">
+                        <h1 style="margin:0; font-family: Arial Black, Arial, Helvetica, sans-serif; font-size:28px; font-weight:900; color:#0F1117; line-height:1.2; letter-spacing:-0.02em;">{{ report.meeting_analysis.meeting_title }}</h1>
+                    </td>
                 </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
 
-    {% if report.meeting_analysis.decisions and report.meeting_analysis.decisions|length > 0 %}
-    <div class="section">
-        <h2>Key Decisions</h2>
-        <ul>
-            {% for decision in report.meeting_analysis.decisions %}
-                <li>{{ decision }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+                <!-- ===================== OVERVIEW ===================== -->
+                {% if report.meeting_analysis.summary %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td style="padding-left:14px; border-left: 4px solid #0F1117;">
+                                    <p style="margin:0 0 8px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Overview</p>
+                                    <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:15px; line-height:1.7; color:#374151;">{{ report.meeting_analysis.summary }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.meeting_analysis.risks and report.meeting_analysis.risks|length > 0 %}
-    <div class="section">
-        <h2>Risks</h2>
-        <ul>
-            {% for risk in report.meeting_analysis.risks %}
-                <li>{{ risk }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+                <!-- ===================== MEETING FLOW ===================== -->
+                {% if report.narrative_report.discussion_narrative %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 12px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Meeting Flow</p>
+                        <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:15px; line-height:1.7; color:#374151;">{{ report.narrative_report.discussion_narrative }}</p>
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.meeting_analysis.opportunities and report.meeting_analysis.opportunities|length > 0 %}
-    <div class="section">
-        <h2>Opportunities</h2>
-        <ul>
-            {% for opportunity in report.meeting_analysis.opportunities %}
-                <li>{{ opportunity }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+                <!-- ===================== ACTION ITEMS ===================== -->
+                {% if report.meeting_analysis.action_items and report.meeting_analysis.action_items|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Action Items</p>
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-radius:6px; overflow:hidden; border:1px solid #E5E7EB;">
+                            <!-- Table header -->
+                            <tr>
+                                <td width="50%" style="background:#0F1117; padding:10px 14px;">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; color:#FFFFFF; text-transform:uppercase; letter-spacing:0.1em;">Task</span>
+                                </td>
+                                <td width="25%" style="background:#0F1117; padding:10px 14px;">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; color:#FFFFFF; text-transform:uppercase; letter-spacing:0.1em;">Owner</span>
+                                </td>
+                                <td width="25%" style="background:#0F1117; padding:10px 14px;">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; color:#FFFFFF; text-transform:uppercase; letter-spacing:0.1em;">Deadline</span>
+                                </td>
+                            </tr>
+                            <!-- Table rows -->
+                            {% for item in report.meeting_analysis.action_items %}
+                            <tr style="background-color: {{ '#FFFFFF' if loop.index is odd else '#F9FAFB' }};">
+                                <td style="padding:12px 14px; border-top:1px solid #E5E7EB;">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#111827; font-weight:500;">{{ item.task }}</span>
+                                </td>
+                                <td style="padding:12px 14px; border-top:1px solid #E5E7EB;">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#374151;">{{ item.owner or "—" }}</span>
+                                </td>
+                                <td style="padding:12px 14px; border-top:1px solid #E5E7EB;">
+                                    <span style="font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#374151;">{{ item.deadline or "—" }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.meeting_analysis.open_questions and report.meeting_analysis.open_questions|length > 0 %}
-    <div class="section">
-        <h2>Open Questions</h2>
-        <ul>
-            {% for question in report.meeting_analysis.open_questions %}
-                <li>{{ question }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+                <!-- ===================== KEY DECISIONS ===================== -->
+                {% if report.meeting_analysis.decisions and report.meeting_analysis.decisions|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Key Decisions</p>
+                        {% for decision in report.meeting_analysis.decisions %}
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+                            <tr>
+                                <td width="6" style="background:#0F1117; border-radius:2px;" valign="top">&nbsp;</td>
+                                <td style="padding-left:12px;">
+                                    <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:14px; color:#374151; line-height:1.6;">{{ decision }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.meeting_analysis.resources_mentioned and report.meeting_analysis.resources_mentioned|length > 0 %}
-    <div class="section">
-        <h2>Resources Mentioned</h2>
-        <div class="badge-container">
-            {% for resource in report.meeting_analysis.resources_mentioned %}
-                <span class="badge">{{ resource }}</span>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+                <!-- ===================== RISKS ===================== -->
+                {% if report.meeting_analysis.risks and report.meeting_analysis.risks|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB; background:#FFFBEB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#78350F;">⚠ Risks</p>
+                        {% for risk in report.meeting_analysis.risks %}
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+                            <tr>
+                                <td width="6" style="background:#D97706; border-radius:2px;" valign="top">&nbsp;</td>
+                                <td style="padding-left:12px;">
+                                    <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:14px; color:#374151; line-height:1.6;">{{ risk }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.meeting_analysis.kpis and report.meeting_analysis.kpis|length > 0 %}
-    <div class="section">
-        <h2>KPIs</h2>
-        <ul>
-            {% for kpi in report.meeting_analysis.kpis %}
-                <li>{{ kpi }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+                <!-- ===================== OPPORTUNITIES ===================== -->
+                {% if report.meeting_analysis.opportunities and report.meeting_analysis.opportunities|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB; background:#F0FDF4;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#14532D;">✦ Opportunities</p>
+                        {% for opportunity in report.meeting_analysis.opportunities %}
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+                            <tr>
+                                <td width="6" style="background:#16A34A; border-radius:2px;" valign="top">&nbsp;</td>
+                                <td style="padding-left:12px;">
+                                    <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:14px; color:#374151; line-height:1.6;">{{ opportunity }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.meeting_analysis.participants and report.meeting_analysis.participants|length > 0 %}
-    <div class="section">
-        <h2>Participants</h2>
-        <ul>
-            {% for participant in report.meeting_analysis.participants %}
-                <li>{{ participant }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+                <!-- ===================== OPEN QUESTIONS ===================== -->
+                {% if report.meeting_analysis.open_questions and report.meeting_analysis.open_questions|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Open Questions</p>
+                        {% for question in report.meeting_analysis.open_questions %}
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+                            <tr>
+                                <td width="6" style="background:#6366F1; border-radius:2px;" valign="top">&nbsp;</td>
+                                <td style="padding-left:12px;">
+                                    <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:14px; color:#374151; line-height:1.6;">{{ question }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.meeting_analysis.tags and report.meeting_analysis.tags|length > 0 %}
-    <div class="section">
-        <h2>Tags</h2>
-        <div class="badge-container">
-            {% for tag in report.meeting_analysis.tags %}
-                <span class="badge">{{ tag }}</span>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+                <!-- ===================== KPIs ===================== -->
+                {% if report.meeting_analysis.kpis and report.meeting_analysis.kpis|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">KPIs & Metrics</p>
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                            {% for kpi in report.meeting_analysis.kpis %}
+                            <tr>
+                                <td style="padding: 9px 0; border-bottom: 1px solid #F3F4F6;">
+                                    <table cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td style="padding-right:10px; color:#0F1117; font-size:16px; font-weight:700; font-family: Arial, Helvetica, sans-serif; line-height:1;" valign="middle">—</td>
+                                            <td>
+                                                <span style="font-family: Arial, Helvetica, sans-serif; font-size:14px; color:#374151;">{{ kpi }}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+                {% endif %}
 
-    {% if report.historical_report %}
-    <div class="section">
-        <h2>Historical Trends</h2>
-        <p>{{ report.historical_report }}</p>
-    </div>
-    {% endif %}
+                <!-- ===================== PARTICIPANTS ===================== -->
+                {% if report.meeting_analysis.participants and report.meeting_analysis.participants|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Participants</p>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                {% for participant in report.meeting_analysis.participants %}
+                                <td style="padding-right:8px; padding-bottom:8px;">
+                                    <span style="display:inline-block; background:#F3F4F6; border-radius:20px; padding: 6px 14px; font-family: Arial, Helvetica, sans-serif; font-size:13px; font-weight:600; color:#111827;">{{ participant }}</span>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                {% endif %}
 
-</div>
+                <!-- ===================== RESOURCES MENTIONED ===================== -->
+                {% if report.meeting_analysis.resources_mentioned and report.meeting_analysis.resources_mentioned|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Resources Mentioned</p>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                {% for resource in report.meeting_analysis.resources_mentioned %}
+                                <td style="padding-right:8px; padding-bottom:8px;">
+                                    <span style="display:inline-block; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:4px; padding: 5px 12px; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:600; color:#1D4ED8; letter-spacing:0.02em;">{{ resource }}</span>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                {% endif %}
+
+                <!-- ===================== TAGS ===================== -->
+                {% if report.meeting_analysis.tags and report.meeting_analysis.tags|length > 0 %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB;">
+                        <p style="margin:0 0 16px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Tags</p>
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                {% for tag in report.meeting_analysis.tags %}
+                                <td style="padding-right:8px; padding-bottom:8px;">
+                                    <span style="display:inline-block; background:#F3F4F6; border:1px solid #E5E7EB; border-radius:4px; padding: 5px 12px; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:600; color:#374151; letter-spacing:0.02em;">{{ tag }}</span>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                {% endif %}
+
+                <!-- ===================== HISTORICAL TRENDS ===================== -->
+                {% if report.historical_report %}
+                <tr>
+                    <td style="padding: 28px 32px; border-bottom: 1px solid #E5E7EB; background:#F9FAFB;">
+                        <p style="margin:0 0 12px 0; font-family: Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:#111827;">Historical Trends</p>
+                        <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:14px; line-height:1.7; color:#374151;">{{ report.historical_report }}</p>
+                    </td>
+                </tr>
+                {% endif %}
+
+                <!-- ===================== FOOTER ===================== -->
+                <tr>
+                    <td style="background:#0F1117; padding: 20px 32px; text-align:center;">
+                        <p style="margin:0; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#9CA3AF;">Generated by <strong style="color:#FFFFFF; font-size:15px; letter-spacing:0.05em;">स्मृति</strong></p>
+                    </td>
+                </tr>
+
+            </table>
+            <!-- End main container -->
+
+        </td>
+    </tr>
+</table>
 
 </body>
 </html>

@@ -164,20 +164,7 @@ class TranscriptReport(models.Model):
 
     merged_final_report = models.TextField()
 
-    transcript_search = SearchVectorField(null=True)
-
-    summary_search = SearchVectorField(null=True)
-
-    report_search = SearchVectorField(null=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        indexes = [
-            GinIndex(fields=["transcript_search"]),
-            GinIndex(fields=["summary_search"]),
-            GinIndex(fields=["report_search"]),
-        ]
 
 
 class MeetingAnalysis(models.Model):
@@ -252,6 +239,8 @@ class Embedding(models.Model):
 
     metadata = models.JSONField(default=dict)
 
+    chunk_search = SearchVectorField(null=True)
+
     class Meta:
         indexes = [
             HnswIndex(
@@ -261,4 +250,5 @@ class Embedding(models.Model):
                 ef_construction=64,
                 opclasses=["vector_cosine_ops"]
             ),
+            GinIndex(fields=["chunk_search"]),
         ]

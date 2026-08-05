@@ -1,5 +1,5 @@
 from myapi.agent.state import MeetingState
-from myapi.agent.llm import LLMService
+from myapi.agent.llm import LLMService, AlternativeLLMService
 from myapi.agent.schema import StructuredMeetingAnalysis, NarrativeReport
 from myapi.models import MeetingReport, MeetingAnalysis, TranscriptReport, Embedding, Customer, User
 from myapi.agent.prompts.loader import load_prompt
@@ -8,9 +8,11 @@ from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 import json
 from myapi.email_service.email_service import send_email
-from datetime import datetime
+import datetime
+from django.db import transaction
 
 llm= LLMService()
+altllm= AlternativeLLMService()
 
 AGENT_1_PROMPT = load_prompt("agent_1.md")
 AGENT_2_PROMPT = load_prompt("agent_2.md")
@@ -36,8 +38,12 @@ def structured_report_node(state: MeetingState):
             SystemMessage(content= AGENT_1_PROMPT),
             HumanMessage(content= transcript),
         ]
-        
-        structured_report= llm.get_structured(StructuredMeetingAnalysis, messages)
+
+        try:
+            structured_report= llm.get_structured(StructuredMeetingAnalysis, messages)
+        except: 
+            structured_report= altllm.get_structured(StructuredMeetingAnalysis, messages= messages)
+
         print(f"Structured Report: {structured_report}")
 
         return {
@@ -46,10 +52,7 @@ def structured_report_node(state: MeetingState):
 
     except Exception as e:
         print(f"Agent 1 failed: {e}")
-
-        return {
-            "errors": [str(e)]
-        }
+        raise
     
 def narrative_report_node(state: MeetingState):
     print("Agent 2: Gererating Narrative Report")
@@ -62,21 +65,22 @@ def narrative_report_node(state: MeetingState):
             HumanMessage(content= transcript),
        ]
 
-        narrative_report= llm.get_structured(schema= NarrativeReport,
+        try:
+            narrative_report= llm.get_structured(schema= NarrativeReport,
                                              messages= messages)
+        except: 
+            narrative_report= altllm.get_structured(schema= NarrativeReport,
+                                             messages= messages)
+
         print(f"Narrative Report: {narrative_report}")
 
         return {
             "narrative_report": narrative_report
         }
 
-    except Exception:
+    except Exception as e:
+        print(f"Agent 2 failed: {e}")
         raise
-            
-
-        # return {
-        #     "errors": [str(e)]
-        # }
 
 def historical_report_node(state: MeetingState):
     print("Agent 3: Gererating Historical Report")
@@ -95,6 +99,11 @@ def historical_report_node(state: MeetingState):
             .order_by("-created_at")[:4]
         )
 
+        if not previous_meetings:
+            return {
+                "historical_analysis": "No historical meetings are available for comparison."
+            }
+
         history = [
             meeting.agent_1_report_persistent
             for meeting in previous_meetings
@@ -111,7 +120,10 @@ def historical_report_node(state: MeetingState):
         messages= [SystemMessage(content= AGENT_3_PROMPT),
                     HumanMessage(content= prompt)]
 
-        historical_report= llm.invoke( messages)
+        try: 
+            historical_report= llm.invoke( messages)
+        except:
+            historical_report= altllm.invoke(messages)
 
         return {
             "historical_analysis": historical_report.content
@@ -119,10 +131,7 @@ def historical_report_node(state: MeetingState):
 
     except Exception as e:
         print(f"Agent 3 failed: {e}")
-
-        return {
-            "errors": [str(e)]
-        }
+        raise
 
 
 def merge_report_node(state: MeetingState):
@@ -221,13 +230,13 @@ def make_html_report_node(state: MeetingState):
 
     template = env.get_template("report_template.html")
     report= state['merged_report']
-    current_date = datetime.now().strftime("%B %d, %Y")
+    current_date = datetime.datetime.now().strftime("%B %d, %Y")
 
     try:
 
         html = template.render(
-            report= report,
-            current_date= current_date
+            report=report,
+            current_date=current_date
         )
 
         print(f"Generated HTML ({len(html)} chars)")
@@ -238,10 +247,7 @@ def make_html_report_node(state: MeetingState):
 
     except Exception as e:
         print(f"HTML Rendering Failed: {e}")
-
-        return {
-            "errors": [f"HTML Generation: {str(e)}"]
-        }
+        raise
     
 
 def save_to_db_node(state: MeetingState):
@@ -249,40 +255,37 @@ def save_to_db_node(state: MeetingState):
     print("Saving Reports")
 
     try:
-        MeetingAnalysis.objects.create(
-            meeting_id=state['meeting_id'],
-            organisation_id=state['organisation_id'],
-            customer_id=state['customer_id'],
-            agent_1_report_persistent=state['meeting_analysis'].model_dump()
-        )
+        with transaction.atomic():
+            MeetingAnalysis.objects.create(
+                meeting_id=state['meeting_id'],
+                organisation_id=state['organisation_id'],
+                customer_id=state['customer_id'],
+                agent_1_report_persistent=state['meeting_analysis'].model_dump()
+            )
 
+            TranscriptReport.objects.create(
+                meeting_id=state['meeting_id'],
+                organisation_id=state['organisation_id'],
+                transcript=state['transcript'],
+                summary=state['meeting_analysis'].summary,
+                merged_final_report=state['markdown_report']
+            )
 
-        TranscriptReport.objects.create(
-            meeting_id=state['meeting_id'],
-            organisation_id=state['organisation_id'],
-            transcript=state['transcript'],
-            summary=state['meeting_analysis'].summary,
-            merged_final_report=state['markdown_report']
-        )
-
-
-        MeetingReport.objects.create(
-            meeting_id=state['meeting_id'],
-            organisation_id=state['organisation_id'],
-            customer_id=state['customer_id'],
-            salesperson_id=state['salesperson_id'],
-            html_report=state['html_report']
-        )
+            MeetingReport.objects.create(
+                meeting_id=state['meeting_id'],
+                organisation_id=state['organisation_id'],
+                customer_id=state['customer_id'],
+                salesperson_id=state['salesperson_id'],
+                html_report=state['html_report']
+            )
 
         return {
             "status": "Saved to DB Successfully"
         }
 
     except Exception as e:
-
-        return {
-            "errors": [str(e)]
-        }
+        print(f"Database save failed: {e}")
+        raise
 
 def send_report_to_mail(state: MeetingState):
 

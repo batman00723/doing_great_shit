@@ -1,0 +1,35 @@
+=======================================================
+MEETING INTELLIGENCE PLATFORM - RAG ARCHITECTURE PLAN
+=======================================================
+
+1. THE INGESTION PIPELINE (Chunking)
+------------------------------------
+- Decision: We will chunk the RAW TRANSCRIPT (not just the Markdown report) to preserve granular conversational details.
+- Tool: We will use a "Semantic Chunker". Instead of cutting text arbitrarily every 500 characters, it will split chunks based on natural topic shifts in the conversation.
+
+2. METADATA ENRICHMENT (Contextual Chunking)
+--------------------------------------------
+To prevent the LLM from losing context, we will use two types of metadata:
+- Semantic Metadata: We will inject critical context (e.g., "Customer: Acme Corp | Meeting Date: Oct 5 | Title: Q3 Planning") directly into the text string of EVERY chunk BEFORE embedding it.
+- Database Filter Metadata: We will store `customer_id` and `meeting_id` in the JSON `metadata` column in PostgreSQL to allow strict SQL pre-filtering before the vector search runs (to ensure speed and prevent data leaks).
+
+3. THE EMBEDDING MODEL
+----------------------
+- Constraint: The PostgreSQL database schema requires EXACTLY 1024 dimensions (`VectorField(dimensions=1024)`).
+- Decision: We will use an embedding model that outputs 1024 dimensions.
+- Top Options: 
+  a) BAAI/bge-large-en-v1.5 (Free/Open Source, run locally via HuggingFace - great for resume).
+  b) Cohere embed-english-v3.0 (Enterprise standard).
+  c) OpenAI text-embedding-3-large (If we use this, we MUST set the API parameter `dimensions=1024` to compress it down from 3072).
+
+4. THE RETRIEVAL SYSTEM (Hybrid Search)
+---------------------------------------
+- Decision: We will implement "Hybrid Search" to combine the best of both worlds.
+- Vector Search: Using `pgvector` to find semantic meaning (e.g., matching the concept of "money" to "budget").
+- Keyword Search: Using Django's `SearchVectorField` (GIN Index) to find exact-match keywords (e.g., specific error codes, names, or jargon).
+- Merging: We will use Reciprocal Rank Fusion (RRF) to merge the vector and keyword search results together, ensuring the RAG bot gets the absolute most accurate context possible.
+
+5. DEVELOPMENT STRATEGY
+-----------------------
+- We will mock the user authentication during RAG development to focus on core AI logic.
+- After the RAG pipeline is fully functional, we will wrap the application in standard Django Authentication.

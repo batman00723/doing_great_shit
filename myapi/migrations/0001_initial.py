@@ -3,6 +3,7 @@
 import django.contrib.postgres.search
 import django.db.models.deletion
 import pgvector.django.vector
+import pgvector.django
 from django.db import migrations, models
 
 
@@ -14,6 +15,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        pgvector.django.VectorExtension(),
         migrations.CreateModel(
             name='Customer',
             fields=[
