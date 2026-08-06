@@ -12,6 +12,8 @@ from myapi.services.process_audio import process_audio
 class MeetingRequest(Schema):
     transcript: str
 
+
+
 @api_controller("/analyse", tags= ['Transcript → Report'])
 class MeetingOperationController(ControllerBase):
     @http_post("/report")
@@ -67,5 +69,38 @@ class AudioController(ControllerBase):
         finally:
             if os.path.exists(file_path):
                 os.remove(file_path)
+
+
+class ChatRequest(Schema):
+    query: str
+    start_date: str | None = None
+    end_date: str | None = None
+    specific_date: str | None = None
+
+
+@api_controller("/chat", tags=['Chatbot API'])
+class ChatController(ControllerBase):
+    @http_post("/ask")
+    def ask_bot(self, request, payload: ChatRequest):
+        from myapi.services.rag_retrieval_pipeline import retrieve_and_generate
+        
+        try:
+            answer = retrieve_and_generate(
+                user_query=payload.query,
+                start_date=payload.start_date,
+                end_date=payload.end_date,
+                specific_date=payload.specific_date
+            )
+            return {
+                "answer": answer
+            }
+        except Exception as e:
+            logger = logging.getLogger(__name__)
+            logger.error(f"Chatbot Error: {str(e)}", exc_info=True)
+            return {
+                "status": "error",
+                "message": "Failed to generate answer",
+                "details": str(e) if settings.debug else "Internal Server Error"
+            }
 
 

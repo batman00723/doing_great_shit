@@ -12,6 +12,9 @@ def perform_hybrid_search(query: str, query_embedding: list[float], top_k: int =
     org = Organisation.objects.first()
     salesperson = User.objects.first()
 
+
+    print (f"Organisation {org}, SalesPerson: {salesperson}")
+
     if not org or not salesperson:
         raise ValueError("Database is missing initial Organisation or User.")
 
@@ -34,6 +37,8 @@ def perform_hybrid_search(query: str, query_embedding: list[float], top_k: int =
     # 4. Apply Filters to Base Query
     base_query = Embedding.objects.filter(**dynamic_filters)
 
+    print(f"Query after filters {base_query}")
+
     # senamtic search
     semantic_results = list(
         base_query.alias(
@@ -41,11 +46,14 @@ def perform_hybrid_search(query: str, query_embedding: list[float], top_k: int =
         ).order_by('distance')[:top_k]
     )
 
+    print(f"Semantic Search Result: {semantic_results}")
+
     # Uses PostgreSQL FTS against the chunk_search
     keyword_results = list(
         base_query.filter(
             chunk_search=SearchQuery(query)
         )[:top_k]
     )
+    print(f"Keyword Search results{keyword_results}")
 
     return semantic_results, keyword_results

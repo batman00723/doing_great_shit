@@ -17,6 +17,7 @@ def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str
     print(f"Chatbot Query: {user_query}")
     
     query_vector = rag_service.embed_query(user_query)
+    print(f"Query Vector: {query_vector}")
     if not query_vector:
         return "I couldn't process your question."
 
@@ -29,6 +30,9 @@ def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str
         specific_date=specific_date
     )
 
+    print(f"Semantic Chunks: {semantic_results}")
+    print(f"Keyword Chunks: {keyword_results}")
+
     if not semantic_results and not keyword_results:
         return "I couldn't find any information about that in the database."
 
@@ -37,14 +41,20 @@ def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str
         keyword_results=keyword_results
     )
 
+    print(f"Fused Chunks After RRF : {fused_chunks}")
+
     top_5_chunks = rerank_chunks(
         query=user_query,
         documents=fused_chunks,
         top_k=5
     )
 
+    print(f"Top 5 Chunks: {top_5_chunks}")
+
     # 5. Format Context and Call LLM
     context_text = "\n\n---\n\n".join(top_5_chunks)
+
+    print(f"Contxt Chunks Formatted for LLM: {context_text}")
     
     system_prompt = f"""You are an advanced Meeting Intelligence Chatbot. 
         Your job is to answer the user's question using ONLY the provided meeting excerpts below.
@@ -60,10 +70,16 @@ def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str
         HumanMessage(content=user_query)
     ]
 
+    print(f" Message to LLM Context Chunks + system prompt: {messages}")
+
     try:
-        # Calls Llama-3-70B via Groq
         response = llm_service.invoke(messages)
-        return response.content
+        print(f" LLM Response: {response}")
+        answer= response.content
+        print(f"Final Content Response: {answer}")
+        return answer
+    
+    
     except Exception as e:
         print(f"LLM Generation Failed: {e}")
         return "I'm sorry, I encountered an error while generating the answer."
