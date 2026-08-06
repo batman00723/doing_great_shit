@@ -73,6 +73,7 @@ class AudioController(ControllerBase):
 
 class ChatRequest(Schema):
     query: str
+    session_id: str | None = None
     start_date: str | None = None
     end_date: str | None = None
     specific_date: str | None = None
@@ -85,14 +86,17 @@ class ChatController(ControllerBase):
         from myapi.services.rag_retrieval_pipeline import retrieve_and_generate
         
         try:
-            answer = retrieve_and_generate(
+            result = retrieve_and_generate(
                 user_query=payload.query,
+                session_id=payload.session_id,
                 start_date=payload.start_date,
                 end_date=payload.end_date,
                 specific_date=payload.specific_date
             )
             return {
-                "answer": answer
+                "status": "success",
+                "answer": result["answer"],
+                "session_id": result["session_id"]
             }
         except Exception as e:
             logger = logging.getLogger(__name__)

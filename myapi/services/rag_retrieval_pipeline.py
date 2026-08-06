@@ -3,23 +3,33 @@ from myapi.services.hybrid_search import perform_hybrid_search
 from myapi.services.rrf import reciprocal_rank_fusion
 from myapi.services.reranker import rerank_chunks
 from myapi.agent.llm import ChatLLMService
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from myapi.models import ChatSession, ChatTurn, Organisation, User
+from django.contrib.postgres.search import SearchVector
 
 # Initialize services once
 rag_service = RAGService()
 llm_service = ChatLLMService()
 
-def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str = None, specific_date: str = None) -> str:
+def retrieve_and_generate(user_query: str, session_id: str = None, start_date: str = None, end_date: str = None, specific_date: str = None) -> dict:
     """
     Master orchestrator for the RAG Chatbot API.
     Executes the full pipeline: Embed -> Hybrid Search -> RRF -> Rerank -> LLM Generation.
     """
     print(f"Chatbot Query: {user_query}")
     
+    org = Organisation.objects.first()
+    salesperson = User.objects.first()
+    
+    if session_id:
+        session = ChatSession.objects.get(id=session_id)
+    else:
+        session = ChatSession.objects.create(organisation=org, salesperson=salesperson)
+    
     query_vector = rag_service.embed_query(user_query)
     print(f"Query Vector: {query_vector}")
     if not query_vector:
-        return "I couldn't process your question."
+        return {"answer": "I couldn't process your question.", "session_id": str(session.id)}
 
     semantic_results, keyword_results = perform_hybrid_search(
         query=user_query,
@@ -34,7 +44,7 @@ def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str
     print(f"Keyword Chunks: {keyword_results}")
 
     if not semantic_results and not keyword_results:
-        return "I couldn't find any information about that in the database."
+        return {"answer": "I couldn't find any information about that in the database.", "session_id": str(session.id)}
 
     fused_chunks = reciprocal_rank_fusion(
         vector_results=semantic_results, 
@@ -65,10 +75,13 @@ def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str
         {context_text}
         </EXCERPTS>"""
 
-    messages = [
-        SystemMessage(content=system_prompt),
-        HumanMessage(content=user_query)
-    ]
+    recent_turns = ChatTurn.objects.filter(session=session).order_by('created_at')[:3]
+    history_messages = []
+    for turn in recent_turns:
+        history_messages.append(HumanMessage(content=turn.query))
+        history_messages.append(AIMessage(content=turn.answer))
+
+    messages = [SystemMessage(content=system_prompt)] + history_messages + [HumanMessage(content=user_query)]
 
     print(f" Message to LLM Context Chunks + system prompt: {messages}")
 
@@ -77,9 +90,21 @@ def retrieve_and_generate(user_query: str, start_date: str = None, end_date: str
         print(f" LLM Response: {response}")
         answer= response.content
         print(f"Final Content Response: {answer}")
-        return answer
-    
+        
+        # Save to memory layer
+        new_turn = ChatTurn.objects.create(
+            session=session,
+            query=user_query,
+            answer=answer,
+            query_vector=query_vector
+        )
+        ChatTurn.objects.filter(id=new_turn.id).update(query_search=SearchVector('query'))
+        
+        return {
+            "answer": answer,
+            "session_id": str(session.id)
+        }
     
     except Exception as e:
         print(f"LLM Generation Failed: {e}")
-        return "I'm sorry, I encountered an error while generating the answer."
+        return {"answer": "I'm sorry, I encountered an error while generating the answer.", "session_id": str(session.id) if 'session' in locals() else None}

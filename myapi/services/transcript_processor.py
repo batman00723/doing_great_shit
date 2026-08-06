@@ -56,3 +56,5 @@ def process_transcript(transcript: str):
         meeting.save()
         print(f"Transcript processing failed: {e}")
         raise
+
+    

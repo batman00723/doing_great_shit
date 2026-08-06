@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from pgvector.django import VectorField, HnswIndex
-
+import uuid
 
 class Organisation(models.Model):
     organisation_name = models.CharField(max_length=255)
@@ -253,4 +253,27 @@ class Embedding(models.Model):
                 opclasses=["vector_cosine_ops"]
             ),
             GinIndex(fields=["chunk_search"]),
+        ]
+
+class ChatSession(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    salesperson = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class ChatTurn(models.Model):
+    session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name="turns")
+    
+    query = models.TextField()
+    answer = models.TextField()
+    
+    query_vector = VectorField(dimensions=1024, null=True, blank=True) 
+    query_search = SearchVectorField(null=True, blank=True) 
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            HnswIndex(name='chat_query_vector_idx', fields=['query_vector'], opclasses=['vector_cosine_ops']),
+            GinIndex(fields=['query_search'], name='chat_query_gin_idx'),
         ]
