@@ -39,6 +39,38 @@ class MeetingOperationController(ControllerBase):
                 "message": "Agent Execution Falied",
                 "details": str(e) if settings.debug else "Internal Server Error"
             }
+
+    @http_get("/customer/{customer_id}", auth=JWTAuth())
+    def list_customer_meetings(self, request, customer_id: int):
+        from myapi.models import Meeting
+        # Securely fetch meetings for this customer belonging to the logged-in user's organisation
+        meetings = Meeting.objects.filter(
+            customer_id=customer_id,
+            organisation=request.user.organisation
+        ).order_by("-meeting_date")
+        
+        return [
+            {
+                "id": m.id,
+                "title": m.title,
+                "meeting_date": m.meeting_date.isoformat(),
+                "status": m.status
+            }
+            for m in meetings
+        ]
+
+    @http_get("/{meeting_id}/report", auth=JWTAuth())
+    def get_meeting_report(self, request, meeting_id: int):
+        from myapi.models import MeetingReport
+        try:
+            # Securely fetch the report ensuring it belongs to their org
+            report = MeetingReport.objects.get(
+                meeting_id=meeting_id,
+                organisation=request.user.organisation
+            )
+            return {"html": report.html_report}
+        except MeetingReport.DoesNotExist:
+            return self.create_response("Report not found or processing not finished.", status_code=404)
         
 
 
@@ -113,5 +145,51 @@ class ChatController(ControllerBase):
                 "message": "Failed to generate answer",
                 "details": str(e) if settings.debug else "Internal Server Error"
             }
+
+    @http_get("/history/{session_id}", auth=JWTAuth())
+    def get_chat_history(self, request, session_id: str):
+        from myapi.models import ChatSession, ChatTurn
+        try:
+            # Securely fetch the session ensuring it belongs to their org
+            session = ChatSession.objects.get(
+                id=session_id,
+                organisation=request.user.organisation
+            )
+            # Fetch all turns ordered by creation time
+            turns = ChatTurn.objects.filter(session=session).order_by("created_at")
+            
+            return [
+                {
+                    "id": turn.id,
+                    "query": turn.query,
+                    "answer": turn.answer,
+                    "created_at": turn.created_at.isoformat()
+                }
+                for turn in turns
+            ]
+        except ChatSession.DoesNotExist:
+            return self.create_response("Chat session not found.", status_code=404)
+
+    @http_get("/sessions", auth=JWTAuth())
+    def list_chat_sessions(self, request):
+        from myapi.models import ChatSession, ChatTurn
+        # Fetch all sessions for this specific salesperson, ordered newest to oldest
+        sessions = ChatSession.objects.filter(
+            salesperson=request.user
+        ).order_by("-created_at")
+        
+        result = []
+        for session in sessions:
+            # Grab the very first question they asked to use as the "Title" in the sidebar
+            first_turn = ChatTurn.objects.filter(session=session).order_by("created_at").first()
+            title = first_turn.query[:40] + "..." if first_turn else "New Chat"
+            
+            result.append({
+                "id": str(session.id),
+                "title": title,
+                "created_at": session.created_at.isoformat()
+            })
+            
+        return result
 
 

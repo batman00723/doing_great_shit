@@ -177,3 +177,15 @@ class AuthController:
             
         except (jwt.ExpiredSignatureError, jwt.DecodeError):
             return self.create_response("Invalid or expired refresh token", status_code=401)
+
+    @http_get("/me", auth=JWTAuth())
+    def get_me(self, request):
+        user = request.user
+        return {
+            "user_id": user.id,
+            "salesperson_name": user.salesperson_name,
+            "email": user.email,
+            "role": user.role,
+            "organisation": user.organisation.organisation_name,
+            "organisation_id": user.organisation.id
+        }
