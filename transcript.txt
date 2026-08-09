@@ -1,0 +1,54 @@
+Meeting 1 
+
+Well, I can start off by just giving you a quick recap on what's happening on the Pixel side. I had a meeting with the developers this week.
+
+multiple meetings where we've kind of gone back and forth on strategies And also the administration in Ellora, the main three Norwegian co-founders are thinking of how we can make this more user-friendly. So we've mapped out kind of a hybrid software where you can both use it as a traditional software and you can choose the variables yourself and you can kind of do it the usual way a software would work.
+
+And then you could also do it with LLMs. So an LLM is trained on the entire system. It knows all the different parameters and variables that it can change. And then you just have a... usual conversation with it and as you go it fills out the different things you need to do in PIXIS. This could be things like your ICP definition, starting campaigns, helping you set up different messagings in the campaigns and so on and so forth.
+
+So we're basically building an assistant into this...
+
+Meeting 2 
+
+Michael Ross: Good morning, everyone.
+Michael Ross: Thanks for joining.
+Michael Ross: The main objective today is to review our Southeast Asia expansion strategy, discuss the upcoming fundraising process, and finalize responsibilities for the next investor update.
+Sarah Chen: I've prepared the latest financial projections.
+Sarah Chen: Based on current performance, we're forecasting approximately $40 million in annual recurring revenue by the end of this fiscal year.
+Sarah Chen: Our EBITDA margin has improved from 14% to 19% over the last two quarters, which strengthens our position for a growth equity raise.
+David Kumar: What valuation range are we expecting based on current market conditions?
+Sarah Chen: After benchmarking comparable SaaS transactions completed this year, we believe a reasonable valuation is between $180 million and $220 million.
+Sarah Chen: Assuming we raise between $25 million and $30 million, dilution would remain within our acceptable threshold.
+Michael Ross: That aligns with what our advisors suggested.
+Michael Ross: The objective isn't simply raising capital.
+Michael Ross: We want partners who can help us expand internationally, especially across Singapore, Indonesia, and Vietnam.
+Emily Wong: We've completed preliminary market research.
+Emily Wong: Singapore appears to be the easiest entry point due to regulatory clarity.
+Emily Wong: Indonesia represents the largest long-term opportunity.
+Emily Wong: Vietnam also looks promising but requires additional legal due diligence before market entry.
+David Kumar: What are the biggest operational risks?
+Emily Wong: The primary concerns are local compliance requirements, hiring experienced regional sales leaders, and maintaining customer support quality during rapid expansion.
+Emily Wong: Customer acquisition costs could also fluctuate significantly during the first twelve months.
+Sarah Chen: Another consideration is infrastructure scalability.
+Sarah Chen: If customer growth exceeds projections, we may need to accelerate cloud infrastructure investments by approximately $2 million over the next year.
+Michael Ross: Let's also discuss investor targeting.
+Michael Ross: Are we prioritizing strategic investors or traditional growth equity funds?
+Sarah Chen: I'd recommend a balanced approach.
+Sarah Chen: Strategic investors could accelerate distribution partnerships.
+Sarah Chen: Financial investors generally offer cleaner governance structures.
+Sarah Chen: We'll evaluate both during the fundraising process.
+David Kumar: How long do we estimate the fundraising timeline?
+Sarah Chen: Around four to six weeks to prepare the data room, financial model, and investor presentation.
+Sarah Chen: Once outreach begins, we estimate another eight to ten weeks to complete the process.
+Michael Ross: Sounds reasonable.
+Michael Ross: Let's assign responsibilities before we wrap up.
+Sarah Chen: I'll finalize the valuation benchmarks.
+Sarah Chen: I'll update the financial model.
+Sarah Chen: I'll prepare an initial investor target list by Friday.
+Emily Wong: I'll circulate the complete Southeast Asia market assessment.
+Emily Wong: I'll coordinate meetings with external legal advisors by next week.
+Michael Ross: Excellent.
+Michael Ross: We'll schedule another board meeting in two weeks to review progress.
+Michael Ross: We'll validate investor feedback.
+Michael Ross: We'll decide whether we move forward with strategic investors or financial sponsors.
+Michael Ross: Thanks, everyone.

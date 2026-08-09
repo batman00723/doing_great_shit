@@ -2,16 +2,23 @@ from myapi.models import Embedding, User, Organisation
 from pgvector.django import CosineDistance
 from django.contrib.postgres.search import SearchQuery
 
-def perform_hybrid_search(query: str, query_embedding: list[float], top_k: int = 10, start_date: str = None, end_date: str = None, specific_date: str = None):
+def perform_hybrid_search(
+    query: str, 
+    query_embedding: list[float], 
+    user,
+    top_k: int = 10,
+    start_date: str = None, 
+    end_date: str = None,
+    specific_date: str = None
+):
     """
     Executes a hybrid search on PostgreSQL.
-    Filters strictly by the first Organisation and User in the DB (mocking auth).
+    Filters by the user's Organisation and identity.
     Returns two lists of Embedding objects: (semantic_results, keyword_results)
     """
 
-    org = Organisation.objects.first()
-    salesperson = User.objects.first()
-
+    org = user.organisation
+    salesperson = user
 
     print (f"Organisation {org}, SalesPerson: {salesperson}")
 

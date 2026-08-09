@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     voyage_api_key: SecretStr
 
     brevo_api_key: SecretStr
+    recall_api_key: SecretStr
 
 
 

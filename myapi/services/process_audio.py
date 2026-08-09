@@ -1,12 +1,12 @@
 from myapi.services.sst import transcribe_audio
 from myapi.services.transcript_processor import process_transcript
 
-def process_audio(file_path):
+def process_audio(audio_path: str, user, customer):
     print("Audio processing started")
 
     try:
-        transcript = transcribe_audio(file_path)
-        result = process_transcript(transcript)
+        transcript = transcribe_audio(audio_path)
+        result = process_transcript(transcript, user, customer)
         print("Audio Processed")
 
         return result

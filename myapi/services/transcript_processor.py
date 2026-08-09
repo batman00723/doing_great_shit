@@ -6,12 +6,11 @@ llm = LLMService()
 meeting_agent = build_graph()
 
 
-def process_transcript(transcript: str):
+def process_transcript(transcript: str, user, customer):
     print("Transcription is processing")
 
-    organisation = Organisation.objects.first()
-    salesperson = User.objects.first()
-    customer = Customer.objects.first()
+    organisation = user.organisation
+    salesperson = user
 
     from datetime import timedelta
     from django.utils import timezone

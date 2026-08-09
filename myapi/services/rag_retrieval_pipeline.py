@@ -11,15 +11,22 @@ from django.contrib.postgres.search import SearchVector
 rag_service = RAGService()
 llm_service = ChatLLMService()
 
-def retrieve_and_generate(user_query: str, session_id: str = None, start_date: str = None, end_date: str = None, specific_date: str = None) -> dict:
+def retrieve_and_generate(
+    user_query: str, 
+    user,
+    session_id: str = None, 
+    start_date: str = None, 
+    end_date: str = None,
+    specific_date: str = None
+) -> dict:
     """
     Master orchestrator for the RAG Chatbot API.
     Executes the full pipeline: Embed -> Hybrid Search -> RRF -> Rerank -> LLM Generation.
     """
     print(f"Chatbot Query: {user_query}")
     
-    org = Organisation.objects.first()
-    salesperson = User.objects.first()
+    org = user.organisation
+    salesperson = user
     
     if session_id:
         session = ChatSession.objects.get(id=session_id)
@@ -34,6 +41,7 @@ def retrieve_and_generate(user_query: str, session_id: str = None, start_date: s
     semantic_results, keyword_results = perform_hybrid_search(
         query=user_query,
         query_embedding=query_vector,
+        user=user,
         top_k=10,
         start_date=start_date,
         end_date=end_date,

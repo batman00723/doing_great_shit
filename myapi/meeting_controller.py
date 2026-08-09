@@ -8,20 +8,24 @@ from ninja.files import UploadedFile
 import os
 import uuid
 from myapi.services.process_audio import process_audio
+from myapi.auth_controller import JWTAuth
 
 class MeetingRequest(Schema):
     transcript: str
+    customer_id: int
 
 
 
 @api_controller("/analyse", tags= ['Transcript → Report'])
 class MeetingOperationController(ControllerBase):
-    @http_post("/report")
+    @http_post("/report", auth=JWTAuth())
     def agent(self, request, payload: MeetingRequest):
         print("starting to call agent")
 
         try:
-            response = process_transcript(payload.transcript)
+            from myapi.models import Customer
+            customer = Customer.objects.get(id=payload.customer_id)
+            response = process_transcript(payload.transcript, request.user, customer)
 
             return {
                 "analysis": response
@@ -40,8 +44,8 @@ class MeetingOperationController(ControllerBase):
 
 @api_controller("/audio", tags= ['Audio → Report'])
 class AudioController(ControllerBase):
-    @http_post("/analyse")
-    def analyse_audio(self, request, audio_file: UploadedFile= File(...)):
+    @http_post("/analyse", auth=JWTAuth())
+    def analyse_audio(self, request, customer_id: int, audio_file: UploadedFile= File(...)):
         print("Agent Started")
 
         os.makedirs("recordings", exist_ok=True)  
@@ -53,7 +57,9 @@ class AudioController(ControllerBase):
                 for chunk in audio_file.chunks():
                     destination.write(chunk)
 
-            response = process_audio(file_path)
+            from myapi.models import Customer
+            customer = Customer.objects.get(id=customer_id)
+            response = process_audio(file_path, request.user, customer)
 
             return {
                 "status": "success",
@@ -81,13 +87,14 @@ class ChatRequest(Schema):
 
 @api_controller("/chat", tags=['Chatbot API'])
 class ChatController(ControllerBase):
-    @http_post("/ask")
+    @http_post("/ask", auth=JWTAuth())
     def ask_bot(self, request, payload: ChatRequest):
         from myapi.services.rag_retrieval_pipeline import retrieve_and_generate
         
         try:
             result = retrieve_and_generate(
                 user_query=payload.query,
+                user=request.user,
                 session_id=payload.session_id,
                 start_date=payload.start_date,
                 end_date=payload.end_date,
