@@ -1,0 +1,281 @@
+# SMRITI API REFERENCE
+# Server: http://localhost:8000/api_v1
+# Auth: All 🔒 endpoints require header: Authorization: Bearer <access_token>
+
+---
+
+## 1. AUTHENTICATION (/auth)
+
+### POST /auth/register-org
+Creates a new Organisation + Admin account.
+INPUT:
+{
+  "organisation_name": "string",  // Required
+  "admin_name": "string",         // Required
+  "email": "string",              // Required
+  "password": "string"            // Required
+}
+OUTPUT:
+{
+  "access": "jwt_access_token",
+  "refresh": "jwt_refresh_token"
+}
+
+---
+
+### POST /auth/register-salesperson 🔒 (Admin only)
+Adds a new salesperson to the logged-in admin's organisation.
+INPUT:
+{
+  "salesperson_name": "string",  // Required
+  "email": "string",             // Required
+  "password": "string"           // Required
+}
+OUTPUT:
+{
+  "message": "Salesperson registered successfully"
+}
+
+---
+
+### POST /auth/login
+Logs in and returns JWT tokens.
+INPUT:
+{
+  "email": "string",    // Required
+  "password": "string"  // Required
+}
+OUTPUT:
+{
+  "access": "jwt_access_token",
+  "refresh": "jwt_refresh_token"
+}
+
+---
+
+### POST /auth/refresh
+Exchanges a refresh token for a new access token.
+INPUT:
+{
+  "refresh_token": "string"  // Required
+}
+OUTPUT:
+{
+  "access": "new_jwt_access_token"
+}
+
+---
+
+### GET /auth/me 🔒
+Returns the logged-in user's profile. Call this on every page refresh to restore React state.
+INPUT: None (token in header)
+OUTPUT:
+{
+  "user_id": 3,
+  "salesperson_name": "Aman",
+  "email": "aman@stripe.com",
+  "role": "Admin",
+  "organisation": "Stripe",
+  "organisation_id": 1
+}
+
+---
+
+## 2. CUSTOMER CRM (/customers)
+
+### POST /customers/create 🔒
+Creates a new customer under the logged-in user's organisation.
+INPUT:
+{
+  "customer_name": "string",  // Required
+  "industry": "string",       // Optional (default: "")
+  "website": "string",        // Optional (default: "")
+  "status": "string"          // Optional (default: "Lead")
+}
+OUTPUT:
+{
+  "id": 1,
+  "customer_name": "Netflix",
+  "industry": "Entertainment",
+  "website": "https://netflix.com",
+  "status": "Lead"
+}
+
+---
+
+### GET /customers/list 🔒
+Returns all customers belonging to the logged-in user's organisation.
+INPUT: None
+OUTPUT:
+[
+  {
+    "id": 1,
+    "customer_name": "Netflix",
+    "industry": "Entertainment",
+    "website": "https://netflix.com",
+    "status": "Lead"
+  },
+  ...
+]
+
+---
+
+## 3. MEETINGS & REPORTS (/analyse)
+
+### POST /analyse/report 🔒
+Manually submit a raw transcript for AI processing. (Used for testing without Recall.ai)
+INPUT:
+{
+  "transcript": "string",  // Required — Raw meeting transcript text
+  "customer_id": 1          // Required — ID of the customer this meeting was with
+}
+OUTPUT:
+{
+  "analysis": "completed"  // or "failed"
+}
+
+---
+
+### GET /analyse/customer/{customer_id} 🔒
+Returns a list of all meetings for a specific customer.
+INPUT: customer_id (in URL path)
+OUTPUT:
+[
+  {
+    "id": 1,
+    "title": "Demo Meeting",
+    "meeting_date": "2026-08-09T10:00:00Z",
+    "status": "completed"
+  },
+  ...
+]
+
+---
+
+### GET /analyse/{meeting_id}/report 🔒
+Fetches the generated HTML report for a specific meeting.
+INPUT: meeting_id (in URL path)
+OUTPUT:
+{
+  "html": "<html><body>...full AI generated report...</body></html>"
+}
+
+---
+
+### POST /analyse/{meeting_id}/report 🔒
+Saves an edited version of the HTML report back to the database.
+INPUT: meeting_id (in URL path) +
+{
+  "html_report": "<html>...edited report...</html>"  // Required
+}
+OUTPUT:
+{
+  "message": "Report updated successfully!"
+}
+
+---
+
+### POST /analyse/{meeting_id}/send-email 🔒
+Emails the current HTML report to the customer's email via Brevo.
+INPUT: meeting_id (in URL path) +
+{
+  "recipient_email": "client@netflix.com"  // Required
+}
+OUTPUT:
+{
+  "message": "Email sent successfully to client@netflix.com!"
+}
+
+---
+
+## 4. AUDIO UPLOAD (/audio)
+
+### POST /audio/analyse 🔒
+Upload an audio file for transcription and AI processing.
+INPUT: Multipart Form Data
+  - customer_id: integer (query param)  // Required
+  - audio_file: binary file upload      // Required (.mp3, .wav, etc.)
+OUTPUT:
+{
+  "status": "success",
+  "analysis": "completed"
+}
+
+---
+
+## 5. RECALL AI BOT (/bot)
+
+### POST /bot/deploy 🔒
+Deploys a Recall.ai bot to join a meeting URL.
+INPUT:
+{
+  "meeting_url": "https://zoom.us/j/123",  // Required
+  "customer_id": 1                           // Required — Links meeting to this customer
+}
+OUTPUT:
+{
+  "message": "Bot deployed successfully!",
+  "bot_id": "recall_bot_uuid",
+  "status": "recording"
+}
+
+---
+
+### POST /bot/webhook (Internal — Called by Recall.ai only)
+Recall.ai hits this when a meeting ends. It processes the transcript automatically.
+INPUT: Recall.ai JSON payload (handled automatically)
+OUTPUT:
+{
+  "message": "Meeting processed and saved to database!"
+}
+
+---
+
+## 6. CHATBOT (/chat)
+
+### POST /chat/ask 🔒
+Ask the AI a question about past meetings.
+INPUT:
+{
+  "query": "What did the Netflix client say about pricing?",  // Required
+  "session_id": "uuid-string-or-null",   // Optional — pass null for new session
+  "start_date": "2026-08-01",            // Optional — filter meetings by date
+  "end_date": "2026-08-09",              // Optional
+  "specific_date": "2026-08-05"          // Optional
+}
+OUTPUT:
+{
+  "answer": "The Netflix client mentioned pricing was too high...",
+  "session_id": "abc-123-uuid"
+}
+
+---
+
+### GET /chat/sessions 🔒
+Returns a list of all past chat sessions for the sidebar.
+INPUT: None
+OUTPUT:
+[
+  {
+    "id": "abc-123-uuid",
+    "title": "What did the Netflix client say abo...",
+    "created_at": "2026-08-09T10:00:00Z"
+  },
+  ...
+]
+
+---
+
+### GET /chat/history/{session_id} 🔒
+Returns all past messages for a specific chat session.
+INPUT: session_id (in URL path — UUID string)
+OUTPUT:
+[
+  {
+    "id": 1,
+    "query": "What did the Netflix client say about pricing?",
+    "answer": "The client mentioned pricing was too high...",
+    "created_at": "2026-08-09T10:00:00Z"
+  },
+  ...
+]

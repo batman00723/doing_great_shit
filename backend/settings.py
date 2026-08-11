@@ -13,7 +13,7 @@ SECRET_KEY = settings.secret_key.get_secret_value()
 
 DEBUG = settings.debug
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # Allows all hosts, you can restrict this to your specific Render URL later
 
 
 INSTALLED_APPS = [
@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'myapi',
     'ninja_extra',
     'django.contrib.postgres'
@@ -30,7 +31,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -99,3 +102,8 @@ MEDIA_ROOT= os.path.join(BASE_DIR, 'media')
 
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# CORS settings for frontend communication
+CORS_ALLOW_ALL_ORIGINS = True  # Allows all origins, can be restricted to frontend domain later
+CORS_ALLOW_CREDENTIALS = True

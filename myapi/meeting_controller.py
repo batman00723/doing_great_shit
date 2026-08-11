@@ -1,4 +1,4 @@
-from ninja_extra import ControllerBase, api_controller, http_post
+from ninja_extra import ControllerBase, api_controller, http_post, http_get
 from backend.config import settings
 import logging
 from ninja import Schema
@@ -13,6 +13,12 @@ from myapi.auth_controller import JWTAuth
 class MeetingRequest(Schema):
     transcript: str
     customer_id: int
+
+class EditReportSchema(Schema):
+    html_report: str
+
+class SendEmailSchema(Schema):
+    recipient_email: str
 
 
 
@@ -71,6 +77,62 @@ class MeetingOperationController(ControllerBase):
             return {"html": report.html_report}
         except MeetingReport.DoesNotExist:
             return self.create_response("Report not found or processing not finished.", status_code=404)
+
+    @http_post("/{meeting_id}/report", auth=JWTAuth()) # Changed to post because ninja sometimes complains about put
+    def edit_meeting_report(self, request, meeting_id: int, payload: EditReportSchema):
+        from myapi.models import MeetingReport
+        try:
+            report = MeetingReport.objects.get(
+                meeting_id=meeting_id,
+                organisation=request.user.organisation
+            )
+            report.html_report = payload.html_report
+            report.save()
+            return {"message": "Report updated successfully!"}
+        except MeetingReport.DoesNotExist:
+            return self.create_response("Report not found.", status_code=404)
+            
+    @http_post("/{meeting_id}/send-email", auth=JWTAuth())
+    def send_report_email(self, request, meeting_id: int, payload: SendEmailSchema):
+        from myapi.models import MeetingReport, Meeting
+        import requests
+        try:
+            report = MeetingReport.objects.get(
+                meeting_id=meeting_id,
+                organisation=request.user.organisation
+            )
+            meeting = report.meeting
+            
+            api_key = settings.brevo_api_key.get_secret_value() if settings.brevo_api_key else None
+            if not api_key:
+                return self.create_response("Brevo API key not configured.", status_code=500)
+                
+            url = "https://api.brevo.com/v3/smtp/email"
+            headers = {
+                "accept": "application/json",
+                "api-key": api_key,
+                "content-type": "application/json"
+            }
+            
+            data = {
+                "sender": {
+                    "name": request.user.salesperson_name,
+                    "email": request.user.email
+                },
+                "to": [{"email": payload.recipient_email}],
+                "subject": f"Meeting Report: {meeting.title}",
+                "htmlContent": report.html_report
+            }
+            
+            response = requests.post(url, headers=headers, json=data)
+            
+            if response.status_code in [201, 202]:
+                return {"message": f"Email sent successfully to {payload.recipient_email}!"}
+            else:
+                return self.create_response({"message": "Failed to send email", "details": response.text}, status_code=400)
+                
+        except MeetingReport.DoesNotExist:
+            return self.create_response("Report not found.", status_code=404)
         
 
 
