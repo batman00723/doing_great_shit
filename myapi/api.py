@@ -9,3 +9,7 @@ api_v1 = NinjaExtraAPI(version="1.0.0")
 
 api_v1.register_controllers(MeetingOperationController, AudioController, ChatController, AuthController, BotController, CustomerController)
 
+@api_v1.get("/ping", tags=["Utility"])
+def ping(request):
+    """Simple health check endpoint for Cron jobs to keep the server awake."""
+    return {"message": "pong"}
