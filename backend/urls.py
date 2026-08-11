@@ -16,9 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.http import HttpResponse
 from myapi.api import api_v1
 
+def health_check(request):
+    return HttpResponse("OK")
+
 urlpatterns = [
+    path('', health_check),  # Added for Render health check
     path('admin/', admin.site.urls),
     path("api_v1/", api_v1.urls),
 ]
