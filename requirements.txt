@@ -2,6 +2,8 @@ Django
 django-ninja
 django-ninja-extra
 dj-database-url
+psycopg-binary
+pgvector
 pydantic-settings
 langgraph
 langchain
@@ -17,6 +19,4 @@ python-dotenv
 gunicorn
 whitenoise
 django-cors-headers
-pgvector
-psycopg
-
+Jinja2
