@@ -68,11 +68,4 @@ Traceback (most recent call last):
   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/backends/postgresql/psycopg_any.py", line 77, in <module>
     from psycopg2 import errors, extensions, sql  # NOQA
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/psycopg2/__init__.py", line 51, in <module>
-    from psycopg2._psycopg import (                     # noqa
-    ...<10 lines>...
-    )
-ImportError: /opt/render/project/src/.venv/lib/python3.14/site-packages/psycopg2/_psycopg.cpython-314-x86_64-linux-gnu.so: undefined symbol: _PyInterpreterState_Get
-==> Exited with status 1
-==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
-==> Running 'gunicorn backend.wsgi:application'
+ModuleNotFoundError: No module named 'psycopg2'
