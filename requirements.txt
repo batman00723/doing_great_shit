@@ -21,3 +21,4 @@ gunicorn
 whitenoise
 django-cors-headers
 Jinja2
+sib-api-v3-sdk
