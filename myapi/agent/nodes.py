@@ -379,4 +379,4 @@ def generate_embeddings_node(state: MeetingState):
     except Exception as e:
         print(f"Embedding Generation Failed: {e}")
         raise
-
+    
