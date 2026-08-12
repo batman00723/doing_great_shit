@@ -15,13 +15,16 @@ def process_transcript(transcript: str, user, customer):
     from datetime import timedelta
     from django.utils import timezone
 
+    meeting_count = Meeting.objects.filter(customer=customer).count()
+    sequential_title = f"Meeting {meeting_count + 1}"
+
     meeting = Meeting.objects.create(
         organisation=organisation,
         customer=customer,
         salesperson=salesperson,
         meeting_date=timezone.now(),
         duration=timedelta(),
-        title="Demo Meeting",
+        title=sequential_title,
         meeting_type="Sales Call",
         status= Meeting.Status.PROCESSING,
     )

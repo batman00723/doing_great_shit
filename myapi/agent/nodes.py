@@ -300,19 +300,11 @@ def send_report_to_mail(state: MeetingState):
 
     # Email to salesperson
     send_email(
-        recipient_email= "batmanmishra23@gmail.com",#salesperson.email,
+        recipient_email= salesperson.email,
         recipient_name=salesperson.salesperson_name,
         subject="Meeting Report",
         html_content=state["html_report"],
     )
-
-    # Email to customer
-    # send_email(
-    #     recipient_email=customer.email,
-    #     recipient_name=customer.customer_name,
-    #     subject="Meeting Summary",
-    #     html_content=state["html_report"],
-    # )
 
     return {
         "status": "Emails Sent Successfully"

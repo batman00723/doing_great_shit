@@ -35,5 +35,5 @@ class CustomerController(ControllerBase):
 
     @http_get("/list", auth=JWTAuth(), response=List[CustomerOutSchema])
     def list_customers(self, request):
-        # Salesperson can only see customers in their organisation
-        return Customer.objects.filter(organisation=request.user.organisation)
+        # Salesperson can strictly only see their own assigned customers
+        return Customer.objects.filter(salesperson=request.user)

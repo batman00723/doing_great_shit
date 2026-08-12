@@ -9,6 +9,7 @@ import os
 import uuid
 from myapi.services.process_audio import process_audio
 from myapi.auth_controller import JWTAuth
+from myapi.models import Customer
 
 class MeetingRequest(Schema):
     transcript: str
@@ -16,9 +17,6 @@ class MeetingRequest(Schema):
 
 class EditReportSchema(Schema):
     html_report: str
-
-class SendEmailSchema(Schema):
-    recipient_email: str
 
 
 
@@ -49,10 +47,10 @@ class MeetingOperationController(ControllerBase):
     @http_get("/customer/{customer_id}", auth=JWTAuth())
     def list_customer_meetings(self, request, customer_id: int):
         from myapi.models import Meeting
-        # Securely fetch meetings for this customer belonging to the logged-in user's organisation
+        # Securely fetch meetings for this customer belonging to the logged-in salesperson
         meetings = Meeting.objects.filter(
             customer_id=customer_id,
-            organisation=request.user.organisation
+            salesperson=request.user
         ).order_by("-meeting_date")
         
         return [
@@ -69,10 +67,10 @@ class MeetingOperationController(ControllerBase):
     def get_meeting_report(self, request, meeting_id: int):
         from myapi.models import MeetingReport
         try:
-            # Securely fetch the report ensuring it belongs to their org
+            # Securely fetch the report ensuring it belongs to their salesperson account
             report = MeetingReport.objects.get(
                 meeting_id=meeting_id,
-                organisation=request.user.organisation
+                salesperson=request.user
             )
             return {"html": report.html_report}
         except MeetingReport.DoesNotExist:
@@ -84,7 +82,7 @@ class MeetingOperationController(ControllerBase):
         try:
             report = MeetingReport.objects.get(
                 meeting_id=meeting_id,
-                organisation=request.user.organisation
+                salesperson=request.user
             )
             report.html_report = payload.html_report
             report.save()
@@ -93,13 +91,13 @@ class MeetingOperationController(ControllerBase):
             return self.create_response("Report not found.", status_code=404)
             
     @http_post("/{meeting_id}/send-email", auth=JWTAuth())
-    def send_report_email(self, request, meeting_id: int, payload: SendEmailSchema):
+    def send_report_email(self, request, meeting_id: int):
         from myapi.models import MeetingReport, Meeting
         import requests
         try:
             report = MeetingReport.objects.get(
                 meeting_id=meeting_id,
-                organisation=request.user.organisation
+                salesperson=request.user
             )
             meeting = report.meeting
             
@@ -119,7 +117,7 @@ class MeetingOperationController(ControllerBase):
                     "name": request.user.salesperson_name,
                     "email": request.user.email
                 },
-                "to": [{"email": payload.recipient_email}],
+                "to": [{"email": meeting.customer.email}],
                 "subject": f"Meeting Report: {meeting.title}",
                 "htmlContent": report.html_report
             }
@@ -127,7 +125,7 @@ class MeetingOperationController(ControllerBase):
             response = requests.post(url, headers=headers, json=data)
             
             if response.status_code in [201, 202]:
-                return {"message": f"Email sent successfully to {payload.recipient_email}!"}
+                return {"message": f"Email sent successfully to {meeting.customer.email}!"}
             else:
                 return self.create_response({"message": "Failed to send email", "details": response.text}, status_code=400)
                 

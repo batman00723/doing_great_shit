@@ -1,0 +1,163 @@
+=========================================================
+  SMRITI API — COMPLETE ENDPOINT REFERENCE
+  Base URL: https://doing-great-shit.onrender.com/api_v1
+  Docs:     https://doing-great-shit.onrender.com/api_v1/docs
+=========================================================
+
+🔓 = No auth required
+🔒 = Requires Bearer token (JWT access token in Authorization header)
+     Header format: Authorization: Bearer <access_token>
+
+---------------------------------------------------------
+  UTILITY
+---------------------------------------------------------
+GET   /ping                         🔓
+  → Health check. Returns {"message": "pong"}
+  → Use this for your 10-min cron job to keep server alive
+
+
+---------------------------------------------------------
+  AUTHENTICATION  (/auth)
+---------------------------------------------------------
+POST  /auth/register-org            🔓
+  → Register a new Organisation + Admin user
+  Body: {
+    "organisation_name": "string",
+    "admin_name": "string",
+    "email": "string",
+    "password": "string"
+  }
+  Returns: { org_id, admin_id }
+
+POST  /auth/login                   🔓
+  → Login with email + password
+  Body: {
+    "email": "string",
+    "password": "string"
+  }
+  Returns: { access_token, refresh_token, user_id, organisation, role }
+
+POST  /auth/refresh                 🔓
+  → Get a new access token using a refresh token
+  Body: { "refresh_token": "string" }
+  Returns: { access_token }
+
+POST  /auth/register-salesperson    🔒 (Admin only)
+  → Add a salesperson to your organisation
+  Body: {
+    "salesperson_name": "string",
+    "email": "string",
+    "password": "string"
+  }
+  Returns: { salesperson_id }
+
+GET   /auth/me                      🔒
+  → Get the currently logged-in user's details
+  Returns: { user_id, salesperson_name, email, role, organisation, organisation_id }
+
+
+---------------------------------------------------------
+  CUSTOMER CRM  (/customers)
+---------------------------------------------------------
+POST  /customers/create             🔒
+  → Create a new customer/lead
+  Body: {
+    "customer_name": "string",
+    "industry": "string",      (optional, default "")
+    "website": "string",       (optional, default "")
+    "status": "string"         (optional, default "Lead")
+  }
+  Returns: { id, customer_name, industry, website, status }
+
+GET   /customers/list               🔒
+  → List all customers in your organisation
+  Returns: [{ id, customer_name, industry, website, status }]
+
+
+---------------------------------------------------------
+  TRANSCRIPT → REPORT  (/analyse)
+---------------------------------------------------------
+POST  /analyse/report               🔒
+  → Submit a raw transcript text → triggers LangGraph AI pipeline
+  → Saves Meeting, MeetingReport, embeddings in DB
+  Body: {
+    "transcript": "string",
+    "customer_id": int
+  }
+  Returns: { analysis: { ... full structured report ... } }
+
+GET   /analyse/customer/{customer_id}   🔒
+  → List all meetings for a specific customer
+  Returns: [{ id, title, meeting_date, status }]
+
+GET   /analyse/{meeting_id}/report  🔒
+  → Fetch the saved HTML report for a meeting
+  Returns: { html: "<html>..." }
+
+POST  /analyse/{meeting_id}/report  🔒
+  → Edit/update the HTML report for a meeting
+  Body: { "html_report": "<html>..." }
+  Returns: { message: "Report updated successfully!" }
+
+POST  /analyse/{meeting_id}/send-email  🔒
+  → Send the meeting report as an HTML email via Brevo
+  Body: { "recipient_email": "string" }
+  Returns: { message: "Email sent successfully to <email>!" }
+
+
+---------------------------------------------------------
+  AUDIO → REPORT  (/audio)
+---------------------------------------------------------
+POST  /audio/analyse                🔒
+  → Upload an audio file → transcribes + runs full AI pipeline
+  Body: multipart/form-data
+    - customer_id: int (form field)
+    - audio_file: <audio file> (file upload)
+  Returns: { status: "success", analysis: { ... } }
+
+
+---------------------------------------------------------
+  RECALL AI BOT INTEGRATION  (/bot)
+---------------------------------------------------------
+POST  /bot/deploy                   🔒
+  → Deploy an AI bot to join a live meeting URL (Google Meet, Zoom, etc.)
+  Body: {
+    "meeting_url": "string",
+    "customer_id": int
+  }
+  Returns: { message, bot_id, status: "recording" }
+
+POST  /bot/webhook                  🔓
+  → Recall.ai sends a POST here when the meeting ends
+  → Automatically fetches transcript and runs the AI pipeline
+  → Configure this URL in your Recall.ai dashboard
+  Body: Recall.ai webhook payload (dict)
+  Returns: { message }
+
+
+---------------------------------------------------------
+  CHATBOT API  (/chat)
+---------------------------------------------------------
+POST  /chat/ask                     🔒
+  → Ask the AI a question about your meetings (RAG chatbot)
+  Body: {
+    "query": "string",
+    "session_id": "string | null",   (null to start a new session)
+    "start_date": "YYYY-MM-DD | null",
+    "end_date": "YYYY-MM-DD | null",
+    "specific_date": "YYYY-MM-DD | null"
+  }
+  Returns: { status, answer, session_id }
+
+GET   /chat/sessions                🔒
+  → List all chat sessions for the logged-in user
+  Returns: [{ id, title, created_at }]
+
+GET   /chat/history/{session_id}    🔒
+  → Get full message history for a specific chat session
+  Returns: [{ id, query, answer, created_at }]
+
+
+=========================================================
+  TOTAL ENDPOINTS: 17 + 1 (ping) = 18
+=========================================================

@@ -60,6 +60,8 @@ class Customer(models.Model):
 
     customer_name = models.CharField(max_length=255)
 
+    email = models.EmailField(unique=True, null= True, blank=True) # Remove he null = true an blank = true in production
+
     industry = models.CharField(
         max_length=150,
         blank=True
@@ -219,6 +221,8 @@ class MeetingReport(models.Model):
     html_report = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [
