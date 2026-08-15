@@ -46,6 +46,30 @@ class MeetingOperationController(ControllerBase):
                 "details": str(e) if settings.debug else "Internal Server Error"
             }
 
+    @http_get("/meetings", auth=JWTAuth())
+    def list_all_my_meetings(self, request):
+        from myapi.models import Meeting
+        # Fetch all meetings for this salesperson, newest first, with customer info pre-loaded
+        meetings = Meeting.objects.filter(
+            salesperson=request.user
+        ).select_related("customer").order_by("-meeting_date")
+
+        return [
+            {
+                "meeting_id": m.id,
+                "title": m.title,
+                "meeting_date": m.meeting_date.isoformat(),
+                "status": m.status,
+                "customer": {
+                    "id": m.customer.id,
+                    "customer_name": m.customer.customer_name,
+                    "industry": m.customer.industry,
+                    "status": m.customer.status
+                }
+            }
+            for m in meetings
+        ]
+
     @http_get("/customer/{customer_id}", auth=JWTAuth())
     def list_customer_meetings(self, request, customer_id: int):
         from myapi.models import Meeting
