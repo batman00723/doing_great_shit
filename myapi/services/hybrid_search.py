@@ -59,7 +59,7 @@ def perform_hybrid_search(
         ).order_by('distance')[:top_k]
     )
 
-    print(f"Semantic Search Result: {semantic_results}")
+    # print(f"Semantic Search Result: {semantic_results}")
 
     # Uses PostgreSQL FTS against the chunk_search
     keyword_results = list(
@@ -67,6 +67,6 @@ def perform_hybrid_search(
             chunk_search=SearchQuery(query)
         )[:top_k]
     )
-    print(f"Keyword Search results{keyword_results}")
+    # print(f"Keyword Search results{keyword_results}")
 
     return semantic_results, keyword_results

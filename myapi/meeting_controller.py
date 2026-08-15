@@ -49,7 +49,9 @@ class MeetingOperationController(ControllerBase):
     @http_get("/meetings", auth=JWTAuth())
     def list_all_my_meetings(self, request):
         from myapi.models import Meeting
+
         # Fetch all meetings for a specefic salesperson, newest first, with customer info also
+
         meetings = Meeting.objects.filter(
             salesperson=request.user
         ).select_related("customer").order_by("-meeting_date")
@@ -73,7 +75,7 @@ class MeetingOperationController(ControllerBase):
     @http_get("/customer/{customer_id}", auth=JWTAuth())
     def list_customer_meetings(self, request, customer_id: int):
         from myapi.models import Meeting
-        # Securely fetch meetings for this customer belonging to the logged-in salesperson
+        # Securely fetch meetings for this customer belonging to the logged in salesperson
         meetings = Meeting.objects.filter(
             customer_id=customer_id,
             salesperson=request.user
