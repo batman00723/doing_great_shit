@@ -19,7 +19,9 @@ class EditReportSchema(Schema):
     html_report: str
 
 
-
+# Here we need to give the customer_id by the user and in frontend it wil show a drop down of the customer name and we seslet which custoemr this report belongs to 
+# and then in the recall ai webhook this will be the same the user will provide the custoemr id and recall will give it after the transcript via webhook.
+# when we wil give the meetig link to the recall ai we will also give customer id via drop down link i frontend and then it will bring back the custoemr id for next steps in the report genration so we are golden.
 @api_controller("/analyse", tags= ['Transcript → Report'])
 class MeetingOperationController(ControllerBase):
     @http_post("/report", auth=JWTAuth())
@@ -29,7 +31,7 @@ class MeetingOperationController(ControllerBase):
         try:
             from myapi.models import Customer
             customer = Customer.objects.get(id=payload.customer_id)
-            response = process_transcript(payload.transcript, request.user, customer)
+            response = process_transcript(payload.transcript, request.user, customer) # fetch the user object from the logged in user via request.user
 
             return {
                 "analysis": response

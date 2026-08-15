@@ -94,6 +94,8 @@ def historical_report_node(state: MeetingState):
     
 
     try:
+        #here we are fetching the past meetings by flter by current customer id and organisation id but we are 
+        # exculding the current meeting by the .exclude and then oredring them by created at 
         previous_meetings = (
             MeetingAnalysis.objects
             .filter(
@@ -108,13 +110,16 @@ def historical_report_node(state: MeetingState):
             return {
                 "historical_analysis": "No historical meetings are available for comparison."
             }
-
+        
+        # previous_meetings contains full MeetingAnalysis objects.
+        # We only need the persistent reports from those meetings as historical context
+        # for the current meeting's analysis here we loop through all 4 to fetch the main object we need and store it in history list.
         history = [
             meeting.agent_1_report_persistent
             for meeting in previous_meetings
         ]
 
-        
+        # convert the python obejcts into the python dictionary first by model dump then into json by json dump and indent =2 so its easy for humans to understand.
         prompt= json.dumps({
             "current_report": current_report.model_dump(),
             "historical_context": history
@@ -139,6 +144,7 @@ def historical_report_node(state: MeetingState):
         raise
 
 
+# this node is only useful for creating the html template 
 def merge_report_node(state: MeetingState):
 
     return {
@@ -150,10 +156,13 @@ def merge_report_node(state: MeetingState):
     }
 
 
+# here we are creating the json report into the markdown text as the gin index works on markdown text not on json so we need this for the 
+# RAG chatbot (currently we are not using gin index on reports rn only on raw transcript to chunks - but we are preparing this for future)
 def markdown_report_node(state: MeetingState):
     print("Generating Markdown Report")
 
     analysis = state['meeting_analysis']
+
     # Converting json to md file as out db column is for text field and gin index works on text not on json
 
     merged_report = f""" # {analysis.meeting_title}
@@ -231,7 +240,7 @@ def markdown_report_node(state: MeetingState):
 def make_html_report_node(state: MeetingState):
     "use jinja 2 to bake into html here"
 
-    # Using the merged report here instead of the maekdown report so that i can generate tables and beautiful in html and save the markdown report
+    # Using the merged report so that I can generate tables and beautiful in html and save the markdown report in parallel
 
     template = env.get_template("report_template.html")
     report= state['merged_report']
@@ -294,11 +303,11 @@ def save_to_db_node(state: MeetingState):
 
 def send_report_to_mail(state: MeetingState):
 
-    customer = Customer.objects.get(id=state["customer_id"])
+    # Fetch the current salesperson object from the current salesperson id in state from the User Table
 
     salesperson = User.objects.get(id=state["salesperson_id"])
 
-    # Email to salesperson
+    # Send Email to salesperson
     send_email(
         recipient_email= salesperson.email,
         recipient_name=salesperson.salesperson_name,
@@ -320,7 +329,8 @@ def generate_embeddings_node(state: MeetingState):
         salesperson = User.objects.get(id=state["salesperson_id"])
         transcript_report = TranscriptReport.objects.get(meeting_id=state["meeting_id"])
 
-        # 1. Prepare Semantic Metadata (For the LLM Context)
+        # 1. Prepare Semantic Metadata (For the LLM Context) 
+        # we will inject this into every chunk for postgres FTS and vector search 
         semantic_header = f"Organisation: {organisation.organisation_name}\n"
         semantic_header += f"Salesperson: {salesperson.salesperson_name}\n"
         semantic_header += f"Customer: {customer.customer_name}\n"
@@ -359,7 +369,7 @@ def generate_embeddings_node(state: MeetingState):
             for i, text in enumerate(enriched_texts):
                 embedding_objects.append(
                     Embedding(
-                        transcript_report=transcript_report,
+                        transcript_report=transcript_report, # this is foreign key
                         chunks=text,
                         vector=vectors[i],
                         metadata=db_metadata
@@ -369,7 +379,7 @@ def generate_embeddings_node(state: MeetingState):
             # Bulk create is 10x faster
             Embedding.objects.bulk_create(embedding_objects)
 
-            # 5. Build the GIN Index for Keyword Search
+            # 5. Build the GIN Index for Keyword Search of the transcript column in the Transcript report Table asnd populate search vector column there 
             Embedding.objects.filter(
                 transcript_report=transcript_report
             ).update(chunk_search=SearchVector('chunks'))

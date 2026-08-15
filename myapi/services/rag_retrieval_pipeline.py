@@ -11,23 +11,17 @@ from django.contrib.postgres.search import SearchVector
 rag_service = RAGService()
 llm_service = ChatLLMService()
 
-def retrieve_and_generate(
-    user_query: str, 
-    user,
-    session_id: str = None, 
-    start_date: str = None, 
-    end_date: str = None,
-    specific_date: str = None
-) -> dict:
+def retrieve_and_generate(user_query: str, user, session_id: str = None, start_date: str = None, end_date: str = None,specific_date: str = None) -> dict:
     """
-    Master orchestrator for the RAG Chatbot API.
-    Executes the full pipeline: Embed -> Hybrid Search -> RRF -> Rerank -> LLM Generation.
+    full pipeline: Embed -> Hybrid Search -> RRF -> Rerank -> LLM Generation.
     """
     print(f"Chatbot Query: {user_query}")
     
     org = user.organisation
     salesperson = user
-    
+
+    # is user passed in the session id then use the passed in and if new chat create a new session_id and then return the session_id
+    # also in frontend we will use the session id from the drop down menu and dont have to manually selsect it everytime.  
     if session_id:
         session = ChatSession.objects.get(id=session_id)
     else:
@@ -72,7 +66,7 @@ def retrieve_and_generate(
     # 5. Format Context and Call LLM
     context_text = "\n\n---\n\n".join(top_5_chunks)
 
-    print(f"Contxt Chunks Formatted for LLM: {context_text}")
+    print(f"Context Chunks Formatted for LLM: {context_text}")
     
     system_prompt = f"""You are an advanced Meeting Intelligence Chatbot. 
         Your job is to answer the user's question using ONLY the provided meeting excerpts below.
@@ -83,6 +77,11 @@ def retrieve_and_generate(
         {context_text}
         </EXCERPTS>"""
 
+
+
+    # Message history in the prompt 
+    # fetch the last 3 message turns (3 ai message with respective 3 human queries) from the ChatTurn Table and filer it by session id as we already made it 
+    # in the start of this function. 
     recent_turns = ChatTurn.objects.filter(session=session).order_by('created_at')[:3]
     history_messages = []
     for turn in recent_turns:
@@ -99,13 +98,15 @@ def retrieve_and_generate(
         answer= response.content
         print(f"Final Content Response: {answer}")
         
-        # Save to memory layer
+        # Save the AI Message and Human Message into the ChatTurn Table 
         new_turn = ChatTurn.objects.create(
             session=session,
             query=user_query,
             answer=answer,
             query_vector=query_vector
         )
+
+        # Create a gin index for the human query as we need this for future advanced semantic memory layer (for future plans)
         ChatTurn.objects.filter(id=new_turn.id).update(query_search=SearchVector('query'))
         
         return {

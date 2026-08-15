@@ -9,6 +9,7 @@ meeting_agent = build_graph()
 def process_transcript(transcript: str, user, customer):
     print("Transcription is processing")
 
+
     organisation = user.organisation
     salesperson = user
 
@@ -18,6 +19,8 @@ def process_transcript(transcript: str, user, customer):
     meeting_count = Meeting.objects.filter(customer=customer).count()
     sequential_title = f"Meeting {meeting_count + 1}"
 
+
+    # Here we first create a meeting object 
     meeting = Meeting.objects.create(
         organisation=organisation,
         customer=customer,

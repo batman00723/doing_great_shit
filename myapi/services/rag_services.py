@@ -6,8 +6,6 @@ from backend.config import settings
 
 class RAGService:
     def __init__(self):
-        # Using Pydantic settings for the API key
-        # We use the officially supported voyage-3.5 model.
         self.embedder = VoyageAIEmbeddings(
             model="voyage-3.5", 
             voyage_api_key=settings.voyage_api_key.get_secret_value()
@@ -29,10 +27,10 @@ class RAGService:
         if not text.strip():
             return [], []
 
-        # 1. Semantic Chunking
+        # Do Semantic Chunking using a embedding model
         raw_chunks = self.chunker.create_documents([text])
         
-        # 2. Inject Metadata Header
+        # Inject Metadata Header (semantic header)
         enriched_texts = []
         for chunk in raw_chunks:
             # We glue the header to the beginning of the chunk's text

@@ -14,6 +14,7 @@ class Organisation(models.Model):
     def __str__(self):
         return self.organisation_name
 
+# This has salesoerson account info
 
 class User(models.Model):
     organisation = models.ForeignKey(
@@ -44,6 +45,8 @@ class User(models.Model):
     def __str__(self):
         return self.salesperson_name
 
+
+# Customer of the respective salespersons
 
 class Customer(models.Model):
     organisation = models.ForeignKey(
@@ -93,6 +96,8 @@ class Customer(models.Model):
     def __str__(self):
         return self.customer_name
 
+
+# Meeting info of between the customer and salesperon 
 
 class Meeting(models.Model):
 
@@ -147,6 +152,7 @@ class Meeting(models.Model):
             models.Index(fields=["customer", "-meeting_date"]), 
         ]
 
+# It contains raw transcript and the final markdown report
 
 class TranscriptReport(models.Model):
     meeting = models.OneToOneField(
@@ -168,6 +174,8 @@ class TranscriptReport(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+# This mainly contains agent 1 report for agent 3 analysis (historical analysis node)
 
 class MeetingAnalysis(models.Model):
     meeting = models.OneToOneField(
@@ -195,6 +203,8 @@ class MeetingAnalysis(models.Model):
             models.Index(fields=["created_at"]),
         ]
 
+
+# It contains the Meeting Report (HTML) Format for the email delivery and website viewing 
 
 class MeetingReport(models.Model):
     meeting = models.OneToOneField(
@@ -230,6 +240,8 @@ class MeetingReport(models.Model):
         ]
 
 
+# This is for RAG 
+
 class Embedding(models.Model):
     transcript_report = models.ForeignKey(
         TranscriptReport,
@@ -258,6 +270,8 @@ class Embedding(models.Model):
             ),
             GinIndex(fields=["chunk_search"]),
         ]
+
+# This is for session id , chathistory and for semantic chathistory and possibly semantic cache
 
 class ChatSession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

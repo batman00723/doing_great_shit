@@ -25,6 +25,8 @@ def perform_hybrid_search(
     if not org or not salesperson:
         raise ValueError("Database is missing initial Organisation or User.")
 
+    # these filters are done to narrow down teh scope for the search semantic and keyword seach for better accuracy and not get other customer and salesperosn results
+    # later I will add customer id filter too.
     dynamic_filters = {
         "metadata__organisation_id": org.id,
         "metadata__salesperson_id": salesperson.id
@@ -46,7 +48,7 @@ def perform_hybrid_search(
 
     print(f"Query after filters {base_query}")
 
-    # senamtic search
+    # Calculate similarity distance → name it distance → sort by it → take the closest top_k embeddings. alias creates a temp distance
     semantic_results = list(
         base_query.alias(
             distance=CosineDistance('vector', query_embedding)
