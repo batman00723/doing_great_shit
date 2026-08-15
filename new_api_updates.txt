@@ -1,0 +1,163 @@
+=========================================================
+  SMRITI — NEW & UPDATED API REFERENCE
+  Base URL: https://doing-great-shit.onrender.com/api_v1
+=========================================================
+
+🔒 = Requires Authorization header
+     Format: Authorization: Bearer <access_token>
+
+---------------------------------------------------------
+  1. NEW ENDPOINT — All Meetings Feed
+---------------------------------------------------------
+
+GET /analyse/meetings    🔒
+
+  Description:
+    Fetches ALL meetings belonging to the logged-in
+    salesperson, sorted by most recent first.
+    Use this to power the meetings feed / card list
+    on the dashboard.
+
+  Request:
+    No body required. No query params.
+    Just pass the JWT token in the header.
+
+  Response (200 OK):
+    [
+      {
+        "meeting_id": 5,
+        "title": "Meeting 3",
+        "meeting_date": "2026-08-15T10:30:00",
+        "status": "completed",          ← "uploaded" | "processing" | "completed" | "failed"
+        "customer": {
+          "id": 1,
+          "customer_name": "Acme Corp",
+          "industry": "SaaS",
+          "status": "Lead"
+        }
+      },
+      {
+        "meeting_id": 4,
+        "title": "Meeting 2",
+        "meeting_date": "2026-08-10T14:00:00",
+        "status": "completed",
+        "customer": {
+          "id": 2,
+          "customer_name": "Google",
+          "industry": "Technology",
+          "status": "Client"
+        }
+      }
+    ]
+
+  Notes:
+    - Sorted newest → oldest automatically.
+    - Strictly scoped: salesperson can only see
+      their own meetings, never another salesperson's.
+    - Use meeting_id to then call GET /analyse/{meeting_id}/report
+
+
+---------------------------------------------------------
+  2. UPDATED ENDPOINT — Chatbot Ask
+---------------------------------------------------------
+
+POST /chat/ask    🔒
+
+  Description:
+    Ask the AI a question about your meetings.
+    Now supports optional customer scoping so the
+    AI searches only within a specific customer's
+    meetings instead of all meetings.
+
+  Request Body (JSON):
+    {
+      "query": "string",              ← REQUIRED. The question to ask.
+
+      "session_id": "string | null",  ← OPTIONAL.
+                                         Pass null to start a new chat session.
+                                         Pass an existing session UUID to continue
+                                         a previous conversation with history.
+
+      "customer_id": int | null,      ← OPTIONAL. NEW!
+                                         Pass a customer id to scope the search
+                                         to only that customer's meetings.
+                                         Pass null to search across ALL meetings.
+                                         Get the customer id from GET /customers/list
+
+      "start_date": "YYYY-MM-DD | null",  ← OPTIONAL. Filter meetings from this date.
+      "end_date":   "YYYY-MM-DD | null",  ← OPTIONAL. Filter meetings up to this date.
+      "specific_date": "YYYY-MM-DD | null" ← OPTIONAL. Filter meetings on exact date.
+                                              If this is set, start_date and end_date
+                                              are ignored.
+    }
+
+  Example — Ask about all meetings (no filters):
+    {
+      "query": "What were the most common objections?",
+      "session_id": null,
+      "customer_id": null
+    }
+
+  Example — Ask scoped to one customer:
+    {
+      "query": "What did Acme Corp say about pricing?",
+      "session_id": null,
+      "customer_id": 1
+    }
+
+  Example — Ask with date range:
+    {
+      "query": "What happened in meetings last week?",
+      "session_id": null,
+      "customer_id": null,
+      "start_date": "2026-08-08",
+      "end_date": "2026-08-15"
+    }
+
+  Example — Continue an existing conversation:
+    {
+      "query": "Can you elaborate on that?",
+      "session_id": "a1b2c3d4-e5f6-...",
+      "customer_id": 1
+    }
+
+  Response (200 OK):
+    {
+      "status": "success",
+      "answer": "Based on the meetings, Acme Corp raised concerns about...",
+      "session_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    }
+
+  Notes:
+    - Always store the returned session_id on the frontend
+      after the first message. Pass it back in every
+      subsequent message to maintain conversation history.
+    - customer_id comes from GET /customers/list
+    - Date filters are additive with customer_id filter.
+      You can combine all of them at once.
+
+
+---------------------------------------------------------
+  HOW TO WIRE THE CHATBOT UI (Frontend Guide)
+---------------------------------------------------------
+
+  Step 1 — Load customer list for the dropdown:
+    GET /customers/list
+    → Renders a "Filter by customer" dropdown in the chat UI.
+
+  Step 2 — User types a question and optionally picks a customer:
+    → If customer selected: send customer_id in body.
+    → If "All Customers" selected: send customer_id: null.
+
+  Step 3 — First message:
+    → Send session_id: null
+    → Store the session_id from the response in local state.
+
+  Step 4 — Every follow-up message in same chat:
+    → Send the stored session_id back.
+    → AI will remember the previous conversation context.
+
+  Step 5 — User starts a new chat:
+    → Send session_id: null again to get a fresh session.
+
+=========================================================

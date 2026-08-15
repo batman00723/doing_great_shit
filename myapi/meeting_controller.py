@@ -49,7 +49,7 @@ class MeetingOperationController(ControllerBase):
     @http_get("/meetings", auth=JWTAuth())
     def list_all_my_meetings(self, request):
         from myapi.models import Meeting
-        # Fetch all meetings for this salesperson, newest first, with customer info pre-loaded
+        # Fetch all meetings for a specefic salesperson, newest first, with customer info also
         meetings = Meeting.objects.filter(
             salesperson=request.user
         ).select_related("customer").order_by("-meeting_date")

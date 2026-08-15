@@ -1,101 +1,155 @@
-2026-08-11T19:24:13.0991672Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.09916957Z     ...<2 lines>...
-2026-08-11T19:24:13.09917192Z         max_tokens= 3000
-2026-08-11T19:24:13.09917424Z         ^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.09917657Z     )
-2026-08-11T19:24:13.09917896Z     ^
-2026-08-11T19:24:13.09918134Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langchain_core/load/serializable.py", line 136, in __init__
-2026-08-11T19:24:13.09918373Z     super().__init__(*args, **kwargs)
-2026-08-11T19:24:13.09918628Z     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.09918925Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/pydantic/main.py", line 263, in __init__
-2026-08-11T19:24:13.09919171Z     validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
-2026-08-11T19:24:13.099199631Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langchain_cerebras/chat_models.py", line 371, in validate_environment
-2026-08-11T19:24:13.099202331Z     self.root_async_client = openai.AsyncOpenAI(
-2026-08-11T19:24:13.0992046Z                              ~~~~~~~~~~~~~~~~~~^
-2026-08-11T19:24:13.099204971Z 127.0.0.1 - - [11/Aug/2026:19:24:13 +0000] "HEAD / HTTP/1.1" 500 0 "-" "-"
-2026-08-11T19:24:13.09920704Z         **client_params,  # type: ignore
-2026-08-11T19:24:13.099210741Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099213431Z         **async_specific,  # type: ignore
-2026-08-11T19:24:13.099215941Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099218181Z     )
-2026-08-11T19:24:13.099220481Z     ^
-2026-08-11T19:24:13.099222831Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/openai/_client.py", line 871, in __init__
-2026-08-11T19:24:13.099225191Z     super().__init__(
-2026-08-11T19:24:13.099227571Z     ~~~~~~~~~~~~~~~~^
-2026-08-11T19:24:13.099229941Z         version=__version__,
-2026-08-11T19:24:13.099232241Z         ^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099234531Z     ...<6 lines>...
-2026-08-11T19:24:13.099236901Z         _strict_response_validation=_strict_response_validation,
-2026-08-11T19:24:13.099239201Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099241531Z     )
-2026-08-11T19:24:13.099243831Z     ^
-2026-08-11T19:24:13.099246111Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/openai/_base_client.py", line 1576, in __init__
-2026-08-11T19:24:13.099248531Z     self._client = http_client or AsyncHttpxClientWrapper(
-2026-08-11T19:24:13.099250871Z                                   ~~~~~~~~~~~~~~~~~~~~~~~^
-2026-08-11T19:24:13.099253172Z         base_url=base_url,
-2026-08-11T19:24:13.099255492Z         ^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099258272Z         # cast to a valid type because mypy doesn't understand our type narrowing
-2026-08-11T19:24:13.099260741Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099263002Z         timeout=cast(Timeout, timeout),
-2026-08-11T19:24:13.099265392Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099267682Z     )
-2026-08-11T19:24:13.099270042Z     ^
-2026-08-11T19:24:13.099272482Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/openai/_base_client.py", line 1469, in __init__
-2026-08-11T19:24:13.099274882Z     super().__init__(**kwargs)
-2026-08-11T19:24:13.099277202Z     ~~~~~~~~~~~~~~~~^^^^^^^^^^
-2026-08-11T19:24:13.099279612Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/httpx/_client.py", line 1402, in __init__
-2026-08-11T19:24:13.099286412Z     self._transport = self._init_transport(
-2026-08-11T19:24:13.099288992Z                       ~~~~~~~~~~~~~~~~~~~~^
-2026-08-11T19:24:13.099291362Z         verify=verify,
-2026-08-11T19:24:13.099293792Z         ^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099296122Z     ...<5 lines>...
-2026-08-11T19:24:13.099298442Z         transport=transport,
-2026-08-11T19:24:13.099300782Z         ^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099303082Z     )
-2026-08-11T19:24:13.099305333Z     ^
-2026-08-11T19:24:13.099307542Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/httpx/_client.py", line 1445, in _init_transport
-2026-08-11T19:24:13.099309822Z     return AsyncHTTPTransport(
-2026-08-11T19:24:13.099312073Z         verify=verify,
-2026-08-11T19:24:13.099314353Z     ...<4 lines>...
-2026-08-11T19:24:13.099316603Z         limits=limits,
-2026-08-11T19:24:13.099318833Z     )
-2026-08-11T19:24:13.099321233Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/httpx/_transports/default.py", line 297, in __init__
-2026-08-11T19:24:13.099327243Z     ssl_context = create_ssl_context(verify=verify, cert=cert, trust_env=trust_env)
-2026-08-11T19:24:13.099329723Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/httpx/_config.py", line 40, in create_ssl_context
-2026-08-11T19:24:13.099332143Z     ctx = ssl.create_default_context(cafile=certifi.where())
-2026-08-11T19:24:13.099334553Z   File "/opt/render/project/python/Python-3.14.3/lib/python3.14/ssl.py", line 717, in create_default_context
-2026-08-11T19:24:13.099336893Z     context.load_verify_locations(cafile, capath, cadata)
-2026-08-11T19:24:13.099339623Z     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
-2026-08-11T19:24:13.099342163Z   File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/workers/base.py", line 198, in handle_abort
-2026-08-11T19:24:13.099344623Z     sys.exit(1)
-2026-08-11T19:24:13.099347013Z     ~~~~~~~~^^^
-2026-08-11T19:24:13.099349463Z SystemExit: 1
-2026-08-11T19:24:13.100693888Z [2026-08-11 19:24:13 +0000] [59] [INFO] Worker exiting (pid: 59)
-2026-08-11T19:24:14.009512518Z [2026-08-11 19:24:14 +0000] [58] [ERROR] Worker (pid:59) was sent SIGKILL! Perhaps out of memory?
-2026-08-11T19:24:14.09908355Z [2026-08-11 19:24:14 +0000] [58] [INFO] Control socket listening at /opt/render/.gunicorn/gunicorn.ctl
-2026-08-11T19:24:14.099110051Z [2026-08-11 19:24:14 +0000] [68] [INFO] Booting worker with pid: 68
-2026-08-11T19:24:34.710258077Z Not Found: /
-2026-08-11T19:24:34.710627934Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.713328854Z Not Found: /
-2026-08-11T19:24:34.713557448Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.799887941Z Not Found: /
-2026-08-11T19:24:34.800236567Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "GET / HTTP/1.1" 404 2324 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
-2026-08-11T19:24:34.802984098Z Not Found: /
-2026-08-11T19:24:34.803157231Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.805535975Z Not Found: /
-2026-08-11T19:24:34.805722539Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.808152534Z Not Found: /
-2026-08-11T19:24:34.808296727Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.810932796Z Not Found: /
-2026-08-11T19:24:34.811121589Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.899164364Z Not Found: /
-2026-08-11T19:24:34.899493899Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.902727779Z Not Found: /
-2026-08-11T19:24:34.902959534Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.907556619Z Not Found: /
-2026-08-11T19:24:34.907564239Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:34.910206658Z Not Found: /
-2026-08-11T19:24:34.910215558Z 127.0.0.1 - - [11/Aug/2026:19:24:34 +0000] "HEAD / HTTP/1.1" 404 2324 "-" "Go-http-client/1.1"
-2026-08-11T19:24:57.214257503Z ==> New primary port detected: 10000. Restarting deploy to update network configuration...
-2026-08-11T19:24:57.595753918Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
-2026-08-11T19:25:06.884848324Z ==> Running 'gunicorn backend.wsgi:application'
+starting to call agent
+Agent Execution Error: column "updated_at" of relation "myapi_meetingreport" does not exist
+Transcription is processing
+Agent 2: Gererating Narrative Report
+Agent 1: Generating Structured Report
+LINE 1: ...", "salesperson_id", "html_report", "created_at", "updated_a...
+                                                             ^
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/backends/utils.py", line 105, in _execute
+Narrative Report: thought_process='I will structure this narrative by focusing on key discussion points' discussion_narrative='No meaningful discussion occurred as the input was nonsensical.'
+Structured Report: meeting_title='' summary='' action_items=[] decisions=[] risks=[] opportunities=[] open_questions=[] resources_mentioned=[] kpis=[] participants=[] tags=[]
+Agent 3: Gererating Historical Report
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: column "updated_at" of relation "myapi_meetingreport" does not exist
+LINE 1: ...", "salesperson_id", "html_report", "created_at", "updated_a...
+                                                             ^
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "/opt/render/project/src/myapi/meeting_controller.py", line 34, in agent
+    response = process_transcript(payload.transcript, request.user, customer) # fetch the user object from the logged in user via request.user
+  File "/opt/render/project/src/myapi/services/transcript_processor.py", line 52, in process_transcript
+    final_state = meeting_agent.invoke(initial_state, config= config)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langgraph/pregel/main.py", line 3913, in invoke
+    for chunk in self.stream(
+                 ~~~~~~~~~~~^
+        input,
+        ^^^^^^
+    ...<11 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    ):
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langgraph/pregel/main.py", line 2967, in stream
+    for _ in runner.tick(
+             ~~~~~~~~~~~^
+        [t for t in loop.tasks.values() if not t.writes],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        schedule_task=loop.accept_push,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ):
+    ^
+Generating Markdown Report
+Generated HTML (7306 chars)
+Saving Reports
+Database save failed: column "updated_at" of relation "myapi_meetingreport" does not exist
+LINE 1: ...", "salesperson_id", "html_report", "created_at", "updated_a...
+                                                             ^
+Transcript processing failed: column "updated_at" of relation "myapi_meetingreport" does not exist
+LINE 1: ...", "salesperson_id", "html_report", "created_at", "updated_a...
+                                                             ^
+127.0.0.1 - - [15/Aug/2026:18:48:13 +0000] "POST /api_v1/analyse/report HTTP/1.1" 200 272 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langgraph/pregel/_runner.py", line 207, in tick
+    run_with_retry(
+    ~~~~~~~~~~~~~~^
+        t,
+        ^^
+    ...<10 lines>...
+        },
+        ^^
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langgraph/pregel/_retry.py", line 617, in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langgraph/_internal/_runnable.py", line 707, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/langgraph/_internal/_runnable.py", line 447, in invoke
+    ret = self.func(*args, **kwargs)
+  File "/opt/render/project/src/myapi/agent/nodes.py", line 288, in save_to_db_node
+    MeetingReport.objects.create(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        meeting_id=state['meeting_id'],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        html_report=state['html_report']
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 669, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/base.py", line 874, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/base.py", line 966, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, insert_fields, returning_fields, raw
+    )
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/base.py", line 1220, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/sql/compiler.py", line 1925, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+django.db.utils.ProgrammingError: column "updated_at" of relation "myapi_meetingreport" does not exist
+LINE 1: ...", "salesperson_id", "html_report", "created_at", "updated_a...
+                                                             ^
+During task with name 'save_to_db' and id '78e7a5b8-c08b-34a9-e8fb-3f7716c7cda3'
+"POST - MeetingOperationController[agent] /api_v1/analyse/report" 5.81149697303772
+"GET - ping /api_v1/ping" 8.7738037109375e-05
