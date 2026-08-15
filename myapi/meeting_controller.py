@@ -174,6 +174,7 @@ class AudioController(ControllerBase):
 class ChatRequest(Schema):
     query: str
     session_id: str | None = None
+    customer_id: int | None = None
     start_date: str | None = None
     end_date: str | None = None
     specific_date: str | None = None
@@ -190,6 +191,7 @@ class ChatController(ControllerBase):
                 user_query=payload.query,
                 user=request.user,
                 session_id=payload.session_id,
+                customer_id=payload.customer_id,
                 start_date=payload.start_date,
                 end_date=payload.end_date,
                 specific_date=payload.specific_date

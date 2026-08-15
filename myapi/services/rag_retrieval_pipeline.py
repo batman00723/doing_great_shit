@@ -11,7 +11,7 @@ from django.contrib.postgres.search import SearchVector
 rag_service = RAGService()
 llm_service = ChatLLMService()
 
-def retrieve_and_generate(user_query: str, user, session_id: str = None, start_date: str = None, end_date: str = None,specific_date: str = None) -> dict:
+def retrieve_and_generate(user_query: str, user, session_id: str = None, customer_id: int = None, start_date: str = None, end_date: str = None, specific_date: str = None) -> dict:
     """
     full pipeline: Embed -> Hybrid Search -> RRF -> Rerank -> LLM Generation.
     """
@@ -37,6 +37,7 @@ def retrieve_and_generate(user_query: str, user, session_id: str = None, start_d
         query_embedding=query_vector,
         user=user,
         top_k=10,
+        customer_id=customer_id,
         start_date=start_date,
         end_date=end_date,
         specific_date=specific_date
