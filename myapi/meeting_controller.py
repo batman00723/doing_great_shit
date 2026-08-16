@@ -117,6 +117,12 @@ class MeetingOperationController(ControllerBase):
             return {"message": "Report updated successfully!"}
         except MeetingReport.DoesNotExist:
             return self.create_response("Report not found.", status_code=404)
+
+
+
+# Here I have to change the architecture of the Email delivery so Brevo can only send maild from the verified domains only so I will 
+# send it woth my comnpanys verified domain and then use replyTo and five the salesperson email address so the customers can reply to the salesperson. 
+# so when the custoemer clicks on reply button when they get the mail they can reply to orignal salesperon mail account.
             
     @http_post("/{meeting_id}/send-email", auth=JWTAuth())
     def send_report_email(self, request, meeting_id: int):
@@ -143,8 +149,14 @@ class MeetingOperationController(ControllerBase):
             data = {
                 "sender": {
                     "name": request.user.salesperson_name,
-                    "email": request.user.email
+                    "email":  "batmanmishra23@gmail.com"       
                 },
+
+                "replyTo": {                                                                                                                                                           
+                    "email": request.user.email,                                                                                                                                       
+                    "name": request.user.salesperson_name                                                                                                                              
+                },
+
                 "to": [{"email": meeting.customer.email}],
                 "subject": f"Meeting Report: {meeting.title}",
                 "htmlContent": report.html_report

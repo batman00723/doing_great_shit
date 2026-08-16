@@ -76,7 +76,7 @@ def send_email(
         email = sib_api_v3_sdk.SendSmtpEmail(
             sender={
                 "name": "Meeting Intelligence",
-                "email": "batmanmishra23@gmail.com",
+                "email": "batmanmishra23@gmail.com",  # later change it with your company domain
             },
             to=[
                 {
