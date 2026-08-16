@@ -6,6 +6,7 @@ from typing import List
 
 class CustomerSchema(Schema):
     customer_name: str
+    email: str
     industry: str = ""
     website: str = ""
     status: str = "Lead"
@@ -13,6 +14,7 @@ class CustomerSchema(Schema):
 class CustomerOutSchema(Schema):
     id: int
     customer_name: str
+    email: str
     industry: str
     website: str
     status: str
@@ -27,6 +29,7 @@ class CustomerController(ControllerBase):
             organisation=request.user.organisation,
             salesperson=request.user,
             customer_name=payload.customer_name,
+            email=payload.email,
             industry=payload.industry,
             website=payload.website,
             status=payload.status

@@ -149,7 +149,7 @@ class MeetingOperationController(ControllerBase):
             data = {
                 "sender": {
                     "name": request.user.salesperson_name,
-                    "email":  "batmanmishra23@gmail.com"       
+                    "email": "batmanmishra23@gmail.com"       
                 },
 
                 "replyTo": {                                                                                                                                                           
