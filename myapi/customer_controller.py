@@ -19,6 +19,10 @@ class CustomerOutSchema(Schema):
     website: str
     status: str
 
+class CustomerOutSchemaList(Schema):
+    id: int
+    customer_name: str
+
 @api_controller("/customers", tags=["Customer CRM"])
 class CustomerController(ControllerBase):
 
@@ -36,7 +40,9 @@ class CustomerController(ControllerBase):
         )
         return customer
 
-    @http_get("/list", auth=JWTAuth(), response=List[CustomerOutSchema])
+    @http_get("/list", auth=JWTAuth(), response=List[CustomerOutSchemaList])
     def list_customers(self, request):
         # Salesperson can strictly only see their own assigned customers
-        return Customer.objects.filter(salesperson=request.user)
+        customer= Customer.objects.filter(salesperson= request.user)
+        return customer
+    
