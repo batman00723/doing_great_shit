@@ -1,6 +1,8 @@
 from myapi.models import Embedding, User, Organisation
 from pgvector.django import CosineDistance
 from django.contrib.postgres.search import SearchQuery
+import logging
+logger = logging.getLogger(__name__) 
 
 def perform_hybrid_search(
     query: str, 
@@ -21,7 +23,7 @@ def perform_hybrid_search(
     org = user.organisation
     salesperson = user
 
-    print (f"Organisation {org}, SalesPerson: {salesperson}")
+    logger.debug(f"Organisation {org}, SalesPerson: {salesperson}")
 
     if not org or not salesperson:
         raise ValueError("Database is missing initial Organisation or User.")
@@ -50,7 +52,7 @@ def perform_hybrid_search(
     # 4. Apply Filters to Base Query
     base_query = Embedding.objects.filter(**dynamic_filters)
 
-    print(f"Query after filters {base_query}")
+
 
     # Calculate similarity distance → name it distance → sort by it → take the closest top_k embeddings. alias creates a temp distance
     semantic_results = list(
@@ -59,7 +61,7 @@ def perform_hybrid_search(
         ).order_by('distance')[:top_k]
     )
 
-    # print(f"Semantic Search Result: {semantic_results}")
+   
 
     # Uses PostgreSQL FTS against the chunk_search
     keyword_results = list(
@@ -67,6 +69,6 @@ def perform_hybrid_search(
             chunk_search=SearchQuery(query)
         )[:top_k]
     )
-    # print(f"Keyword Search results{keyword_results}")
+    
 
     return semantic_results, keyword_results

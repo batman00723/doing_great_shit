@@ -12,10 +12,14 @@ import datetime
 from django.db import transaction
 from myapi.services.rag_services import RAGService
 from django.contrib.postgres.search import SearchVector
+import logging 
 
 llm= ReportLLMService()
 
 rag_service = RAGService()
+
+                                                                                                                                                            
+logger = logging.getLogger(__name__) 
 
 
 AGENT_1_PROMPT = load_prompt("agent_1.md")
@@ -33,7 +37,7 @@ env = Environment(
 
 
 def structured_report_node(state: MeetingState):
-    print("Agent 1: Generating Structured Report")
+    logger.info("Agent 1: Generating Structured Report")
 
     transcript= state['transcript']
 
@@ -47,18 +51,18 @@ def structured_report_node(state: MeetingState):
         structured_report= llm.get_structured(StructuredMeetingAnalysis, messages)
        
 
-        print(f"Structured Report: {structured_report}")
+        logger.debug(f"Structured Report: {structured_report}")
 
         return {
             "meeting_analysis": structured_report
         }
 
     except Exception as e:
-        print(f"Agent 1 failed: {e}")
+        logger.error(f"Agent 1 failed {e}", exc_info= True)
         raise
     
 def narrative_report_node(state: MeetingState):
-    print("Agent 2: Gererating Narrative Report")
+    logger.info("Agent 2: Gererating Narrative Report")
 
     transcript= state['transcript']
 
@@ -73,18 +77,18 @@ def narrative_report_node(state: MeetingState):
                                              messages= messages)
       
 
-        print(f"Narrative Report: {narrative_report}")
+        logger.debug(f"Narrative Report: {narrative_report}")
 
         return {
             "narrative_report": narrative_report
         }
 
     except Exception as e:
-        print(f"Agent 2 failed: {e}")
+        logger.error(f"Agent 2 failed: {e}", exc_info= True)
         raise
 
 def historical_report_node(state: MeetingState):
-    print("Agent 3: Gererating Historical Report")
+    logger.info("Agent 3: Gererating Historical Report")
 
     current_report= state['meeting_analysis']
     
@@ -134,7 +138,7 @@ def historical_report_node(state: MeetingState):
         }
 
     except Exception as e:
-        print(f"Agent 3 failed: {e}")
+        logger.error(f"Agent 3 failed: {e}", exc_info= True)
         raise
 
 
@@ -153,7 +157,7 @@ def merge_report_node(state: MeetingState):
 # here we are creating the json report into the markdown text as the gin index works on markdown text not on json so we need this for the 
 # RAG chatbot (currently we are not using gin index on reports rn only on raw transcript to chunks - but we are preparing this for future)
 def markdown_report_node(state: MeetingState):
-    print("Generating Markdown Report")
+    logger.info("Generating Markdown Report")
 
     analysis = state['meeting_analysis']
 
@@ -247,23 +251,31 @@ def make_html_report_node(state: MeetingState):
             current_date=current_date
         )
 
-        print(f"Generated HTML ({len(html)} chars)")
+        logger.debug(f"Generated HTML ({len(html)} chars)")
 
         return {
             "html_report": html
         }
 
     except Exception as e:
-        print(f"HTML Rendering Failed: {e}")
+        logger.error(f"HTML Rendering Failed: {e}", exc_info=True)
         raise
     
 
 def save_to_db_node(state: MeetingState):
 
-    print("Saving Reports")
+    logger.info("Saving Reports")
 
     try:
         with transaction.atomic():
+
+            # earlier we created the meting title in the meeting table but that was simple name now as we have used llm for meeting report gen we 
+            # have a llm genrated name echich is memorable so we can update that  
+
+            meeting = Meeting.objects.get(id=state['meeting_id'])                                                                                                          
+            meeting.title = state['meeting_analysis'].meeting_title                                                                                                        
+            meeting.save(update_fields=['title']) # Only updates the title column
+            
             MeetingAnalysis.objects.create(
                 meeting_id=state['meeting_id'],
                 organisation_id=state['organisation_id'],
@@ -292,7 +304,7 @@ def save_to_db_node(state: MeetingState):
         }
 
     except Exception as e:
-        print(f"Database save failed: {e}")
+        logger.error(f"Database save failed: {e}", exc_info= True)
         raise
 
 def send_report_to_mail(state: MeetingState):
@@ -314,7 +326,7 @@ def send_report_to_mail(state: MeetingState):
     }
 
 def generate_embeddings_node(state: MeetingState):
-    print("Generating RAG Embeddings...")
+    logger.info("Generating RAG Embeddings...")
     
     try:
         customer = Customer.objects.get(id=state["customer_id"])
@@ -351,7 +363,7 @@ def generate_embeddings_node(state: MeetingState):
         )
 
         if not enriched_texts:
-            print("No text to embed.")
+            logger.warning("No text to embed.")
             return {}
 
         # 4. Save to Database Transactionally
@@ -381,6 +393,6 @@ def generate_embeddings_node(state: MeetingState):
         return {}
 
     except Exception as e:
-        print(f"Embedding Generation Failed: {e}")
+        logger.error(f"Embedding Generation Failed: {e}", exc_info= True)
         raise
     

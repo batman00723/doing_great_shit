@@ -51,7 +51,9 @@
 #         print(f"Email sending failed: {e}")
 #         raise
 
+import logging
 
+logger = logging.getLogger(__name__) 
 
 import sib_api_v3_sdk
 
@@ -90,10 +92,10 @@ def send_email(
 
         response = api_instance.send_transac_email(email)
 
-        print(f"Email sent successfully to {recipient_email}")
+        logging.info(f"Email sent successfully to {recipient_email}")
 
         return response
 
     except Exception as e:
-        print(f"Email sending failed: {e}")
+        logging.error(f"Email sending failed: {e}", exc_info= True)
         raise

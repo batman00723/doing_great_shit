@@ -1,13 +1,16 @@
-from myapi.agent.llm import LLMService
 from myapi.agent.graph import build_graph
+import logging
 from myapi.models import User, Organisation, Meeting, Customer
 
-llm = LLMService()
 meeting_agent = build_graph()
 
 
+logger = logging.getLogger(__name__) 
+
+
+
 def process_transcript(transcript: str, user, customer):
-    print("Transcription is processing")
+    logger.info("Transcription is processing")
 
 
     organisation = user.organisation
@@ -59,7 +62,7 @@ def process_transcript(transcript: str, user, customer):
     except Exception as e:
         meeting.status = Meeting.Status.FAILED
         meeting.save()
-        print(f"Transcript processing failed: {e}")
+        logger.error(f"Transcript processing failed: {e}", exc_info= True)
         raise
 
     

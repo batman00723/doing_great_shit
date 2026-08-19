@@ -6,16 +6,19 @@ from myapi.agent.llm import ChatLLMService
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from myapi.models import ChatSession, ChatTurn, Organisation, User
 from django.contrib.postgres.search import SearchVector
+import logging 
 
 # Initialize services once
 rag_service = RAGService()
 llm_service = ChatLLMService()
 
+logger = logging.getLogger(__name__) 
+
 def retrieve_and_generate(user_query: str, user, session_id: str = None, customer_id: int = None, start_date: str = None, end_date: str = None, specific_date: str = None) -> dict:
     """
     full pipeline: Embed -> Hybrid Search -> RRF -> Rerank -> LLM Generation.
     """
-    print(f"Chatbot Query: {user_query}")
+    logger.info(f"Chatbot Query: {user_query}")
     
     org = user.organisation
     salesperson = user
@@ -28,7 +31,7 @@ def retrieve_and_generate(user_query: str, user, session_id: str = None, custome
         session = ChatSession.objects.create(organisation=org, salesperson=salesperson)
     
     query_vector = rag_service.embed_query(user_query)
-    print(f"Query Vector: {query_vector}")
+    
     if not query_vector:
         return {"answer": "I couldn't process your question.", "session_id": str(session.id)}
 
@@ -124,5 +127,5 @@ def retrieve_and_generate(user_query: str, user, session_id: str = None, custome
         }
     
     except Exception as e:
-        print(f"LLM Generation Failed: {e}")
+        logger.error(f"LLM Generation Failed: {e}", exc_info= True)
         return {"answer": "I'm sorry, I encountered an error while generating the answer.", "session_id": str(session.id) if 'session' in locals() else None}
