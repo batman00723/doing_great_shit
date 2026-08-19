@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     brevo_api_key: SecretStr
     recall_api_key: SecretStr | None = None
 
+    google_api_key: SecretStr
+
 
 
     model_config= SettingsConfigDict(env_file= ".env",
