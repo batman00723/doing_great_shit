@@ -14,6 +14,8 @@ langchain-core
 langchain-experimental
 langchain-google-vertexai
 langchain-groq
+langchain-nvidia-ai-endpoints  
+langchain-google-genai 
 langchain-cerebras
 langchain-voyageai
 groq
