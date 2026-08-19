@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     nvidia_api_key: SecretStr
 
+    openrouter_api_key: SecretStr
+
     model_config= SettingsConfigDict(env_file= ".env",
                                      extra= 'ignore',
                                      case_sensitive=False)

@@ -28,6 +28,7 @@ gunicorn
 whitenoise
 django-cors-headers
 Jinja2
+langchain-openai
 sib-api-v3-sdk
 datasets
 ragas

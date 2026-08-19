@@ -3,6 +3,7 @@ from langchain_groq import ChatGroq
 from langchain_cerebras import ChatCerebras
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
+from langchain_openai import ChatOpenAI
 import logging
 
 logger = logging.getLogger(__name__)
@@ -62,9 +63,10 @@ class ChatLLMService:
 
 class ReportLLMService:
     def __init__(self):
-        self.primary_model= ChatNVIDIA(                                                                                                                                    
-                api_key=settings.nvidia_api_key.get_secret_value(),                                                                                                              
-                model="meta/llama-3.1-70b-instruct",                                                                                                                                         
+        self.primary_model= ChatOpenAI(    
+                base_url="https://openrouter.ai/api/v1",                                                                                                                                
+                api_key=settings.openrouter_api_key.get_secret_value(),                                                                                                              
+                model="meta-llama/llama-3.3-70b-instruct",                                                                                                                                         
                 temperature=0.2,                    
                 timeout= 360,                                                                                                                           
                 model_kwargs={"max_retries": 3}                                                                                                                                                
