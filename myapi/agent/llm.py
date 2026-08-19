@@ -2,6 +2,7 @@ from backend.config import settings
 from langchain_groq import ChatGroq
 from langchain_cerebras import ChatCerebras
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
 import logging
 
 logger = logging.getLogger(__name__)
@@ -56,4 +57,31 @@ class ChatLLMService:
     
     def get_structured(self, schema, messages):
         structured_model = self.model.with_structured_output(schema)
+        return structured_model.invoke(messages)
+
+
+class ReportLLMService:
+    def __init__(self):
+        self.primary_model= ChatNVIDIA(                                                                                                                                    
+                api_key=settings.nvidia_api_key.get_secret_value(),                                                                                                              
+                model="meta/llama-3.1-70b-instruct",                                                                                                                                         
+                temperature=0.2,                                                                                                                                               
+                max_retries=1                                                                                                                                                  
+            )
+
+        self.fallback_model = ChatGoogleGenerativeAI(
+            api_key= settings.google_api_key.get_secret_value(),
+            model= "gemini-3.1-pro-preview",
+            temperature= 0.2,
+            max_tokens= 3000,
+            max_retries=3
+        )
+        
+        self.robust_model = self.primary_model.with_fallbacks([self.fallback_model])
+
+    def invoke(self, messages):                                                                                                                                                                                               
+        return self.robust_model.invoke(messages)                                                                                                                          
+                                                                                                                                                                               
+    def get_structured(self, schema, messages):                                                                                                                                                                                                                                  
+        structured_model = self.robust_model.with_structured_output(schema)                                                                                                
         return structured_model.invoke(messages)

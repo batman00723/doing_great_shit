@@ -1,5 +1,5 @@
 from myapi.agent.state import MeetingState
-from myapi.agent.llm import LLMService, AlternativeLLMService
+from myapi.agent.llm import ReportLLMService
 from myapi.agent.schema import StructuredMeetingAnalysis, NarrativeReport
 from myapi.models import MeetingReport, MeetingAnalysis, TranscriptReport, Embedding, Customer, User, Organisation, Meeting
 from myapi.agent.prompts.loader import load_prompt
@@ -13,8 +13,8 @@ from django.db import transaction
 from myapi.services.rag_services import RAGService
 from django.contrib.postgres.search import SearchVector
 
-llm= LLMService()
-altllm= AlternativeLLMService()
+llm= ReportLLMService()
+
 rag_service = RAGService()
 
 
@@ -44,10 +44,8 @@ def structured_report_node(state: MeetingState):
             HumanMessage(content= transcript),
         ]
 
-        try:
-            structured_report= llm.get_structured(StructuredMeetingAnalysis, messages)
-        except: 
-            structured_report= altllm.get_structured(StructuredMeetingAnalysis, messages= messages)
+        structured_report= llm.get_structured(StructuredMeetingAnalysis, messages)
+       
 
         print(f"Structured Report: {structured_report}")
 
@@ -70,12 +68,10 @@ def narrative_report_node(state: MeetingState):
             HumanMessage(content= transcript),
        ]
 
-        try:
-            narrative_report= llm.get_structured(schema= NarrativeReport,
+        
+        narrative_report= llm.get_structured(schema= NarrativeReport,
                                              messages= messages)
-        except: 
-            narrative_report= altllm.get_structured(schema= NarrativeReport,
-                                             messages= messages)
+      
 
         print(f"Narrative Report: {narrative_report}")
 
@@ -130,11 +126,9 @@ def historical_report_node(state: MeetingState):
         messages= [SystemMessage(content= AGENT_3_PROMPT),
                     HumanMessage(content= prompt)]
 
-        try: 
-            historical_report= llm.invoke( messages)
-        except:
-            historical_report= altllm.invoke(messages)
-
+        
+        historical_report= llm.invoke( messages)
+    
         return {
             "historical_analysis": historical_report.content
         }

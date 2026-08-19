@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     google_api_key: SecretStr
 
-
+    nvidia_api_key: SecretStr
 
     model_config= SettingsConfigDict(env_file= ".env",
                                      extra= 'ignore',
