@@ -65,8 +65,9 @@ class ReportLLMService:
         self.primary_model= ChatNVIDIA(                                                                                                                                    
                 api_key=settings.nvidia_api_key.get_secret_value(),                                                                                                              
                 model="meta/llama-3.1-70b-instruct",                                                                                                                                         
-                temperature=0.2,                                                                                                                                               
-                max_retries=1                                                                                                                                                  
+                temperature=0.2,                    
+                timeout= 360,                                                                                                                           
+                model_kwargs={"max_retries": 3}                                                                                                                                                
             )
 
         self.fallback_model = ChatGoogleGenerativeAI(
@@ -74,7 +75,7 @@ class ReportLLMService:
             model= "gemini-3.1-pro-preview",
             temperature= 0.2,
             max_tokens= 3000,
-            max_retries=3
+            model_kwargs={"max_retries": 1}
         )
         
         self.robust_model = self.primary_model.with_fallbacks([self.fallback_model])
