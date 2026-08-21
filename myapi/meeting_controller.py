@@ -6,10 +6,13 @@ from myapi.services.transcript_processor import process_transcript
 from ninja import File
 from ninja.files import UploadedFile
 import os
+import httpx
 import uuid
 from myapi.services.process_audio import process_audio
 from myapi.auth_controller import JWTAuth
+from myapi.models import MeetingReport, Meeting
 from myapi.models import Customer
+from myapi.services.rag_retrieval_pipeline import retrieve_and_generate
 
 class MeetingRequest(Schema):
     transcript: str
@@ -19,26 +22,28 @@ class EditReportSchema(Schema):
     html_report: str
 
 
+
+
 # Here we need to give the customer_id by the user and in frontend it wil show a drop down of the customer name and we seslet which custoemr this report belongs to 
 # and then in the recall ai webhook this will be the same the user will provide the custoemr id and recall will give it after the transcript via webhook.
 # when we wil give the meetig link to the recall ai we will also give customer id via drop down link i frontend and then it will bring back the custoemr id for next steps in the report genration so we are golden.
 @api_controller("/analyse", tags= ['Transcript → Report'])
 class MeetingOperationController(ControllerBase):
     @http_post("/report", auth=JWTAuth())
-    def agent(self, request, payload: MeetingRequest):
-        print("starting to call agent")
+    async def agent(self, request, payload: MeetingRequest):
+        logger = logging.getLogger(__name__) 
+        logger.info("starting to call agent")
 
         try:
-            from myapi.models import Customer
-            customer = Customer.objects.get(id=payload.customer_id)
-            response = process_transcript(payload.transcript, request.user, customer) # fetch the user object from the logged in user via request.user
+            
+            customer = await Customer.objects.aget(id=payload.customer_id)
+            response = await process_transcript(payload.transcript, request.user, customer) # fetch the user object from the logged in user via request.user
 
             return {
                 "analysis": response
             }
             
         except Exception as e:
-            logger= logging.getLogger(__name__)
             logger.error(f"Agent Execution Error: {str(e)}", exc_info= True)
 
             return {
@@ -47,14 +52,13 @@ class MeetingOperationController(ControllerBase):
             }
 
     @http_get("/meetings", auth=JWTAuth())
-    def list_all_my_meetings(self, request):
-        from myapi.models import Meeting
-
+    async def list_all_my_meetings(self, request):
+        
         # Fetch all meetings for a specefic salesperson, newest first, with customer info also
 
-        meetings = Meeting.objects.filter(
+        meetings = [m async for m in Meeting.objects.filter(
             salesperson=request.user
-        ).select_related("customer").order_by("-meeting_date")
+        ).select_related("customer").order_by("-meeting_date")]
 
         return [
             {
@@ -73,13 +77,12 @@ class MeetingOperationController(ControllerBase):
         ]
 
     @http_get("/customer/{customer_id}", auth=JWTAuth())
-    def list_customer_meetings(self, request, customer_id: int):
-        from myapi.models import Meeting
+    async def list_customer_meetings(self, request, customer_id: int):
         # Securely fetch meetings for this customer belonging to the logged in salesperson
-        meetings = Meeting.objects.filter(
+        meetings = [c async for c in Meeting.objects.filter(
             customer_id=customer_id,
             salesperson=request.user
-        ).order_by("-meeting_date")
+        ).order_by("-meeting_date")]
         
         return [
             {
@@ -92,11 +95,10 @@ class MeetingOperationController(ControllerBase):
         ]
 
     @http_get("/{meeting_id}/report", auth=JWTAuth())
-    def get_meeting_report(self, request, meeting_id: int):
-        from myapi.models import MeetingReport
+    async def get_meeting_report(self, request, meeting_id: int):
         try:
             # Securely fetch the report ensuring it belongs to their salesperson account
-            report = MeetingReport.objects.get(
+            report = await MeetingReport.objects.aget(
                 meeting_id=meeting_id,
                 salesperson=request.user
             )
@@ -105,15 +107,14 @@ class MeetingOperationController(ControllerBase):
             return self.create_response("Report not found or processing not finished.", status_code=404)
 
     @http_post("/{meeting_id}/report", auth=JWTAuth()) # Changed to post because ninja sometimes complains about put
-    def edit_meeting_report(self, request, meeting_id: int, payload: EditReportSchema):
-        from myapi.models import MeetingReport
+    async def edit_meeting_report(self, request, meeting_id: int, payload: EditReportSchema):
         try:
-            report = MeetingReport.objects.get(
+            report = await MeetingReport.objects.aget(
                 meeting_id=meeting_id,
                 salesperson=request.user
             )
             report.html_report = payload.html_report
-            report.save()
+            await report.asave()
             return {"message": "Report updated successfully!"}
         except MeetingReport.DoesNotExist:
             return self.create_response("Report not found.", status_code=404)
@@ -125,11 +126,10 @@ class MeetingOperationController(ControllerBase):
 # so when the custoemer clicks on reply button when they get the mail they can reply to orignal salesperon mail account.
             
     @http_post("/{meeting_id}/send-email", auth=JWTAuth())
-    def send_report_email(self, request, meeting_id: int):
-        from myapi.models import MeetingReport, Meeting
-        import requests
+    async def send_report_email(self, request, meeting_id: int):
+        
         try:
-            report = MeetingReport.objects.get(
+            report = await MeetingReport.objects.aget(
                 meeting_id=meeting_id,
                 salesperson=request.user
             )
@@ -162,7 +162,8 @@ class MeetingOperationController(ControllerBase):
                 "htmlContent": report.html_report
             }
             
-            response = requests.post(url, headers=headers, json=data)
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, headers=headers, json=data)
             
             if response.status_code in [201, 202]:
                 return {"message": f"Email sent successfully to {meeting.customer.email}!"}
@@ -177,8 +178,10 @@ class MeetingOperationController(ControllerBase):
 @api_controller("/audio", tags= ['Audio → Report'])
 class AudioController(ControllerBase):
     @http_post("/analyse", auth=JWTAuth())
-    def analyse_audio(self, request, customer_id: int, audio_file: UploadedFile= File(...)):
-        print("Agent Started")
+    async def analyse_audio(self, request, customer_id: int, audio_file: UploadedFile= File(...)):
+        logger = logging.getLogger(__name__) 
+
+        logger.info("Agent Started")
 
         os.makedirs("recordings", exist_ok=True)  
         file_path = f"recordings/{uuid.uuid4()}_{audio_file.name}"
@@ -189,9 +192,9 @@ class AudioController(ControllerBase):
                 for chunk in audio_file.chunks():
                     destination.write(chunk)
 
-            from myapi.models import Customer
-            customer = Customer.objects.get(id=customer_id)
-            response = process_audio(file_path, request.user, customer)
+            
+            customer = await Customer.objects.aget(id=customer_id)
+            response = await process_audio(file_path, request.user, customer)
 
             return {
                 "status": "success",
@@ -199,6 +202,7 @@ class AudioController(ControllerBase):
             }
 
         except Exception as e:
+            logger.error(f"Error:{e}", exc_info= True)
             return {
                 "status": "error",
                 "message": str(e)
@@ -222,7 +226,7 @@ class ChatRequest(Schema):
 class ChatController(ControllerBase):
     @http_post("/ask", auth=JWTAuth())
     def ask_bot(self, request, payload: ChatRequest):
-        from myapi.services.rag_retrieval_pipeline import retrieve_and_generate
+        
         
         try:
             result = retrieve_and_generate(
@@ -273,17 +277,17 @@ class ChatController(ControllerBase):
             return self.create_response("Chat session not found.", status_code=404)
 
     @http_get("/sessions", auth=JWTAuth())
-    def list_chat_sessions(self, request):
+    async def list_chat_sessions(self, request):
         from myapi.models import ChatSession, ChatTurn
         # Fetch all sessions for this specific salesperson, ordered newest to oldest
-        sessions = ChatSession.objects.filter(
+        sessions = [c async for c in ChatSession.objects.filter(
             salesperson=request.user
-        ).order_by("-created_at")
+        ).order_by("-created_at")]
         
         result = []
         for session in sessions:
             # Grab the very first question they asked to use as the "Title" in the sidebar
-            first_turn = ChatTurn.objects.filter(session=session).order_by("created_at").first()
+            first_turn = await ChatTurn.objects.filter(session=session).order_by("created_at").afirst()
             title = first_turn.query[:40] + "..." if first_turn else "New Chat"
             
             result.append({

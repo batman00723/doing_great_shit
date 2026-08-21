@@ -15,12 +15,12 @@ class ChatLLMService:
             max_tokens= 500
         )
     def invoke(self, messages):
-        response= self.model.invoke(messages)
+        response= self.model.ainvoke(messages)
         return response
     
     def get_structured(self, schema, messages):
         structured_model = self.model.with_structured_output(schema)
-        return structured_model.invoke(messages)
+        return structured_model.ainvoke(messages)
 
 
 class ReportLLMService:
@@ -44,9 +44,9 @@ class ReportLLMService:
         
         self.robust_model = self.primary_model.with_fallbacks([self.fallback_model])
 
-    def invoke(self, messages):                                                                                                                                                                                               
-        return self.robust_model.invoke(messages)                                                                                                                          
+    async def invoke(self, messages):                                                                                                                                                                                               
+        return await self.robust_model.ainvoke(messages)                                                                                                                          
                                                                                                                                                                                
-    def get_structured(self, schema, messages):                                                                                                                                                                                                                                  
+    async def get_structured(self, schema, messages):                                                                                                                                                                                                                                  
         structured_model = self.robust_model.with_structured_output(schema)                                                                                                
-        return structured_model.invoke(messages)
+        return await structured_model.ainvoke(messages)

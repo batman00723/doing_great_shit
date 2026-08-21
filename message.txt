@@ -1,0 +1,410 @@
+TRANSCRIPT OF THE CALL BEFORE THE MESSAGES ON WHATSAPP
+
+Meeting Analyser Updates and Follow-Up - Transcript
+00:24:51
+
+Ferdinand H. Stene: Yeah. Hi,
+Aman Mishra: Yeah.
+Ferdinand H. Stene: I'm on.
+Aman Mishra: Hi. How are you?
+Ferdinand H. Stene: I'm good. You've got a new haircut.
+Aman Mishra: Yeah. I just shortened up my hair. You know, that was messy.
+Ferdinand H. Stene: Looks good. Let me just fix the audio. Give me two seconds.
+Aman Mishra: Yeah, sure.
+Ferdinand H. Stene: Okay, there you go. Hey, how are
+Aman Mishra: Yeah, I'm fine.
+Ferdinand H. Stene: you?
+Aman Mishra: So you know uh I want to discuss about some constraints in my you know product building. Yeah. So first constraint is let me just uh share my
+Ferdinand H. Stene: Shoot.
+Aman Mishra: screen. Yeah. So first is for you know LLM I'm using grock. So grock keeps you know rate limiting my uh my let us look at here. So whenever I like send a big chunk of transcript so it just you know rate limits my it asks for you know a developer tier or like apart from free tier.
+
+
+00:26:02
+
+Aman Mishra: So I need something you know like a paid tier or something like that.
+Ferdinand H. Stene: Okay,
+Aman Mishra: Even if you guys have any other LLM like a provider that would be you know
+Ferdinand H. Stene: fair. Yeah. Yeah, sure. We can definitely solve that when we're going to go live with this.
+Aman Mishra: great.
+Ferdinand H. Stene: But okay, that's number one.
+Aman Mishra: Yeah.
+Ferdinand H. Stene: What was the next thing?
+Aman Mishra: And yeah, for the email provider, what do you guys use? Like inhouse something or
+Ferdinand H. Stene: what we use as uh like the owner of our domains or who we bought our emails from or who we send email outreach from from all of those are different companies.
+Aman Mishra: so thing is so this bot will you know send the emails to the salesperson and customers.
+Ferdinand H. Stene: So
+Aman Mishra: So what service do you guys use? Do you guys like have any uh anything in uh common or like I can use whatever I want.
+Ferdinand H. Stene: there's You should just link that to people's people people's existing
+
+
+00:27:03
+
+Aman Mishra: So first right now I'm using Bravo.
+Ferdinand H. Stene: emails.
+Aman Mishra: This is like uh really good. Uh I'm using this one right now. So it just needs this API key and I can send to you know. So right now free tier is much like pretty much it but uh in future I might need it's paid tier too and yeah and there is another you know LLM provider I was
+Ferdinand H. Stene: Okay.
+Aman Mishra: using. So they completely changed their like they depreciated their one of the models I was using. So I am now recalibrating every code you know say this. So yeah so yeah let me give you a quick tour. So I have like earlier it was not working but now it will work. So let's try smithy alura. What's the name? to locate. Okay. Create account. So first you have to you know create your organization. So right now you are an admin of an organization. Now you can add your salesperson.
+
+
+00:28:43
+
+Aman Mishra: So how you add saleserson? You go to team and yeah can add. Let's say now you're admin like manager or something. You want to add someone else. Let's say me uh this one. Okay. Email is already registered. Let me check my 23. Okay. It has already also registered. Let me use any email for now cuz I have registered that email. So it is not you know taking it. So yeah, Aman Mishra has been added to Alura. Now I can like log with my credentials. No. Yeah, already a member. Yeah. So you were an admin. You created my account and now I can you know join in as a salesperson. So you can see only admin can you know create another salesperson accounts uh like uh only manager can like I don't have that option. So let's say I want yeah add a meeting.
+Ferdinand H. Stene: Okay.
+Aman Mishra: So first like I need to create a customer let's say Netflix their email address is coordinant add is it correct like email yeah so industry is AI automation
+
+
+00:30:42
+
+Ferdinand H. Stene: Yeah.
+Aman Mishra: a new add a customer. Yeah. So, you are my customer now and I can like
+Ferdinand H. Stene: Heat.
+Aman Mishra: Netflix. Let's say I for transcript like hello. Hello and then send it to you know bot. Yeah, it is done. Uh I think I Okay, now I can like see my customers. Oh, these are the meetings meeting one failed because of some issue. Yeah, another you know the problem is you know the free tier of Grock sometimes it works sometimes it doesn't work because of you know free tier it keeps asking for know tier and al also there is one issue about recall AI recall I was talking they need business email for you know even
+Ferdinand H. Stene: Okay.
+Aman Mishra: logging for I can't even you know use it. They are down I think. Okay. So they're in the business email. That's why I need your help for business
+Ferdinand H. Stene: Okay.
+Aman Mishra: email for you know uh
+
+
+00:32:13
+
+Ferdinand H. Stene: But what you need recall for?
+Aman Mishra: transcription bot just like Fireflies.
+Ferdinand H. Stene: Okay. But we need like I I would talk to the other guys as well. We need a feature where it can basically take the recordings without joining the call.
+Aman Mishra: without joining the call. So I have to check uh you
+Ferdinand H. Stene: Okay. Hey, let me just uh share your screen. I'm on two or stop sharing a screen for two seconds.
+Aman Mishra: know
+Ferdinand H. Stene: Let me pick mine up here. So, what I mean is I'm in this software right now. Let it just load. So this is the Norwegian partner that we're going to use for pixels. So that's the plan unless we basically create something better. Right? This is how it works. So uh you log into here that's kind of your basic home.
+Aman Mishra: There
+Ferdinand H. Stene: This is what I have to do on my meetings tomorrow.
+
+
+00:33:10
+
+Ferdinand H. Stene: It automatically connects to my Gmail or to your Outlook or whatever calendar you're using. Then from there it automatically knows that you have these and it kind of it joins just by joining and you can do
+Aman Mishra: heat.
+Ferdinand H. Stene: your okay this is your next to-dos. These are the dues you've done. I don't really use that feature. if you want my user feedback on it. But you can see your coming ones. Pretty simple. We could even make this a lot better. I think we're just adding a calendar visualization and making it a bit more visual.
+Aman Mishra: Yeah.
+Ferdinand H. Stene: When it comes to newly meetings also, I think we can make this look a lot better. But here you can kind of see the setup and when you actually click on a meeting is when it becomes interesting, right? Because this is the meeting that we're in right now. So meeting uh Analyser Updates and Follow-Up uh and then it basically gives you the short gist of things.
+
+
+00:33:58
+
+Ferdinand H. Stene: You can change between uh key notes like what's the key notes from the call or a detailed summary. If I do detailed summary then basically a new adm starts writing it off and it does it from transcriptions. So in some way this software and this is a software that I downloaded on an app. Um, we could probably analyze just the app we downloaded as well to figure out how they did this because there's something like they have to ask our permission basically for how they're doing this, right? So that way by looking at their download process, we could probably steal how they're doing the same thing. But if we get this, this is so valuable in the European market because GDPR, right? There's so different law like so different laws by having uh for example the fireflies that's in the call right now. Um that that's a different noteaker right? So perfect example that one also takes recordings and doesn't do live transcriptions in
+Aman Mishra: Yeah.
+Ferdinand H. Stene: the same way.
+
+
+00:34:57
+
+Ferdinand H. Stene: So that's when it joins like I basically have to tell you like hey is it okay that we uh record this call while with mentor and you can see it's going while I'm talking here it just transcribes it doesn't create audio
+Aman Mishra: Yeah.
+Ferdinand H. Stene: files and when you do it this way um you don't have to inform the person of um that they're being recorded so that's super important for us especially with what's happening on the sales site right now we're growing our sales team a lot we a new Norwegian guy that's starting with us. We're also getting two guys in India, I think, that are going to join the team. They're experienced sales people that have worked 15 years in sales in India. Uh, pretty good. We've worked with them previously. Uh, and they're also bringing some really huge clients over amongst other things. Scror Electric. I don't know if you heard of them, but they're worth a couple of uh I think I have to translate this into US dollars in my head, but I think it's a billion US dollars a year, which is they're huge.
+
+
+00:35:56
+
+Aman Mishra: Yeah.
+Ferdinand H. Stene: Um and um when when we have these corporate clients, we just need GDPR to be as least of a hassle as possible if they're going to sign up on Pixus. That's why we're pushing so much for this feature of it just doing live transcripts. And what it also does, and these are really nice cool features also. I'll just jump into this one again. You can see that this little light bulb here, this also appears on the side of your screen when you're in a call. So you basically get a miniature version of this where have you used like cursor or atlas from chatgpt or claude's like um Chrome extension. Have you ever tried that? Like claw chrome
+Aman Mishra: I have used chrome claw extension.
+Ferdinand H. Stene: extension.
+Aman Mishra: I haven't used but other chrome extensions I have used.
+Ferdinand H. Stene: Okay. Because I can try to show you what I mean here. you basically like for example when I'm on my screen right now and it's hard for me to show you exactly this but when I'm on the screen I get a popup like this basically in my Google meetings as well so I don't have to be in this fullon unlocked software and have multiple screens you can do it on one screen and it comes with suggestions basically based on the call so while you're in the call you can for example okay let's it it comes with an idea let's explore other LLM options that offer better scalability for your needs and that's basically
+
+
+00:37:21
+
+Ferdinand H. Stene: answering what you said previously, right, about Grock and stuff. That's what the AI picked up. The thing that these guys are missing to actually make this feature super valuable is they need all the research from the market that the rest of Pixus does, right? They don't have the rest of Pixus. So, when we have all the lead information, everything was scraped from their company data, all the dialogue in outreach from both LinkedIn or phone sales or email and everything is fed into the system. It knows all the context. It knows what pain points. You can probably upload some sort of um sales scripts or tactics as well. So that in a meeting if you forget something, it gives you a little popup. Hey, you should ask this question or this would be a good icebreaker, right? That's also a super valuable feature that we want. Um, so yeah, this is kind of I'm guessing the final mission for your meeting notebook.
+
+
+00:38:16
+
+Ferdinand H. Stene: If it's going to come into Allur's hands, uh, and be used in Pexus, which I would love. And to be fair, like if we make that happen on a really good scale, I'm sure I can convince the guys to pay you something directly for just completion of that project as well. Um, then um, then we would go for it. But then again, it has to out compete this. We're already getting a pretty good price from these guys per user. I think we're doing it for about 10 bucks a user or something like that. Like pretty cheap. Um but again, it helps our margins if we just own it in-house. So that that then you kind of see the paradigm that we're in here.
+Aman Mishra: There
+Ferdinand H. Stene: But when you you can also do this. This is also a nice feature And I'll show you the Pixus um front end as well that we've come a lot further on today. Uh we have time for that as well.
+
+
+00:39:05
+
+Ferdinand H. Stene: But you can see also that you have basically a typical LM that can that I can ask questions, right? So, uh what what was my last meeting with about and then an LLM is connected to those other conversations and can actually communicate with you and look through the meeting notes. Right? So, I I used this feature also earlier today which was super helpful. Uh there's a meeting I had three four weeks ago with uh some people. We were negotiating prices. I ended up landing a pretty good deal with them, but I didn't remember exactly the number that we landed on. And instead of scraping through everything in my meeting notes, I just asked this thing and then it gave me everything. That's also super valuable feature for noteaker.
+Aman Mishra: I have actually built this you know chatbot kind of
+Ferdinand H. Stene: So perfect. Perfect. That also brings us nicely into the next thing I'm going to show you uh today.
+
+
+00:39:57
+
+Aman Mishra: thing.
+Ferdinand H. Stene: Let me just get this hair. Is it this one? Yeah. Boom. Can you see my screen now?
+Aman Mishra: Yeah.
+Ferdinand H. Stene: Okay. This is probably going to be a lot of yapping from my side. So, just bear with me while I take a snooze. I have to translate a lot of this into English for you as we go. If you have any questions, someone just interrupt me and ask as you go because this is basically version one of how uh a lot of pixels could look. And we shown this to Scandinavia's second largest bank. Uh they were really interested, which they're obviously really huge. If you make that bank fall, then there's super easy to go to SMB companies and tell them, "Hey, the biggest shark in the water bought this. You probably want to have a look as well." And others.
+Aman Mishra: No.
+Ferdinand H. Stene: So, so we want to make this as good as possible.
+
+
+00:40:53
+
+Ferdinand H. Stene: If you have any ideas while we look through this to make it more simple or anything like that, think of that as well. Okay? And then we can kind of go through it. So, what you see, what you see in front of you now, this is first login, right? So, they've never been on Pix before. That's the time that this screen pops up. And what this is is it's an LLM that's basically connected to this scheme that they have to fill out. And we're going to change some of the questions here and make it more relevant. But this is for example, it asks you, hey, who are you? What company do you work for? You have some quick options. So for example, hey, my name is Curry. I work in DNB. That's the Norwegian bank, right? So you just chat with it like an usual usual LLM. And then it writes down your answers.
+
+
+00:41:35
+
+Ferdinand H. Stene: And what we're doing here is we're basically building company profiles. So it asks, okay, is this the company you're working for? That's right. I work in private banking. And then it keeps on following up with questions. And why I'm showing you this, we won't go through the entire thing, but that you understand this onboarding theme, that's kind of one of the most essential parts of Pixus as well. Where? putting together so many different kind of softwares at once. Like you have a meeting note taker, you have lead enrichment, lead lists, you have outreach on multi- channelannel. Like there's so many things you could do which means we could either have a super complex manual front end where you can go in and configure everything yourself and do it kind of in detail and do all your variables and stuff. Or you could just have an LLM that knows the system. It has API access to all the same buttons as uh a human would and it can do everything for you.
+
+
+00:42:33
+
+Ferdinand H. Stene: So the goal here is that you start with this Pix avatar and then once you fill out the entire form with it, it builds a profile on you. You can log into the system and then straight from here you can do anything you want in the system. You can have it start campaigns for you, find new lead list, check meeting summaries. And why I'm mentioning this now is because I think that's super relevant for the note takingaking feature that we're talking about, right? Because we're already building the architecture here in this GitHub repo for a system like that. We just have to connect that part. So I think that's going to be not too hard. Um but yeah, that's that's pretty much the short version of Pixis. Um, do you want to see the entire thing?
+Aman Mishra: Yeah. Yeah.
+Ferdinand H. Stene: Okay,
+Aman Mishra: Sure.
+Ferdinand H. Stene: then let me actually pop this news. I see that I'm lagging a bit as well.
+
+
+00:43:24
+
+Ferdinand H. Stene: Just let me know if it kind of cuts.
+Aman Mishra: Yeah. Okay.
+Ferdinand H. Stene: So, with this thing, you can do anything like you can check your different logs and stuff and what you've talked about previously and then you could actually start talking to it when you do that and when it answers. Oh, come on. The screen here is kind of glitching. This should be There you go. It should be more pulled out and look a bit more sisely. Do you have any suggestions here on Is there anything here that you would think we could do even better? And just be harsh.
+Aman Mishra: So this is like ah
+Ferdinand H. Stene: Be very honest and harsh. I'm just looking for as much feedback as possible.
+Aman Mishra: I can't even understand the language so it is difficult for
+Ferdinand H. Stene: That makes sense.
+Aman Mishra: me.
+Ferdinand H. Stene: But the sign-wise, do you think it's easy to read? Do you think it's too dark some places?
+
+
+00:44:20
+
+Aman Mishra: Uh it is fine you know dark and you know bright textile is
+Ferdinand H. Stene: Perfect. Okay. Well,
+Aman Mishra: fine
+Ferdinand H. Stene: you can basically chat with it here back and forth and make it do all things. If you jump into the main dashboard, this is the main dashboard. We're going to
+Aman Mishra: main dashboard. Uh don't you think the tabs are like these cards are too you know light. We can make it dark because uh sometimes these fonts may not be that much visible.
+Ferdinand H. Stene: Yeah, I could agree with that. Also on the screen that I have in front of me, like in in real life, I see that it's kind of worse quality. on the than on the Google meets. So that's a fair point. I agree. But yeah, you can filter between different KPIs here. Um and we can set different KPIs and stuff. You can chat directly with it here.
+
+
+00:45:10
+
+Ferdinand H. Stene: Here as well. If you do that, it just sends you back here to keep on working there. You can do quick tasks. So hey, you have six messages ready for your approval. You can just do a quick action. Okay, approve them all. And then you're sent here. And then okay, these are my campaigns. These are the messages. Hi Lisa, congratulations on a good year in Vika Holdings. It seems like the return was very good in your finances and so on and so forth. It looks pretty good. Okay, approve them all and then it actually goes out on LinkedIn. So we want to make it that simple, right? For someone to just be instead of contacting all people and having control over all the chats, it should just be, hey, here's your notifications. Here's the last 5 days or 24 hours or whatever since you logged into the system.
+
+
+00:45:57
+
+Ferdinand H. Stene: Do you want to answer all these people and are these messages approved? And then yeah and then we also changed our partner in Pexus for previously we had a partner called Qroth which did um meeting booking on LinkedIn with only one message. So you know that traditional LinkedIn outreach you have for example a hi and then this is outreach it I guess but but basically like hi slash and then it pulls something from a CSV file so a variable right. So hi Ferdinand could be the variable I see that and that's message one and then next one message two you can kind of build that as well but with that was the old one old version the new one we have just an AI connected to the entire thing the AI keeps the entire meeting going like like the entire meeting booking itself it doesn't just do first message or second message it keeps on uh taking the entire conversation until a meeting is booked or the conversation dies out basically which is also great for us But yeah, so this is dashboard.
+
+
+00:46:58
+
+Ferdinand H. Stene: Pretty simple stuff. Quick actions. You can kind of do some other quick actions here as well, but you understand kind of the gist of it. Then in leads and I don't know if I like this design myself. This is not something I designed. Um, but you can filter between different profiles on your team and should it be Gmail, should it be LinkedIn, or should it be on the phone. Uh, also that phone feature is actually built into here. Again, it's a weon and kind of an MVP of what it is going to be. But you can see how we're putting it together slowly but steadily at least. Uh so you can filter between profiles. It automatically creates suggestions for you. You can have a chatbot here as well that also is basically that same LLM just in a different interface. So it can help you as you go and pick information from the the rest of the system.
+
+
+00:47:46
+
+Ferdinand H. Stene: You can create deals on them. So it would be sent in. I guess we could make this a bit better. Uh, you could just send a message and then I think in this chat. Yeah, it comes another message in and then it writes a new suggestion for you to to kind of answer or you could do it yourself. Uh give me a suggestion. Okay. Yeah. So that's basically that that would be like an inbox feature, right? You can filter between your inboxes and and do your thing there. Then on leads, uh you have multiple different things that you can look on on your leads. There's going to be a lot of data. This is very compressed. There's probably a lot more data that we can shove in here, but a quick overview of it. basically company information and then about the person that you're talking with a little profile picture that we picked from LinkedIn.
+
+
+00:48:32
+
+Ferdinand H. Stene: Um, and then you can filter between, hey, why did we call this an A lead, right? They have an A tier or why did we call this a B lead?
+Aman Mishra: All
+Ferdinand H. Stene: And then here's why. So, for example, uh, it matches well to the ICP uh, and the things that they gave us in the startup file or this is they're very like fresh on the market, they got good finances, whatever, right?
+Aman Mishra: right.
+Ferdinand H. Stene: Why did we rank them as an A lead? and then contact information and stuff, how you can answer them, add them to campaign, update their information. So for leads like this and and this is also an interesting thing we kind of have to discuss about Pexes because the way we do we create our lead lists, we create quite a lot more comprehensive lead lists than a lot of other people. The way we make that cost efficient is we start by scraping from free sources like the Norwegian Public Library. After that, we look at, okay, the Norwegian Public Library says they have good finances and they have enough employees, they're in the right industry, right?
+
+
+00:49:34
+
+Ferdinand H. Stene: Okay, perfect. That fills a lot of our boxes. Those people that fill those boxes, we take into the next step, which then would be basically this, right? We found them on the Norwegian public library. It looks good there, but do they want to use credits on finding out the rest of the information? So the system goes and script the rest of the things like contact contact information which is from a different source which is paid like websites creating and so on so forth. So there's going to be a credit system built into this as well but you can kind of see the gist of it here. You can see the pipeline. You can see all your campaigns look at the details of the campaigns. I'm just going to speed through. You can have your AI setup campaigns. You can do it yourself. We don't have to go through everything but it basically asks you what's your goals.
+
+
+00:50:17
+
+Ferdinand H. Stene: Either if you do AI mode or you do it manually. You can do it manually. You can fill out all the different variables. You have the dialer system where you can clone your you can clone your voice. You can have it connect to things on your website as well. So there's a lot of different features there basically. Uh and then this is what so far is the meeting notetaker. And here we can take a stop and kind of discuss uh if we can land
+Aman Mishra: Uh, you are not audible right now. Oh, you aren't audible. Yeah,
+Ferdinand H. Stene: We want Yeah.
+Aman Mishra: now you're audible.
+Ferdinand H. Stene: Yeah, we want more of this and this.
+Aman Mishra: Okay. Okay. By the way, you weren't audible, you know, last 20 seconds.
+Ferdinand H. Stene: Okay. Wow. Well, yeah, this is the meeting not taking part. Let's take a stop here and kind of discuss uh because we're update the framework here.
+
+
+00:51:19
+
+Aman Mishra: Yeah.
+Ferdinand H. Stene: It should look more like this. Basically, we should have some way to build all of the features we discussed in. And the most important thing that you can do is find out can we do transcriptions in the way that I told you.
+Aman Mishra: Okay. So, no without joining a board and meeting through desktop recording or something like
+Ferdinand H. Stene: Yes. Yeah.
+Aman Mishra: that.
+Ferdinand H. Stene: My suggestion is I send you the download files that I got from these guys uh when they gave us early access to this. basically just something I downloaded to my Mac and once I did I got the software here and then I don't think it's too hard to copy it when we can look at their blue blueprint for down downloading basically
+Aman Mishra: Yeah. So, have you sent me that?
+Ferdinand H. Stene: I will definitely send you that um I can see if I find it right away while you're on the
+Aman Mishra: Uh, so like uh all the login credentials and everything I need for that.
+
+
+00:52:26
+
+Aman Mishra: Yeah, I'll try to look at it and you know understand how they work under the hood
+Ferdinand H. Stene: Perfect.
+Aman Mishra: and
+Ferdinand H. Stene: I'll send you uh the I have the app here. At least I can send you the app. I should have the download file somewhere as well. I could probably pull that out and then send that to you as well and then we can do an analysis. But I'm guessing that should be the next thing that you jump into and uh we're absolutely ready to pull funds into this project as well. It just has to match the standard of mentor because if only the infrastructure is better but if mentor
+Aman Mishra: Yeah.
+Ferdinand H. Stene: is a better solution then we're definitely going for mentor.
+Aman Mishra: So apart from you know transcription and report generation and chat feature what does
+Ferdinand H. Stene: Okay,
+Aman Mishra: mentor have you know other
+Ferdinand H. Stene: the coaching the coaching part is the main important thing as well that you get that side panel as
+
+
+00:53:19
+
+Aman Mishra: features
+Ferdinand H. Stene: well and it gives you kind of popups as you go and that shouldn't be too hard, right? It shouldn't be basically that it does live transcriptions and what it does live transcriptions and AI also looks for certain things during the call, right? And when it finds those certain things in the transcriptions, and remember, you're still just analyzing one transcription. It's just coming in more words. So, you're not using that many tokens. When it finds something interesting, then it gives you a little ping and it comes into your screen basically.
+Aman Mishra: Okay. So,
+Ferdinand H. Stene: I think we can solve that part as well.
+Aman Mishra: live live suggestion something like
+Ferdinand H. Stene: Yeah, I think we can solve that as well.
+Aman Mishra: that.
+Ferdinand H. Stene: The hardest net for us to crack is to make it downloadable because when we make it downloadable, there's a lot of features that come with that as well. Like for example, that sales coach
+Aman Mishra: All right.
+
+
+00:54:15
+
+Aman Mishra: Yeah.
+Ferdinand H. Stene: feature
+Aman Mishra: So uh you you know I don't have experience with creating an application downloadable application but I have to look at it and so I can create like website sort of thing of that you
+Ferdinand H. Stene: You know, you know, I don't either,
+Aman Mishra: know.
+Ferdinand H. Stene: but we'll figure it out 100%. And if we don't figure it out, we'll find someone that figure it figures it out. But we will figure it out.
+Aman Mishra: Yeah.
+Ferdinand H. Stene: Or worst case, we just use them.
+Aman Mishra: Yeah.
+Ferdinand H. Stene: But the best thing, like if we if you want a hard nut to craft, this is the nut.
+Aman Mishra: So uh from everything I have shown you about this meeting analyzer that I have built. So like what do you think how much percentage of work is done and how much is left?
+Ferdinand H. Stene: How much of the work is done?
+Aman Mishra: Yeah.
+Ferdinand H. Stene: I think you have um done 30% maybe of the entire job 30
+Aman Mishra: 80
+
+
+00:55:12
+
+Ferdinand H. Stene: 30 if we're going to have it as a downloadable app uh with
+Aman Mishra: 30.
+Ferdinand H. Stene: the features we discussed I think we're talking like 30% done so far
+Aman Mishra: Okay. So, what what happened to you know data?
+Ferdinand H. Stene: just basically on So much things happening, so many angles. It's definitely the project we will pick up, but just on hold for now.
+Aman Mishra: Uh so I have like uh paused that as data back end for now. So for this to actually work.
+Ferdinand H. Stene: Yeah, perfect. That's no worries at all. But we can definitely turn that project on on again. Uh I think the most important thing is I send you these files,
+Aman Mishra: So
+Ferdinand H. Stene: analyze them in depth as good as you can and spar with your AI as well and strategies on how this could be built and then we go from there.
+Aman Mishra: uh like uh can I get like cloud subscription because uh now I need it.
+Ferdinand H. Stene: Yeah.
+
+
+00:56:14
+
+Ferdinand H. Stene: Uh just send me the the thing basically.
+Aman Mishra: So what plan uh can like let me
+Ferdinand H. Stene: What's the pricing for that town in India right
+Aman Mishra: just let me check you know how can I
+Ferdinand H. Stene: now?
+Aman Mishra: have upgrade plan It is not in max. So in max plan there are like two things. One is 5x and another 20x. Uh it is like 200 to 250. Let me just convert it Yeah, it is $250.
+Ferdinand H. Stene: Yeah, but that's for max 20x, right?
+Aman Mishra: Yeah. So, there's another one which
+Ferdinand H. Stene: Yeah, I I I think the other one holds for your use for
+Aman Mishra: is Yeah.
+Ferdinand H. Stene: now.
+Aman Mishra: much max 5x is I think good max 5 let me
+Ferdinand H. Stene: What's that on?
+Aman Mishra: check United States dollar it is around like uh 125 something like that but not uh it is $125
+Ferdinand H. Stene: Okay. Okay. I'll Okay,
+Aman Mishra: $5.
+Ferdinand H. Stene: I'll talk to you guys.
+
+
+00:57:59
+
+Ferdinand H. Stene: We'll probably get that sort as well.
+Aman Mishra: Yeah. So, uh will you guys like give me a separate ID for that
+Ferdinand H. Stene: What? Uh pro. Uh I don't know if you need an email right now.
+Aman Mishra: or
+Ferdinand H. Stene: Uh but we can at least give you um we'll see how how we solve it. I think we might I don't know we own multiple email domains but worst case we just put it on your personal email. You have the subscription and then we just pay for
+Aman Mishra: Yeah. Yeah. Sure. So, yeah, that's it. You know,
+Ferdinand H. Stene: it.
+Aman Mishra: I wanted to ask about by the way like uh from the work I'm doing. So, what do you think like it is good or like
+Ferdinand H. Stene: Uh I think it's okay. It's not the standard that we want to deliver in the end, but that's fine. You're in a learning process and we're going kind of as as we're going.
+
+
+00:59:02
+
+Ferdinand H. Stene: But I definitely think there's room for improvement. But again,
+Aman Mishra: uh so what kind of
+Ferdinand H. Stene: you are in your exam period.
+Aman Mishra: improvement
+Ferdinand H. Stene: Uh like the features we mentioned today, uh we have to crack some bigger challenges basically. And also on the front end there's a lot of work we can do. But I know that I told you like just wait with the design and let's build functionality. Um but yeah, if anything, it takes a bit too much time. Uh like for example, this front end here, the guys pushed this out in basically two nights. They were finished with all of this and all the different working features. You have an AI model that actually works in it and it's presentable in front of customers that say, "Hey, I want it." So I know reate your exam period. I don't know. I told you that we understand that, but if anything, we work really fast projects as fast as we can and we're not scared of solving problems, right?
+
+
+01:00:02
+
+Ferdinand H. Stene: We're always going to meet problems. Just we just have to find solutions and if you don't find a solution the first way doesn't mean there isn't a solution. So just don't give up on trying to find a way to solve a problem because if someone else solved it, there's definitely a way we can solve it. We just have to figure out how. But also, I think it's going to be good help for you to have a claw agent as well. That's going to give you a lot of good coaching and kind of sparring as you go. It's the best on the market. So,
+Aman Mishra: Yeah,
+Ferdinand H. Stene: yeah.
+Aman Mishra: sure.
+Ferdinand H. Stene: Okay. Fair.
+Aman Mishra: Yeah, fair. That's fair. You know, I actually wanted some, you know,
+Ferdinand H. Stene: Okay.
+Aman Mishra: advice like how can I like improve myself and something like that.
+Ferdinand H. Stene: Okay.
+Aman Mishra: That is good.
+Ferdinand H. Stene: In what is there any more questions you have in general?
+
+
+01:00:52
+
+Aman Mishra: Oh, in general like uh done
+Ferdinand H. Stene: Sorry, your mic just broke. What did you say?
+Aman Mishra: like yeah my questions are like over. Uh these are my
+Ferdinand H. Stene: Okay, perfect. Well, in that case,
+Aman Mishra: questions
+Ferdinand H. Stene: I'm I'll send you the files uh and then I'll talk to you guys about your subscription and send you a notification or or uh what that turns out to be and then we can start working on the note take from there and seeing if we can actually build these features live transcription downloadable
+Aman Mishra: there.
+Ferdinand H. Stene: app and uh sales coaching. Those three features if we land those three you have my stamp of approval that this is very good work but we have to hit those three first. Okay.
+Aman Mishra: Yeah,
+Ferdinand H. Stene: Okay.
+Aman Mishra: sure.
+Ferdinand H. Stene: Perfect. Well, I'll send you everything and good luck with your practical exams.
+Aman Mishra: Yeah, sure.
+Ferdinand H. Stene: Okay.
+Aman Mishra: Thank you.
+Ferdinand H. Stene: I see.
+Aman Mishra: Bye.
+Ferdinand H. Stene: I see you.
+Aman Mishra: Bye. Yeah. Bye.
+
+
+Transcription ended after 01:02:03
+
+
+
+
+MESSAGES ON WHATSAPP AFTER THE MEETING HAPPEND
+
+
+[3:45 am, 19/8/2026] Aman: I just decompiled and analysed the Mentr ai app and they dont have a basic app their core engine is written in rust language and uses gsteamer which is c based media framework alongside custom binaries to bypass mac and windows system restrictions.
+[3:46 am, 19/8/2026] Ferdinand: Think we can copy it?
+[3:48 am, 19/8/2026] Aman: No we can't as we dont have original source code and we only have compiled end result. And we can't just copy paste compiled binaries as we dont know internal hooks and communication protocols they programmed
+[3:52 am, 19/8/2026] Ferdinand: I don’t mean copy paste. We just need to understand how they made their app downloadable
+[3:56 am, 19/8/2026] Aman: We can understand how they made it but after analysing their files they used rust and gsteamer to build a native desktop app.
+Now that to understand how they did it and how to replicate it a systems engineer can help with this
+[3:59 am, 19/8/2026] Aman: And also rust is outside of my expertise as AI Engineer. I might build this with AI Coding tools but the quality will be poor as I won't be able to review the code
+[10:59 pm, 19/8/2026] Aman: And also rust is outside of my expertise as AI Engineer. I might build this with AI Coding tools but the quality will be poor as I won't be able to review the code
+..
+[11:04 pm, 19/8/2026] Ferdinand: Aha
+[12:17 am, 20/8/2026] Aman: So what have you thought of this
+[9:00 pm, 20/8/2026] Ferdinand: Hey, I have discussed with the rest of the team and we don’t agree with your assessment. We absolutely see this as doable. 
+
+I don’t want to say this to be harsh, just honest and direct. We don’t see the quality that has been delivered so far to be up to the standard we require at Alura.
+
+We need you to have more belief in yourself and delivered more if we are going to carry on this internship. If that’s noe something you think you can provide at this time, then this internship will be terminated
+[10:03 pm, 20/8/2026] Aman: Hi, Ferdinand. Given that this is an unpaid internship, my primary goal was to learn and build within my own domain of AI Dev. I thought of delivering the backend of this product. Since you are now demanding a native dekstop application which requires a Systems Engineer, not an unpaid AI Intern, and we are fundamentally misaligned, I resign from this unpaid internship. I thought you guys are building something great but guys are soo busy exploiting an unpaid intern and having unrealistic expectations.
+[10:03 pm, 20/8/2026] Aman: Best of luck for your next product

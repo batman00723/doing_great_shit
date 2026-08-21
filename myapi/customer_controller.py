@@ -27,11 +27,11 @@ class CustomerOutSchemaList(Schema):
 class CustomerController(ControllerBase):
 
     @http_post("/create", auth=JWTAuth(), response=CustomerOutSchema)
-    def create_customer(self, request, payload: CustomerSchema):
+    async def create_customer(self, request, payload: CustomerSchema):
         # Create customer linked to the salesperson and their organisation
-        customer = Customer.objects.create(
-            organisation=request.user.organisation,
-            salesperson=request.user,
+        customer = await Customer.objects.acreate(
+            organisation_id=request.user.organisation_id,
+            salesperson_id=request.user.id,
             customer_name=payload.customer_name,
             email=payload.email,
             industry=payload.industry,
@@ -41,8 +41,10 @@ class CustomerController(ControllerBase):
         return customer
 
     @http_get("/list", auth=JWTAuth(), response=List[CustomerOutSchemaList])
-    def list_customers(self, request):
+    async def list_customers(self, request):
         # Salesperson can strictly only see their own assigned customers
-        customer= Customer.objects.filter(salesperson= request.user)
+        customer= [
+            c async for c in
+            Customer.objects.filter(salesperson_id= request.user.id)]
         return customer
     

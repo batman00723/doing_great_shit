@@ -36,7 +36,7 @@ env = Environment(
 
 
 
-def structured_report_node(state: MeetingState):
+async def structured_report_node(state: MeetingState):
     logger.info("Agent 1: Generating Structured Report")
 
     transcript= state['transcript']
@@ -48,7 +48,7 @@ def structured_report_node(state: MeetingState):
             HumanMessage(content= transcript),
         ]
 
-        structured_report= llm.get_structured(StructuredMeetingAnalysis, messages)
+        structured_report= await llm.get_structured(StructuredMeetingAnalysis, messages)
        
 
         logger.debug(f"Structured Report: {structured_report}")
@@ -61,7 +61,7 @@ def structured_report_node(state: MeetingState):
         logger.error(f"Agent 1 failed {e}", exc_info= True)
         raise
     
-def narrative_report_node(state: MeetingState):
+async def narrative_report_node(state: MeetingState):
     logger.info("Agent 2: Gererating Narrative Report")
 
     transcript= state['transcript']
@@ -73,7 +73,7 @@ def narrative_report_node(state: MeetingState):
        ]
 
         
-        narrative_report= llm.get_structured(schema= NarrativeReport,
+        narrative_report= await llm.get_structured(schema= NarrativeReport,
                                              messages= messages)
       
 
@@ -87,7 +87,7 @@ def narrative_report_node(state: MeetingState):
         logger.error(f"Agent 2 failed: {e}", exc_info= True)
         raise
 
-def historical_report_node(state: MeetingState):
+async def historical_report_node(state: MeetingState):
     logger.info("Agent 3: Gererating Historical Report")
 
     current_report= state['meeting_analysis']
@@ -96,15 +96,18 @@ def historical_report_node(state: MeetingState):
     try:
         #here we are fetching the past meetings by flter by current customer id and organisation id but we are 
         # exculding the current meeting by the .exclude and then oredring them by created at 
-        previous_meetings = (
-            MeetingAnalysis.objects
+
+        #here it fetches the 4 meetings from db async using a async for loop
+        previous_meetings = [
+            meeting async for meeting
+            in MeetingAnalysis.objects
             .filter(
                 customer_id=state["customer_id"],
                 organisation_id=state["organisation_id"],
             )
             .exclude(meeting_id=state["meeting_id"])
             .order_by("-created_at")[:4]
-        )
+        ]
 
         if not previous_meetings:
             return {
@@ -131,7 +134,7 @@ def historical_report_node(state: MeetingState):
                     HumanMessage(content= prompt)]
 
         
-        historical_report= llm.invoke( messages)
+        historical_report= await llm.invoke( messages)
     
         return {
             "historical_analysis": historical_report.content
@@ -260,7 +263,10 @@ def make_html_report_node(state: MeetingState):
     except Exception as e:
         logger.error(f"HTML Rendering Failed: {e}", exc_info=True)
         raise
-    
+
+
+# HEre we are not converting this node to asyncronous as we are using atomicity and Django does not supports async transaction.atomic()
+# and its a trdeoff stil saving these wont take much time     
 
 def save_to_db_node(state: MeetingState):
 
@@ -307,14 +313,16 @@ def save_to_db_node(state: MeetingState):
         logger.error(f"Database save failed: {e}", exc_info= True)
         raise
 
-def send_report_to_mail(state: MeetingState):
+
+
+async def send_report_to_mail(state: MeetingState):
 
     # Fetch the current salesperson object from the current salesperson id in state from the User Table
 
-    salesperson = User.objects.get(id=state["salesperson_id"])
+    salesperson = await User.objects.aget(id=state["salesperson_id"])
 
     # Send Email to salesperson
-    send_email(
+    await send_email(
         recipient_email= salesperson.email,
         recipient_name=salesperson.salesperson_name,
         subject="Meeting Report",

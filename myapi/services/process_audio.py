@@ -1,16 +1,19 @@
 from myapi.services.sst import transcribe_audio
 from myapi.services.transcript_processor import process_transcript
+import logging
 
-def process_audio(audio_path: str, user, customer):
-    print("Audio processing started")
+logger = logging.getLogger(__name__) 
+
+async def process_audio(audio_path: str, user, customer):
+    logger.info("Audio processing started")
 
     try:
-        transcript = transcribe_audio(audio_path)
-        result = process_transcript(transcript, user, customer)
-        print("Audio Processed")
+        transcript = await  transcribe_audio(audio_path)
+        result = await process_transcript(transcript, user, customer)
+        logger.info("Audio Processed")
 
         return result
 
     except Exception as e:
-        print(f"Audio processing failed: {e}")
+        logger.error(f"Audio processing failed: {e}", exc_info= True)
         raise
