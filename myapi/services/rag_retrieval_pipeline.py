@@ -14,28 +14,28 @@ llm_service = ChatLLMService()
 
 logger = logging.getLogger(__name__) 
 
-def retrieve_and_generate(user_query: str, user, session_id: str = None, customer_id: int = None, start_date: str = None, end_date: str = None, specific_date: str = None) -> dict:
+async def retrieve_and_generate(user_query: str, user, session_id: str = None, customer_id: int = None, start_date: str = None, end_date: str = None, specific_date: str = None) -> dict:
     """
     full pipeline: Embed -> Hybrid Search -> RRF -> Rerank -> LLM Generation.
     """
     logger.info(f"Chatbot Query: {user_query}")
     
-    org = user.organisation
-    salesperson = user
+    org_id = user.organisation_id
+    salesperson_id = user.id
 
     # is user passed in the session id then use the passed in and if new chat create a new session_id and then return the session_id
     # also in frontend we will use the session id from the drop down menu and dont have to manually selsect it everytime.  
     if session_id:
-        session = ChatSession.objects.get(id=session_id)
+        session = await ChatSession.objects.aget(id=session_id)
     else:
-        session = ChatSession.objects.create(organisation=org, salesperson=salesperson)
+        session = await ChatSession.objects.acreate(organisation_id=org_id, salesperson_id=salesperson_id)
     
-    query_vector = rag_service.embed_query(user_query)
+    query_vector = await rag_service.embed_query(user_query)
     
     if not query_vector:
         return {"answer": "I couldn't process your question.", "session_id": str(session.id)}
 
-    semantic_results, keyword_results = perform_hybrid_search(
+    semantic_results, keyword_results = await perform_hybrid_search(
         query=user_query,
         query_embedding=query_vector,
         user=user,
@@ -56,7 +56,7 @@ def retrieve_and_generate(user_query: str, user, session_id: str = None, custome
     )
 
 
-    top_5_chunks = rerank_chunks(
+    top_5_chunks = await rerank_chunks(
         query=user_query,
         documents=fused_chunks,
         top_k=5
@@ -95,7 +95,9 @@ def retrieve_and_generate(user_query: str, user, session_id: str = None, custome
     # Message history in the prompt 
     # fetch the last 3 message turns (3 ai message with respective 3 human queries) from the ChatTurn Table and filer it by session id as we already made it 
     # in the start of this function. 
-    recent_turns = ChatTurn.objects.filter(session=session).order_by('created_at')[:3]
+    recent_turns = [chat async for chat in ChatTurn.objects.filter(session=session).order_by('created_at')[:3]]
+
+
     history_messages = []
     for turn in recent_turns:
         history_messages.append(HumanMessage(content=turn.query))
@@ -105,13 +107,13 @@ def retrieve_and_generate(user_query: str, user, session_id: str = None, custome
 
 
     try:
-        response = llm_service.invoke(messages)
+        response = await llm_service.invoke(messages)
         
         answer= response.content
     
         
         # Save the AI Message and Human Message into the ChatTurn Table 
-        new_turn = ChatTurn.objects.create(
+        new_turn = await ChatTurn.objects.acreate(
             session=session,
             query=user_query,
             answer=answer,
@@ -119,7 +121,7 @@ def retrieve_and_generate(user_query: str, user, session_id: str = None, custome
         )
 
         # Create a gin index for the human query as we need this for future advanced semantic memory layer (for future plans)
-        ChatTurn.objects.filter(id=new_turn.id).update(query_search=SearchVector('query'))
+        await ChatTurn.objects.filter(id=new_turn.id).aupdate(query_search=SearchVector('query'))
         
         return {
             "answer": answer,

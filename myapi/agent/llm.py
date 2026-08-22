@@ -14,13 +14,13 @@ class ChatLLMService:
             temperature= 0.5,
             max_tokens= 500
         )
-    def invoke(self, messages):
-        response= self.model.ainvoke(messages)
+    async def invoke(self, messages):
+        response= await self.model.ainvoke(messages)
         return response
     
-    def get_structured(self, schema, messages):
+    async def get_structured(self, schema, messages):
         structured_model = self.model.with_structured_output(schema)
-        return structured_model.ainvoke(messages)
+        return await structured_model.ainvoke(messages)
 
 
 class ReportLLMService:

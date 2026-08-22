@@ -4,7 +4,7 @@ from django.contrib.postgres.search import SearchQuery
 import logging
 logger = logging.getLogger(__name__) 
 
-def perform_hybrid_search(
+async def perform_hybrid_search(
     query: str, 
     query_embedding: list[float], 
     user,
@@ -20,18 +20,18 @@ def perform_hybrid_search(
     Returns two lists of Embedding objects: (semantic_results, keyword_results)
     """
 
-    org = user.organisation
-    salesperson = user
+    org_id = user.organisation_id
+    salesperson_id = user.id
 
-    logger.debug(f"Organisation {org}, SalesPerson: {salesperson}")
+    logger.debug(f"Organisation {org_id}, SalesPerson: {salesperson_id}")
 
-    if not org or not salesperson:
+    if not org_id or not salesperson_id:
         raise ValueError("Database is missing initial Organisation or User.")
 
     # these filters are done to narrow down teh scope for the search semantic and keyword seach for better accuracy and not get other customer and salesperosn results
     dynamic_filters = {
-        "metadata__organisation_id": org.id,
-        "metadata__salesperson_id": salesperson.id
+        "metadata__organisation_id": org_id,
+        "metadata__salesperson_id": salesperson_id
     }
 
     # Optional: narrow search to a specific customer
@@ -55,20 +55,24 @@ def perform_hybrid_search(
 
 
     # Calculate similarity distance → name it distance → sort by it → take the closest top_k embeddings. alias creates a temp distance
-    semantic_results = list(
+    semantic_results = [ 
+        item async for item in 
         base_query.alias(
             distance=CosineDistance('vector', query_embedding)
         ).order_by('distance')[:top_k]
-    )
+    ]
+    
 
    
 
     # Uses PostgreSQL FTS against the chunk_search
-    keyword_results = list(
+    keyword_results = [
+
+    item async for item in
         base_query.filter(
             chunk_search=SearchQuery(query)
         )[:top_k]
-    )
+    ]
     
 
     return semantic_results, keyword_results

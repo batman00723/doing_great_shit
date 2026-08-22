@@ -13,6 +13,7 @@ from myapi.auth_controller import JWTAuth
 from myapi.models import MeetingReport, Meeting
 from myapi.models import Customer
 from myapi.services.rag_retrieval_pipeline import retrieve_and_generate
+from myapi.models import ChatSession, ChatTurn
 
 class MeetingRequest(Schema):
     transcript: str
@@ -225,11 +226,11 @@ class ChatRequest(Schema):
 @api_controller("/chat", tags=['Chatbot API'])
 class ChatController(ControllerBase):
     @http_post("/ask", auth=JWTAuth())
-    def ask_bot(self, request, payload: ChatRequest):
+    async def ask_bot(self, request, payload: ChatRequest):
         
         
         try:
-            result = retrieve_and_generate(
+            result = await retrieve_and_generate(
                 user_query=payload.query,
                 user=request.user,
                 session_id=payload.session_id,
@@ -253,16 +254,16 @@ class ChatController(ControllerBase):
             }
 
     @http_get("/history/{session_id}", auth=JWTAuth())
-    def get_chat_history(self, request, session_id: str):
-        from myapi.models import ChatSession, ChatTurn
+    async def get_chat_history(self, request, session_id: str):
+        
         try:
             # Securely fetch the session ensuring it belongs to their org
-            session = ChatSession.objects.get(
+            session = await ChatSession.objects.aget(
                 id=session_id,
-                organisation=request.user.organisation
+                organisation_id=request.user.organisation_id
             )
             # Fetch all turns ordered by creation time
-            turns = ChatTurn.objects.filter(session=session).order_by("created_at")
+            turns =  [chat async for chat in ChatTurn.objects.filter(session=session).order_by("created_at")]
             
             return [
                 {
@@ -278,7 +279,6 @@ class ChatController(ControllerBase):
 
     @http_get("/sessions", auth=JWTAuth())
     async def list_chat_sessions(self, request):
-        from myapi.models import ChatSession, ChatTurn
         # Fetch all sessions for this specific salesperson, ordered newest to oldest
         sessions = [c async for c in ChatSession.objects.filter(
             salesperson=request.user

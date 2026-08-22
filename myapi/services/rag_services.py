@@ -42,7 +42,7 @@ class RAGService:
         
         return enriched_texts, vectors
 
-    def embed_query(self, query: str) -> List[float]:
+    async def embed_query(self, query: str) -> List[float]:
         """
         Takes a raw user query string (e.g., from the Chatbot API).
         Returns a single 1024-d vector embedding for vector database search.
@@ -50,4 +50,4 @@ class RAGService:
         if not query.strip():
             return []
             
-        return self.embedder.embed_query(query)
+        return  await self.embedder.aembed_query(query)

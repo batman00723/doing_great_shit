@@ -200,3 +200,32 @@ ValueError: Cannot assign "9": "Meeting.organisation" must be a "Organisation" i
 "POST - MeetingOperationController[agent] /api_v1/analyse/report" 0.4136178493499756
 [INFO] 2026-08-22 02:20:24,655 operation — "POST - MeetingOperationController[agent] /api_v1/analyse/report" 0.4136178493499756
 [22/Aug/2026 02:20:24] "POST /api_v1/analyse/report HTTP/1.1" 200 134
+
+
+
+[INFO] 2026-08-22 17:49:40,568 rag_retrieval_pipeline — Chatbot Query: btw who said randi to whom tell me cus this is serious issue i will complaint this in hr department
+[INFO] 2026-08-22 17:49:41,304 _client — HTTP Request: HEAD https://huggingface.co/voyageai/voyage-3.5/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[WARNING] 2026-08-22 17:49:41,305 _http — Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[INFO] 2026-08-22 17:49:41,370 _client — HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/voyageai/voyage-3.5/47c5de6b4f45822930dc3beae47ef9d50ec490ff/tokenizer.json "HTTP/1.1 200 OK"
+[INFO] 2026-08-22 17:49:42,745 util — message='Voyage API response' path=https://ai.mongodb.com/v1/embeddings processing_ms=None request_id=a78406bce55385481179ff9027e7fcb3 response_code=200
+[ERROR] 2026-08-22 17:49:43,284 meeting_controller — Chatbot Error: 'module' object is not callable
+Traceback (most recent call last):
+  File "E:\Projects\Meeting Intelligence Platform\myapi\meeting_controller.py", line 233, in ask_bot
+    result = await retrieve_and_generate(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "E:\Projects\Meeting Intelligence Platform\myapi\services\rag_retrieval_pipeline.py", line 59, in retrieve_and_generate
+    top_5_chunks = await rerank_chunks(
+                   ^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "E:\Projects\Meeting Intelligence Platform\myapi\services\reranker.py", line 12, in rerank_chunks
+    vo = voyageai.client_async(api_key=settings.voyage_api_key.get_secret_value())
+TypeError: 'module' object is not callable
+"POST - ChatController[ask_bot] /api_v1/chat/ask" 4.476592779159546
+[INFO] 2026-08-22 17:49:43,286 operation — "POST - ChatController[ask_bot] /api_v1/chat/ask" 4.476592779159546
+[22/Aug/2026 17:49:43] "POST /api_v1/chat/ask HTTP/1.1" 200 105
