@@ -23,15 +23,16 @@ class ChatLLMService:
         return await structured_model.ainvoke(messages)
 
 
+
 class ReportLLMService:
     def __init__(self):
         self.primary_model= ChatOpenAI(    
-                base_url="https://openrouter.ai/api/v1",                                                                                                                                
+                base_url="https://openrouter.ai/api/v1",                                                                                                                              
                 api_key=settings.openrouter_api_key.get_secret_value(),                                                                                                              
                 model="meta-llama/llama-3.3-70b-instruct",                                                                                                                                         
                 temperature=0.2,                    
-                timeout= 360,                                                                                                                           
-                model_kwargs={"max_retries": 3}                                                                                                                                                
+                timeout= 10,                                                                                                                           
+                max_retries=3                                                                                                                                                
             )
 
         self.fallback_model = ChatGoogleGenerativeAI(
@@ -39,14 +40,15 @@ class ReportLLMService:
             model= "gemini-3.1-pro-preview",
             temperature= 0.2,
             max_tokens= 3000,
-            model_kwargs={"max_retries": 1}
+            max_retries=1
         )
         
-        self.robust_model = self.primary_model.with_fallbacks([self.fallback_model])
-
-    async def invoke(self, messages):                                                                                                                                                                                               
-        return await self.robust_model.ainvoke(messages)                                                                                                                          
-                                                                                                                                                                               
+    async def invoke(self, messages):
+        chain = self.primary_model.with_fallbacks([self.fallback_model])
+        return await chain.ainvoke(messages)                                                                                                                          
+                                                                                                                                                                                
     async def get_structured(self, schema, messages):                                                                                                                                                                                                                                  
-        structured_model = self.robust_model.with_structured_output(schema)                                                                                                
-        return await structured_model.ainvoke(messages)
+        primary_structured = self.primary_model.with_structured_output(schema)
+        fallback_structured = self.fallback_model.with_structured_output(schema)
+        robust_structured = primary_structured.with_fallbacks([fallback_structured])
+        return await robust_structured.ainvoke(messages)

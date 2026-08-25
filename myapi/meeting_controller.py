@@ -14,6 +14,9 @@ from myapi.models import MeetingReport, Meeting
 from myapi.models import Customer
 from myapi.services.rag_retrieval_pipeline import retrieve_and_generate
 from myapi.models import ChatSession, ChatTurn
+from datetime import timedelta
+from django.utils import timezone
+import asyncio
 
 class MeetingRequest(Schema):
     transcript: str
@@ -22,6 +25,24 @@ class MeetingRequest(Schema):
 class EditReportSchema(Schema):
     html_report: str
 
+# set() creates a memory for background tasks so that we can keep them here and then remove them without storing background tasks in set python garbage collector will remove them from memory
+# in middle of processing so we will keep track of them in set and remove them  (.discard) when that background task is done to then free up space.
+# set() is a data struture in python like list but it doesnot allows duplicates so we can add and rmove background tasks without worrying about 
+# duplicates and also its faster than list operations as .discard has time complexity has O(1) nd list has O(n).
+BACKGROUND_TASKS = set()
+
+# 
+def schedule_background_task(coro):
+    # schedule the corotuine on python evven loop
+    task = asyncio.create_task(coro)
+
+    # put the task in the set to tell python garbage ccollector that this task is still in use and not to remove it from memory
+    BACKGROUND_TASKS.add(task)
+
+    # when the task is done or crashes we will remove it from the set to free up memory
+    task.add_done_callback(BACKGROUND_TASKS.discard)
+
+    return task
 
 
 
@@ -37,11 +58,33 @@ class MeetingOperationController(ControllerBase):
 
         try:
             
-            customer = await Customer.objects.aget(id=payload.customer_id)
-            response = await process_transcript(payload.transcript, request.user, customer) # fetch the user object from the logged in user via request.user
+            customer = await Customer.objects.aget(id=payload.customer_id, organisation_id=request.user.organisation_id)
+            meeting_count = await Meeting.objects.filter(customer=customer).acount()
+            sequential_title = f"Meeting {meeting_count + 1}"
+
+
+            # Here we first create a meeting object 
+            meeting = await Meeting.objects.acreate(
+                organisation_id=request.user.organisation_id,
+                customer=customer,
+                salesperson_id=request.user.id,
+                meeting_date=timezone.now(),
+                duration=timedelta(),
+                title=sequential_title,
+                meeting_type="Sales Call",
+                status= Meeting.Status.PROCESSING,
+            )
+
+
+            # Here we use the background task to process transcript and so it's free alternative to celery background workers but this works entirely on RAM so it can work on rander free tier.
+            schedule_background_task(process_transcript(payload.transcript, request.user, customer, meeting)) # fetch the user object from the logged in user via request.user
 
             return {
-                "analysis": response
+                "status": meeting.status,
+                "meeting": meeting.id,
+                "title": meeting.title,
+                "message": "Report generation has started"
+
             }
             
         except Exception as e:
@@ -192,14 +235,33 @@ class AudioController(ControllerBase):
             with open(file_path, "wb+") as destination:
                 for chunk in audio_file.chunks():
                     destination.write(chunk)
+            logger.info(f"Wrote file {file_path}, size: {os.path.getsize(file_path)}")
 
             
-            customer = await Customer.objects.aget(id=customer_id)
-            response = await process_audio(file_path, request.user, customer)
+            customer = await Customer.objects.aget(id=customer_id, organisation_id=request.user.organisation_id)
+
+            meeting_count = await Meeting.objects.filter(customer=customer).acount()
+            sequential_title = f"Meeting {meeting_count + 1}"
+
+
+            # Here we first create a meeting object 
+            meeting = await Meeting.objects.acreate(
+                organisation_id=request.user.organisation_id,
+                customer=customer,
+                salesperson_id=request.user.id,
+                meeting_date=timezone.now(),
+                duration=timedelta(),
+                title=sequential_title,
+                meeting_type="Sales Call",
+                status= Meeting.Status.PROCESSING,
+            )
+
+
+            schedule_background_task(process_audio(file_path, request.user, customer, meeting)) # fetch the user object from the logged in user via request.user
 
             return {
-                "status": "success",
-                "analysis": response
+                "status": "pending",
+                "message": "Audio analysis given to background tasks."
             }
 
         except Exception as e:
@@ -209,9 +271,6 @@ class AudioController(ControllerBase):
                 "message": str(e)
             }
 
-        finally:
-            if os.path.exists(file_path):
-                os.remove(file_path)
 
 
 class ChatRequest(Schema):
@@ -299,3 +358,18 @@ class ChatController(ControllerBase):
         return result
 
 
+
+@http_get("/{meeting_id}/status", auth=JWTAuth())
+async def get_meeting_status(self, request, meeting_id: int):
+    try:
+        meeting = await Meeting.objects.aget(
+            id=meeting_id,
+            salesperson=request.user
+        )
+        return {
+            "meeting_id": meeting.id,
+            "title": meeting.title,
+            "status": meeting.status
+        }
+    except Meeting.DoesNotExist:
+        return self.create_response("Meeting not found.", status_code=404)

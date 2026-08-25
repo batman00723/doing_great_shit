@@ -1,8 +1,8 @@
 from myapi.agent.graph import build_graph
 import logging
 from myapi.models import User, Organisation, Meeting, Customer
-from datetime import timedelta
-from django.utils import timezone
+from asgiref.sync import sync_to_async
+
 
 meeting_agent = build_graph()
 
@@ -11,30 +11,11 @@ logger = logging.getLogger(__name__)
 
 
 
-async def process_transcript(transcript: str, user, customer):
-    logger.info("Transcription is processing")
-
+async def process_transcript(transcript: str, user, customer, meeting: Meeting):
+    logger.info(f"Background task started for processing transcript. Meeting ID: {meeting.id}")
 
     organisation_id = user.organisation_id                                                                                                                                     
     salesperson_id = user.id 
-
-  
-
-    meeting_count = await Meeting.objects.filter(customer=customer).acount()
-    sequential_title = f"Meeting {meeting_count + 1}"
-
-
-    # Here we first create a meeting object 
-    meeting = await Meeting.objects.acreate(
-        organisation_id=organisation_id,
-        customer=customer,
-        salesperson_id=salesperson_id,
-        meeting_date=timezone.now(),
-        duration=timedelta(),
-        title=sequential_title,
-        meeting_type="Sales Call",
-        status= Meeting.Status.PROCESSING,
-    )
 
     initial_state = {
         "meeting_id": meeting.id,
@@ -55,14 +36,13 @@ async def process_transcript(transcript: str, user, customer):
     try:
         final_state = await meeting_agent.ainvoke(initial_state, config= config)
         meeting.status = Meeting.Status.COMPLETED
-        await meeting.asave()
-
+        await sync_to_async(meeting.save, thread_sensitive=False)(update_fields=['status'])
 
         return final_state.get("status")
 
     except Exception as e:
         meeting.status = Meeting.Status.FAILED
-        await meeting.asave()
+        await sync_to_async(meeting.save, thread_sensitive=False)(update_fields=['status'])
         logger.error(f"Transcript processing failed: {e}", exc_info= True)
         raise
 

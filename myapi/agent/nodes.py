@@ -12,6 +12,7 @@ import datetime
 from django.db import transaction
 from myapi.services.rag_services import RAGService
 from django.contrib.postgres.search import SearchVector
+from asgiref.sync import sync_to_async
 import logging 
 
 llm= ReportLLMService()
@@ -97,17 +98,21 @@ async def historical_report_node(state: MeetingState):
         #here we are fetching the past meetings by flter by current customer id and organisation id but we are 
         # exculding the current meeting by the .exclude and then oredring them by created at 
 
-        #here it fetches the 4 meetings from db async using a async for loop
-        previous_meetings = [
-            meeting async for meeting
-            in MeetingAnalysis.objects
-            .filter(
-                customer_id=state["customer_id"],
-                organisation_id=state["organisation_id"],
+        # We use sync_to_async here because async for on Django querysets uses CurrentThreadExecutor
+        # which breaks inside asyncio.create_task background tasks
+        @sync_to_async(thread_sensitive=False)
+        def _fetch_previous():
+            return list(
+                MeetingAnalysis.objects
+                .filter(
+                    customer_id=state["customer_id"],
+                    organisation_id=state["organisation_id"],
+                )
+                .exclude(meeting_id=state["meeting_id"])
+                .order_by("-created_at")[:4]
             )
-            .exclude(meeting_id=state["meeting_id"])
-            .order_by("-created_at")[:4]
-        ]
+
+        previous_meetings = await _fetch_previous()
 
         if not previous_meetings:
             return {
@@ -263,16 +268,14 @@ def make_html_report_node(state: MeetingState):
     except Exception as e:
         logger.error(f"HTML Rendering Failed: {e}", exc_info=True)
         raise
+  
 
-
-# HEre we are not converting this node to asyncronous as we are using atomicity and Django does not supports async transaction.atomic()
-# and its a trdeoff stil saving these wont take much time     
-
-def save_to_db_node(state: MeetingState):
+async def save_to_db_node(state: MeetingState):
 
     logger.info("Saving Reports")
 
-    try:
+    @sync_to_async(thread_sensitive=False)
+    def _save():
         with transaction.atomic():
 
             # earlier we created the meting title in the meeting table but that was simple name now as we have used llm for meeting report gen we 
@@ -305,6 +308,8 @@ def save_to_db_node(state: MeetingState):
                 html_report=state['html_report']
             )
 
+    try:
+        await _save()
         return {
             "status": "Saved to DB Successfully"
         }
@@ -318,8 +323,13 @@ def save_to_db_node(state: MeetingState):
 async def send_report_to_mail(state: MeetingState):
 
     # Fetch the current salesperson object from the current salesperson id in state from the User Table
+    # Using sync_to_async because aget() also uses CurrentThreadExecutor which crashes in background tasks
 
-    salesperson = await User.objects.aget(id=state["salesperson_id"])
+    @sync_to_async(thread_sensitive=False)
+    def _get_salesperson():
+        return User.objects.get(id=state["salesperson_id"])
+
+    salesperson = await _get_salesperson()
 
     # Send Email to salesperson
     await send_email(
@@ -333,10 +343,11 @@ async def send_report_to_mail(state: MeetingState):
         "status": "Emails Sent Successfully"
     }
 
-def generate_embeddings_node(state: MeetingState):
+async def generate_embeddings_node(state: MeetingState):
     logger.info("Generating RAG Embeddings...")
     
-    try:
+    @sync_to_async(thread_sensitive=False)
+    def _generate():
         customer = Customer.objects.get(id=state["customer_id"])
         meeting = Meeting.objects.get(id=state["meeting_id"])
         organisation = Organisation.objects.get(id=state["organisation_id"])
@@ -364,7 +375,8 @@ def generate_embeddings_node(state: MeetingState):
             "meeting_date": meeting.meeting_date.isoformat()
         }
 
-        # 3. Use the RAG service to chunk and embed
+        # Use the RAG service to chunk and embed
+        # rag_service might do external IO but we can run it in this thread synchronously
         enriched_texts, vectors = rag_service.chunk_and_embed_text(
             text=state["transcript"],
             semantic_header=semantic_header
@@ -390,7 +402,7 @@ def generate_embeddings_node(state: MeetingState):
                     )
                 )
             
-            # Bulk create is 10x faster
+            
             Embedding.objects.bulk_create(embedding_objects)
 
             # 5. Build the GIN Index for Keyword Search of the transcript column in the Transcript report Table asnd populate search vector column there 
@@ -400,6 +412,8 @@ def generate_embeddings_node(state: MeetingState):
 
         return {}
 
+    try:
+        return await _generate()
     except Exception as e:
         logger.error(f"Embedding Generation Failed: {e}", exc_info= True)
         raise
