@@ -63,3 +63,4 @@ def build_graph():
     return builder.compile(
         checkpointer=memory
     )
+
