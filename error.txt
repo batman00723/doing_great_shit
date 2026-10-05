@@ -1,0 +1,149 @@
+ile "/opt/render/project/src/.venv/lib/python3.14/site-packages/ninja_extra/controllers/route/route_functions.py", line 194, in as_view
+    result = await self.route.view_func(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        ctx.controller_instance, *args, **ctx.view_func_kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/myapi/meeting_controller.py", line 180, in send_report_email
+    meeting = report.meeting
+              ^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 267, in **get**
+    instance._state.fetch_mode.fetch(self, instance)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fetch_modes.py", line 17, in fetch
+    fetcher.fetch_one(instance)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 280, in fetch_one
+    rel_obj = self.get_object(instance)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 410, in get_object
+    return super().get_object(instance)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 232, in get_object
+    return qs.get(self.field.get_reverse_related_filter(instance))
+           ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 718, in get
+    num = len(clone)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 455, in **len**
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 2287, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 131, in **iter**
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/sql/compiler.py", line 1641, in execute_sql
+    cursor = self.connection.cursor()
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/utils/asyncio.py", line 24, in inner
+    raise SynchronousOnlyOperation(message)
+django.core.exceptions.SynchronousOnlyOperation: You cannot call this from an async context - use a thread or sync_to_async.
+[ERROR] 2026-10-05 23:45:13,039 errors — You cannot call this from an async context - use a thread or sync_to_async.
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 251, in **get**
+    rel_obj = self.field.get_cached_value(instance)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/mixins.py", line 21, in get_cached_value
+    return instance._state.fields_cache[self.cache_name]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+KeyError: 'meeting'
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/ninja_extra/operation.py", line 320, in run
+    result = await self.view_func(request, **ctx.kwargs["view_func_kwargs"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/ninja_extra/controllers/route/route_functions.py", line 194, in as_view
+    result = await self.route.view_func(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        ctx.controller_instance, *args, **ctx.view_func_kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/render/project/src/myapi/meeting_controller.py", line 180, in send_report_email
+    meeting = report.meeting
+              ^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 267, in **get**
+    instance._state.fetch_mode.fetch(self, instance)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fetch_modes.py", line 17, in fetch
+    fetcher.fetch_one(instance)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 280, in fetch_one
+    rel_obj = self.get_object(instance)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 410, in get_object
+    return super().get_object(instance)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/fields/related_descriptors.py", line 232, in get_object
+    return qs.get(self.field.get_reverse_related_filter(instance))
+           ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 718, in get
+    num = len(clone)
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 455, in **len**
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 2287, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/query.py", line 131, in **iter**
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/db/models/sql/compiler.py", line 1641, in execute_sql
+    cursor = self.connection.cursor()
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/django/utils/asyncio.py", line 24, in inner
+    raise SynchronousOnlyOperation(message)
+django.core.exceptions.SynchronousOnlyOperation: You cannot call this from an async context - use a thread or sync_to_async.
+Internal Server Error: /api_v1/analyse/93/send-email
+[ERROR] 2026-10-05 23:45:13,044 log — Internal Server Error: /api_v1/analyse/93/send-email
+127.0.0.1 - - [05/Oct/2026:23:45:13 +0530] "POST /api_v1/analyse/93/send-email HTTP/1.1" 500 3672 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+
+@http_post("/{meeting_id}/send-email", auth=JWTAuth())
+    async def send_report_email(self, request, meeting_id: int):
+        
+        try:
+            report = await MeetingReport.objects.select_related("meeting__customer").aget(
+                meeting_id=meeting_id,
+                salesperson=request.user
+            )
+            meeting = report.meeting
+            
+            api_key = settings.brevo_api_key.get_secret_value() if settings.brevo_api_key else None
+            if not api_key:
+                return self.create_response("Brevo API key not configured.", status_code=500)
+                
+            url = "https://api.brevo.com/v3/smtp/email"
+            headers = {
+                "accept": "application/json",
+                "api-key": api_key,
+                "content-type": "application/json"
+            }
+            
+            data = {
+                "sender": {
+                    "name": request.user.salesperson_name,
+                    "email": "batmanmishra23@gmail.com"       
+                },
+
+                "replyTo": {                                                                                                                                                           
+                    "email": request.user.email,                                                                                                                                       
+                    "name": request.user.salesperson_name                                                                                                                              
+                },
+
+                "to": [{"email": meeting.customer.email}],
+                "subject": f"Meeting Report: {meeting.title}",
+                "htmlContent": report.html_report
+            }
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.post(url, headers=headers, json=data)
+            
+            if response.status_code in [201, 202]:
+                return {
+                    "message": f"Email sent successfully to {meeting.customer.email}!",
+                    "email": meeting.customer.email
+                }
+            else:
+                return self.create_response({"message": "Failed to send email", "details": response.text}, status_code=400)
+                
+        except MeetingReport.DoesNotExist:
+            return self.create_response("Report not found.", status_code=404)

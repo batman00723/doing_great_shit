@@ -40,17 +40,22 @@ class CustomerController(ControllerBase):
             if photo.size > 500*1024:
                 raise HttpError(400, "Image exceeds 500 KB limit.")
             
-        # Create customer linked to the salesperson and their organisation
-        customer = await Customer.objects.acreate(
-            organisation_id=request.user.organisation_id,
-            salesperson_id=request.user.id,
-            customer_name=payload.customer_name,
-            email=payload.email,
-            industry=payload.industry,
-            website=payload.website,
-            status=payload.status,
-            customer_image= photo
-        )
+        # Wrap file saving in a sync_to_async call because Django's file storage is synchronous
+        from asgiref.sync import sync_to_async
+        
+        def save_customer():
+            return Customer.objects.create(
+                organisation_id=request.user.organisation_id,
+                salesperson_id=request.user.id,
+                customer_name=payload.customer_name,
+                email=payload.email,
+                industry=payload.industry,
+                website=payload.website,
+                status=payload.status,
+                customer_image=photo
+            )
+            
+        customer = await sync_to_async(save_customer)()
         return customer
 
     @http_get("/list", auth=JWTAuth(), response=List[CustomerOutSchemaList])

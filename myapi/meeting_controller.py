@@ -174,11 +174,14 @@ class MeetingOperationController(ControllerBase):
     async def send_report_email(self, request, meeting_id: int):
         
         try:
-            report = await MeetingReport.objects.aget(
+            report = await MeetingReport.objects.select_related("meeting__customer").aget(
                 meeting_id=meeting_id,
                 salesperson=request.user
             )
             meeting = report.meeting
+            
+            if not meeting.customer.email:
+                return self.create_response("This customer does not have an email address saved.", status_code=400)
             
             api_key = settings.brevo_api_key.get_secret_value() if settings.brevo_api_key else None
             if not api_key:
