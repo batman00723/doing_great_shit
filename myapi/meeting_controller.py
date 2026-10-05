@@ -114,7 +114,8 @@ class MeetingOperationController(ControllerBase):
                     "id": m.customer.id,
                     "customer_name": m.customer.customer_name,
                     "industry": m.customer.industry,
-                    "status": m.customer.status
+                    "status": m.customer.status,
+                    "email": m.customer.email
                 }
             }
             for m in meetings
@@ -210,7 +211,10 @@ class MeetingOperationController(ControllerBase):
                 response = await client.post(url, headers=headers, json=data)
             
             if response.status_code in [201, 202]:
-                return {"message": f"Email sent successfully to {meeting.customer.email}!"}
+                return {
+                    "message": f"Email sent successfully to {meeting.customer.email}!",
+                    "email": meeting.customer.email
+                }
             else:
                 return self.create_response({"message": "Failed to send email", "details": response.text}, status_code=400)
                 
