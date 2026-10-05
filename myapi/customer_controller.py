@@ -27,6 +27,7 @@ class CustomerOutSchemaList(Schema):
     industry: str
     status: str
     email: str | None = None
+    website: str | None = None
     customer_image: str | None = None
 
 @api_controller("/customers", tags=["Customer CRM"])

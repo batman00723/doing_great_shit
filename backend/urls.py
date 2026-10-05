@@ -15,8 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.http import HttpResponse
+from django.conf import settings
+from django.views.static import serve
 from myapi.api import api_v1
 
 def health_check(request):
@@ -26,4 +28,5 @@ urlpatterns = [
     path('', health_check),  # Added for Render health check
     path('admin/', admin.site.urls),
     path("api_v1/", api_v1.urls),
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
