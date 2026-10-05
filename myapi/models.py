@@ -63,6 +63,8 @@ class Customer(models.Model):
 
     customer_name = models.CharField(max_length=255)
 
+    customer_image = models.ImageField(upload_to= 'customer_photos/', null= True, blank= True) # upload_to create a sub folder inside media folder
+
     email = models.EmailField(unique=True, null= True, blank=True) # Remove he null = true an blank = true in production
 
     industry = models.CharField(
