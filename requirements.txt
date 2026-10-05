@@ -33,3 +33,4 @@ sib-api-v3-sdk
 datasets
 ragas
 httpx
+uvicorn
