@@ -100,3 +100,11 @@ await sync_to_async(meeting.save, thread_sensitive=False)(update_fields=['status
 2. **LLM Fallbacks with Schemas?** Apply the schema to each model *before* calling `.with_fallbacks()`.
 3. **Running async Django?** Use `uvicorn backend.asgi:application`, never `runserver`.
 4. **Database inside a background task?** Always wrap it in `sync_to_async(thread_sensitive=False)`.
+
+
+
+## Django Async Uvicorn
+
+When working with Django Async, remember that asyncio.create_task() background jobs require the server to run in ASGI mode (like Uvicorn or Daphne). If run in WSGI mode  
+  (like default manage.py runserver or standard Gunicorn), Django wraps the view in a temporary event loop that is instantly destroyed when the HTTP response is returned, which
+  silently kills all background tasks without raising any errors.                                                                                                                  
