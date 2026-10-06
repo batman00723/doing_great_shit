@@ -32,9 +32,19 @@ class EditReportSchema(Schema):
 BACKGROUND_TASKS = set()
 
 # 
+from django.db import close_old_connections
+
+# Wraps the coroutine to safely release the database connection when done
+async def _run_and_clean_up(coro):
+    try:
+        await coro
+    finally:
+        # Crucial for background tasks: manually tell Django to release the DB connection
+        close_old_connections()
+
 def schedule_background_task(coro):
-    # schedule the corotuine on python evven loop
-    task = asyncio.create_task(coro)
+    # schedule the corotuine on python evven loop wrapped in our cleanup function
+    task = asyncio.create_task(_run_and_clean_up(coro))
 
     # put the task in the set to tell python garbage ccollector that this task is still in use and not to remove it from memory
     BACKGROUND_TASKS.add(task)
