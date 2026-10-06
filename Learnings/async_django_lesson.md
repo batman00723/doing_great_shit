@@ -108,38 +108,3 @@ await sync_to_async(meeting.save, thread_sensitive=False)(update_fields=['status
 When working with Django Async, remember that asyncio.create_task() background jobs require the server to run in ASGI mode (like Uvicorn or Daphne). If run in WSGI mode  
   (like default manage.py runserver or standard Gunicorn), Django wraps the view in a temporary event loop that is instantly destroyed when the HTTP response is returned, which
   silently kills all background tasks without raising any errors.                                                                                                                  
-
-
----
-
-## 5. Bug #4: Exhausting the Supabase Database Connection Pool
-This was caused by the same background tasks, but led to a new error:
-`django.db.utils.OperationalError: connection failed: ... max clients reached in session mode - max clients are limited to pool_size: 15`
-
-### How Django Normally Behaves
-Django is usually very polite. When an HTTP request comes in, it grabs a database connection. When the HTTP request finishes and returns the response, Django has built-in middleware that automatically runs `django.db.close_old_connections()` to release the connection back to the database.
-
-### The Background Task Leak
-Because our `asyncio.create_task()` background jobs run completely outside of the HTTP request lifecycle, Django's automatic cleanup middleware is **never triggered** when the task finishes. 
-When our LangGraph agent made database queries, Django opened a connection and left it hanging open indefinitely. If you ran the agent a few times, it quickly maxed out Supabase's strict 15-connection limit.
-
-### The Fix
-We wrapped the background task in a `try/finally` block that explicitly forces Django to release the connection the exact moment the task is done, whether it succeeds or crashes.
-
-```python
-from django.db import close_old_connections
-import asyncio
-
-async def _run_and_clean_up(coro):
-    try:
-        await coro
-    finally:
-        # Crucial for background tasks: manually release the DB connection!
-        close_old_connections()
-
-def schedule_background_task(coro):
-    task = asyncio.create_task(_run_and_clean_up(coro))
-    BACKGROUND_TASKS.add(task)
-    task.add_done_callback(BACKGROUND_TASKS.discard)
-    return task
-```

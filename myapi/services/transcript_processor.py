@@ -2,7 +2,6 @@ from myapi.agent.graph import build_graph
 import logging
 from myapi.models import User, Organisation, Meeting, Customer
 from asgiref.sync import sync_to_async
-from django.db import close_old_connections
 
 
 meeting_agent = build_graph()
@@ -37,27 +36,13 @@ async def process_transcript(transcript: str, user, customer, meeting: Meeting):
     try:
         final_state = await meeting_agent.ainvoke(initial_state, config= config)
         meeting.status = Meeting.Status.COMPLETED
-        
-        def _save_meeting():
-            try:
-                meeting.save(update_fields=['status'])
-            finally:
-                close_old_connections()
-        await sync_to_async(_save_meeting, thread_sensitive=False)()
-
+        await sync_to_async(meeting.save, thread_sensitive=False)(update_fields=['status'])
 
         return final_state.get("status")
 
     except Exception as e:
         meeting.status = Meeting.Status.FAILED
-        
-        def _save_meeting():
-            try:
-                meeting.save(update_fields=['status'])
-            finally:
-                close_old_connections()
-        await sync_to_async(_save_meeting, thread_sensitive=False)()
-
+        await sync_to_async(meeting.save, thread_sensitive=False)(update_fields=['status'])
         logger.error(f"Transcript processing failed: {e}", exc_info= True)
         raise
 

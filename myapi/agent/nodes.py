@@ -13,7 +13,6 @@ from django.db import transaction
 from myapi.services.rag_services import RAGService
 from django.contrib.postgres.search import SearchVector
 from asgiref.sync import sync_to_async
-from django.db import close_old_connections
 import logging 
 
 llm= ReportLLMService()
@@ -101,16 +100,7 @@ async def historical_report_node(state: MeetingState):
 
         # We use sync_to_async here because async for on Django querysets uses CurrentThreadExecutor
         # which breaks inside asyncio.create_task background tasks
-        def safe_db_wrapper(f):
-    def wrapper(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        finally:
-            close_old_connections()
-    return wrapper
-
-@sync_to_async(thread_sensitive=False)
-@safe_db_wrapper
+        @sync_to_async(thread_sensitive=False)
         def _fetch_previous():
             return list(
                 MeetingAnalysis.objects
@@ -284,16 +274,7 @@ async def save_to_db_node(state: MeetingState):
 
     logger.info("Saving Reports")
 
-    def safe_db_wrapper(f):
-    def wrapper(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        finally:
-            close_old_connections()
-    return wrapper
-
-@sync_to_async(thread_sensitive=False)
-@safe_db_wrapper
+    @sync_to_async(thread_sensitive=False)
     def _save():
         with transaction.atomic():
 
@@ -344,16 +325,7 @@ async def send_report_to_mail(state: MeetingState):
     # Fetch the current salesperson object from the current salesperson id in state from the User Table
     # Using sync_to_async because aget() also uses CurrentThreadExecutor which crashes in background tasks
 
-    def safe_db_wrapper(f):
-    def wrapper(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        finally:
-            close_old_connections()
-    return wrapper
-
-@sync_to_async(thread_sensitive=False)
-@safe_db_wrapper
+    @sync_to_async(thread_sensitive=False)
     def _get_salesperson():
         return User.objects.get(id=state["salesperson_id"])
 
@@ -374,16 +346,7 @@ async def send_report_to_mail(state: MeetingState):
 async def generate_embeddings_node(state: MeetingState):
     logger.info("Generating RAG Embeddings...")
     
-    def safe_db_wrapper(f):
-    def wrapper(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        finally:
-            close_old_connections()
-    return wrapper
-
-@sync_to_async(thread_sensitive=False)
-@safe_db_wrapper
+    @sync_to_async(thread_sensitive=False)
     def _generate():
         customer = Customer.objects.get(id=state["customer_id"])
         meeting = Meeting.objects.get(id=state["meeting_id"])
